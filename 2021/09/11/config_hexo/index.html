@@ -4,14 +4,19 @@
   <meta charset="utf-8">
   
   
-  <title>zombie&#39;s Hexo blog</title>
+  <title>一切的开始--安装Hexo | zombie&#39;s Hexo blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zombie&#39;s Hexo blog">
-<meta property="og:url" content="http://ali.zombielovevampire.top/index.html">
+  <meta name="description" content="0 为什么做一个Blog其实我一直都有做笔记的习惯, 但都是同步到Github的私有仓库, 而且总感觉在别人面前写代码或者把自己的代码公开是一件很羞耻的事情. 这个博客可以记录每天的学习, 一个起到监督自己学习的作用, 二是克服自己的羞耻感.  为什么会有这种心理? 这个博客什么都系都可能写, 就从这里开始吧~ 如果你链接Github有困难, 这个博客也可以通过http:&#x2F;&#x2F;zombielovev">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一切的开始--安装Hexo">
+<meta property="og:url" content="http://ali.zombielovevampire.top/2021/09/11/config_hexo/index.html">
 <meta property="og:site_name" content="zombie&#39;s Hexo blog">
+<meta property="og:description" content="0 为什么做一个Blog其实我一直都有做笔记的习惯, 但都是同步到Github的私有仓库, 而且总感觉在别人面前写代码或者把自己的代码公开是一件很羞耻的事情. 这个博客可以记录每天的学习, 一个起到监督自己学习的作用, 二是克服自己的羞耻感.  为什么会有这种心理? 这个博客什么都系都可能写, 就从这里开始吧~ 如果你链接Github有困难, 这个博客也可以通过http:&#x2F;&#x2F;zombielovev">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-11T11:30:52.000Z">
+<meta property="article:modified_time" content="2021-09-13T11:49:15.824Z">
 <meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="zombie's Hexo blog" type="application/atom+xml">
@@ -69,108 +74,7 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-install-clash" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/09/13/install-clash/" class="article-date">
-  <time class="dt-published" datetime="2021-09-13T11:40:33.000Z" itemprop="datePublished">2021-09-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/13/install-clash/">安装Clash</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://ali.zombielovevampire.top/2021/09/13/install-clash/" data-id="cktil2w0k00046uu60f9mher6" data-title="安装Clash" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-vscode-remotessh" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/09/13/vscode-remotessh/" class="article-date">
-  <time class="dt-published" datetime="2021-09-13T11:38:45.000Z" itemprop="datePublished">2021-09-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/13/vscode-remotessh/">配置vscode</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="使用vscode的remote高效编写博客"><a href="#使用vscode的remote高效编写博客" class="headerlink" title="使用vscode的remote高效编写博客"></a>使用vscode的remote高效编写博客</h2><p>为vscode安装Remote-SSH的插件.  </p>
-<img src="/2021/09/13/vscode-remotessh/remote-ssh.png" class="" title="Remote-SSH">
-
-<p>使用如下命令在Windows电脑中生成RSA密钥(我本来就有就没有生成), 生成文件在<code>C:\Users\用户名\.ssh\</code>下</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
-
-<p>把<code>C:\Users\用户名\.ssh\id_rsa.pub</code>复制到服务器<code>~/.ssh/</code>下, 使用如下命令加入<code>authorized_keys中</code>(也可以本地打开直接用vim追家进去…)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat id_rsa.pub &gt;&gt; authorized_keys</span><br></pre></td></tr></table></figure>
-
-<p>之后可以使用私钥<code>id_rsa</code>进行ssh链接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@IP -p [Port] –i C:\Users\[用户名]\.ssh\id_rsa</span><br></pre></td></tr></table></figure>
-
-<p>在vscode中按<code>F1</code>, 输入<code>Remote</code>, 选择<code>Remote-SSH: Setting</code>, 找到<code>Config file</code>选项, 打开选项中填写的文件, 如<code>C://Users/[用户名]/.ssh/config</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Host 随便起</span><br><span class="line">  HostName IP或域名</span><br><span class="line">  User root</span><br><span class="line">  Port 端口(默认22)</span><br><span class="line">  IdentityFile C:\Users\[用户名]\.ssh\id_rsa</span><br></pre></td></tr></table></figure>
-
-<p>填写完之后, 保存, 再次在vscode中输入<code>F1</code>, 选择<code>Remote-SSH: Connect to host...</code>, 选择你要链接的Host, 链接成功之后会显示如下内容</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">platform==linux==</span><br><span class="line">unpackResult====</span><br><span class="line">didLocalDownload==0==</span><br><span class="line">downloadTime====</span><br><span class="line">installTime====</span><br><span class="line">extInstallTime====</span><br><span class="line">serverStartTime====</span><br><span class="line">connectionToken==xxxxxxxxxxxxx==</span><br><span class="line">xxxxxx: end</span><br></pre></td></tr></table></figure>
-
-<p>在左侧资源管理器选择对应文件夹就可以和本地一样进行操作了</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://ali.zombielovevampire.top/2021/09/13/vscode-remotessh/" data-id="cktil2w0m00056uu69p2n2l2e" data-title="配置vscode" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-config_hexo" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-config_hexo" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2021/09/11/config_hexo/" class="article-date">
   <time class="dt-published" datetime="2021-09-11T11:30:52.000Z" itemprop="datePublished">2021-09-11</time>
@@ -183,8 +87,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/11/config_hexo/">一切的开始--安装Hexo</a>
+    <h1 class="p-name article-title" itemprop="headline name">
+      一切的开始--安装Hexo
     </h1>
   
 
@@ -266,62 +170,28 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/09/10/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2021-09-10T12:59:55.434Z" itemprop="datePublished">2021-09-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2021/09/13/vscode-remotessh/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
+          配置vscode
+        
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/10/hello-world/">Hello World</a>
-    </h1>
   
+    <a href="/2021/09/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://ali.zombielovevampire.top/2021/09/10/hello-world/" data-id="cktil2w0i00036uu61yxm3vv1" data-title="Hello World" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-
-  
 
 
 </section>
