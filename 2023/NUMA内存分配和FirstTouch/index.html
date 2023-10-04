@@ -20,28 +20,44 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zombie&#39;s">
-<meta property="og:url" content="https://zombie12138.github.io/index.html">
+  <meta name="description" content="实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统CentOS Linux release 7.9.2009 (AltArch), 内核版本4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17 NUMA一般的个人电脑都是UMA(Uni">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NUMA内存分配, FirstTouch从接触到放弃">
+<meta property="og:url" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统CentOS Linux release 7.9.2009 (AltArch), 内核版本4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17 NUMA一般的个人电脑都是UMA(Uni">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng910-chipset-solution.png">
+<meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng-numa.png">
+<meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/bind.png">
+<meta property="article:published_time" content="2023-09-17T07:47:09.000Z">
+<meta property="article:modified_time" content="2023-10-04T07:02:37.332Z">
 <meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="NUMA">
+<meta property="article:tag" content="OpenMP">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="GiveUp">
+<meta property="article:tag" content="TODO">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng910-chipset-solution.png">
 
-<link rel="canonical" href="https://zombie12138.github.io/">
+<link rel="canonical" href="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>zombie's</title>
+  <title>NUMA内存分配, FirstTouch从接触到放弃 | zombie's</title>
   
 
 
@@ -139,9 +155,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -157,10 +174,9 @@
       <meta itemprop="name" content="zombie's">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/" class="post-title-link" itemprop="url">NUMA内存分配, FirstTouch从接触到放弃</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          NUMA内存分配, FirstTouch从接触到放弃
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -190,7 +206,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统<code>CentOS Linux release 7.9.2009 (AltArch)</code>, 内核版本<code>4.14.0-115.el7a.0.1.aarch64</code>, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17</p>
+        <p>实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统<code>CentOS Linux release 7.9.2009 (AltArch)</code>, 内核版本<code>4.14.0-115.el7a.0.1.aarch64</code>, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17</p>
 <h2 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h2><p>一般的个人电脑都是UMA(Uniform Memory Access), 不同的核心访问速度是相同的, 但是在服务器CPU中, 可能有多个CPU socket, CPU访问另一个处理器上的内存会更慢一些, 但是访问本地的内存会快一些， 这就是NUMA(Non-Uniform Memory Access), 当然, 为了提高单个处理器的带宽, 让他能匹配不断增长的核心数, 一些厂商也会处于拓展性等考虑把单个处理器上的核心分为几组, 每一组是一个NUMA Node. 核心自己所在的Node叫Local Node; 其他的Node就是Remote Node, 访存延迟和带宽都会更加受限; 有一些会把相同Socket不同的Node成为Neighbour Node， 速度介于两者之间.</p>
 <p>比如下图的鲲鹏920-Server, 每一个SoC拥有两个CPU-Compute Die, 每一个CPU Compute Die拥有两对, 4个DDR控制器, 一个SoC有8个DDR控制器, 可以达到200GB&#x2F;s的带宽. 如图所示, 多个鲲鹏SoC就会有4个NUMA Node.</p>
 <img src="/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng910-chipset-solution.png" class="" title="kunpeng910-chipset-solution">
@@ -432,262 +448,40 @@
 <li><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/cpp/memory/new/operator_delete">Cppreference - operator delete, operator delete[]</a>.</li>
 </ul>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/NUMA/" rel="tag"># NUMA</a>
+              <a href="/tags/OpenMP/" rel="tag"># OpenMP</a>
+              <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/C/" rel="tag"># C</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/GiveUp/" rel="tag"># GiveUp</a>
+              <a href="/tags/TODO/" rel="tag"># TODO</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="zombie12138">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zombie's">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/" class="post-title-link" itemprop="url">Peterson算法之一--在So中互斥访问变量</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-08-03 20:55:35" itemprop="dateCreated datePublished" datetime="2023-08-03T20:55:35+08:00">2023-08-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-13 11:37:20" itemprop="dateModified" datetime="2023-09-13T11:37:20+08:00">2023-09-13</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:</p>
-<blockquote>
-<p>我们现在遇到一个问题, 在SO中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?</p>
-</blockquote>
-<p>自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用, 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,<br>但是忘记了最终的实现, 甚至忘记了算法名字…</p>
-<p>这个可以拆成几个问题</p>
-<ol>
-<li>So中如何共享一个变量</li>
-<li>有哪些机制可以实现互斥访问</li>
-<li>Peterson算法的实现</li>
-</ol>
-<p>这个问题比较简单(虽然没怎么回答好就是了), 但是可以学习的地方有很多, 这一章先来讨论So中如何互斥地共享某个变量. 如何多进程中互斥.</p>
-<p>所有的代码参见我的<a target="_blank" rel="noopener" href="https://github.com/zombie12138/SharedMemoryMutexExample">仓库</a>, 使用的是腾讯云4C4G的轻量应用服务器(KVM over Intel Xeon Gold 6133 CPU)</p>
-<h2 id="So的全局变量是共享的吗？"><a href="#So的全局变量是共享的吗？" class="headerlink" title="So的全局变量是共享的吗？"></a>So的全局变量是共享的吗？</h2><p>其实也说不上共享, 是Copy On Write. 写一个共享库, 然后开两个进程去分别初始化和读取, 如果可以读取到对方的写入就说明是共享的, 否则就不是.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">process A.init &amp;&amp; wait keyboard</span><br><span class="line">process B.print()</span><br><span class="line">process B.init &amp;&amp; wait keyboard</span><br><span class="line"></span><br><span class="line">continue A &amp; B</span><br><span class="line"></span><br><span class="line">process A.print()</span><br><span class="line">process B.print()</span><br></pre></td></tr></table></figure>
-
-<p>最终的结果是第一个<code>B.print</code>什么都没有输出, 即A的初始化对B无效; 后面A和B的输出也都是自己本身的内容.</p>
-<p>也就是说面试官描述是不准确的, SO中的全局变量是无法共享的（</p>
-<p>如果有能力可能会继续剖析动态链接器在这方面的实现.</p>
-<h2 id="SO中使用共享的变量"><a href="#SO中使用共享的变量" class="headerlink" title="SO中使用共享的变量"></a>SO中使用共享的变量</h2><p>如果想要共享一些变量, 使用mmap来映射一段共享内存就可以了.</p>
-<p>现在so全局变量中定义一下标识符和内存指针</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SHM_NAME <span class="string">&quot;/shared_memory&quot;</span></span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SharedData</span> &#123;</span><br><span class="line">    <span class="type">int</span> counter;</span><br><span class="line">    <span class="type">int</span> wakeup;</span><br><span class="line">    <span class="type">int</span> finished[<span class="number">2</span>];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">int</span> shm_fd;</span><br><span class="line">SharedData *shared_data;</span><br></pre></td></tr></table></figure>
-
-<p>打开共享内存, 设置大小, 映射到内存空间</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shm_fd = <span class="built_in">shm_open</span>(SHM_NAME, O_CREAT | O_RDWR, <span class="number">0666</span>);</span><br><span class="line"><span class="built_in">ftruncate</span>(shm_fd, <span class="built_in">sizeof</span>(SharedData));</span><br><span class="line">shared_data = <span class="built_in">static_cast</span>&lt;SharedData*&gt;(<span class="built_in">mmap</span>(<span class="number">0</span>, <span class="built_in">sizeof</span>(SharedData), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, <span class="number">0</span>));</span><br></pre></td></tr></table></figure>
-
-<p>最终关闭时候顺序相反</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">munmap</span>(shared_data, <span class="built_in">sizeof</span>(SharedData));</span><br><span class="line"><span class="built_in">close</span>(shm_fd);</span><br><span class="line"><span class="built_in">shm_unlink</span>(SHM_NAME);</span><br></pre></td></tr></table></figure>
-
-<p>来测试一个加法, 访问counter, wakeup用来唤醒初始化之后等待的程序(semaphore的作用). 等待结束也是使用两个int来检查即可.</p>
-<p>大概的流程是这样的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">program1 init &amp; wait</span><br><span class="line">start program2 &amp; wakeup program1</span><br><span class="line"></span><br><span class="line">Increase shared int together</span><br><span class="line"></span><br><span class="line">wait for the other to finish</span><br><span class="line">check whether the int value == 1e6</span><br></pre></td></tr></table></figure>
-
-<p>具体来说是通过给Program A添加一个参数, 来设置不同的进程编号, 这就是部分Makefile</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.PHONY : run cleanp</span><br><span class="line"><span class="section">run:</span></span><br><span class="line">    <span class="comment"># A</span></span><br><span class="line">	@LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH ./program KILL_THIS_THREAD 2&gt;&amp;1 &gt; /dev/null &amp;</span><br><span class="line">    <span class="comment"># B</span></span><br><span class="line">	-@LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH time ./program</span><br><span class="line">	@make cleanp</span><br><span class="line"><span class="section">cleanp:</span></span><br><span class="line">	@ps -aux | grep &#x27;KILL_THIS_THREAD&#x27; | grep -v grep | awk &#x27;&#123;print $$2&#125;&#x27; | xargs -r kill</span><br></pre></td></tr></table></figure>
-
-<p>每个进程进行5e6次加法, 如果正常会得到1e6的结果</p>
-<p>最终得到的结果集中在6e6到7e6附近, 用时<code>0.07s</code>. 也就是说确实可以共享, 但也需要一个锁来进行互斥访问变量.</p>
-<p>这就回到面试官的问题了, 如何互斥访问</p>
-<h2 id="使用信号量"><a href="#使用信号量" class="headerlink" title="使用信号量"></a>使用信号量</h2><p>这个其实就是多进程中的加锁, 可以直接使用信号量或者锁来进行进行互斥访问</p>
-<p>可以使用Linux的<code>&lt;semaphore.h&gt;</code>中的<code>sem_t</code>来进行互斥访问, 顺便把wakeup和finished也用信号量来进行实现的(语义会明确些).</p>
-<p>Program A初始化时候</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// init</span></span><br><span class="line">shared_data-&gt;counter = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">sem_init</span>(&amp;shared_data-&gt;mutex, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"><span class="built_in">sem_init</span>(&amp;shared_data-&gt;wakeup, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">sem_init</span>(&amp;shared_data-&gt;finished[<span class="number">0</span>], <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">sem_init</span>(&amp;shared_data-&gt;finished[<span class="number">1</span>], <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// wait program B</span></span><br><span class="line"><span class="built_in">sem_wait</span>(&amp;shared_data-&gt;wakeup);</span><br></pre></td></tr></table></figure>
-
-<p>Program B使用Wakeup信号量唤醒A</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sem_post</span>(&amp;shared_data-&gt;wakeup);</span><br></pre></td></tr></table></figure>
-
-<p>加法就是直接使用信号量实现互斥</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sem_wait</span>(&amp;shared_data-&gt;mutex);</span><br><span class="line">shared_data-&gt;counter++;</span><br><span class="line"><span class="built_in">sem_post</span>(&amp;shared_data-&gt;mutex);</span><br></pre></td></tr></table></figure>
-
-<p>最终结束等待对方的进程, 然后返回结果</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pid == 0 or 1</span></span><br><span class="line"><span class="comment">// finished </span></span><br><span class="line"><span class="built_in">sem_post</span>(&amp;shared_data-&gt;finished[pid]);</span><br><span class="line"><span class="comment">// wait</span></span><br><span class="line"><span class="built_in">sem_wait</span>(&amp;shared_data-&gt;finished[<span class="number">1</span> - pid]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// get vaule</span></span><br><span class="line"><span class="type">int</span> value = shared_data-&gt;counter;</span><br></pre></td></tr></table></figure>
-
-<p>最终要记得destroy所有信号量</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pthread_mutex_destroy</span>(&amp;shared_data-&gt;mutex);</span><br><span class="line"><span class="built_in">sem_destroy</span>(&amp;shared_data-&gt;wakeup);</span><br><span class="line"><span class="built_in">sem_destroy</span>(&amp;shared_data-&gt;finished[<span class="number">0</span>]);</span><br><span class="line"><span class="built_in">sem_destroy</span>(&amp;shared_data-&gt;finished[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
-
-<p>这次可以得到正确的答案, 但是性能下降了许多, 占用了<code>1.87s</code>, 运行时间提升了25倍以上. 倒也正常, 毕竟又是互斥访问又是系统调用.</p>
-<h2 id="更轻量的锁"><a href="#更轻量的锁" class="headerlink" title="更轻量的锁"></a>更轻量的锁</h2><p>使用信号量太笨重了, 每次都要切换内核态和用户态, 所以性能下降如此严重. 不如直接使用多进程的mutex.<br>恰好, pthread提供了一个多进程之间锁的调用</p>
-<p>首先把结构体中的互斥锁改成<code>pthread_mutex_t mutex;</code>, 之后初始化为多进程之间的锁</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SharedData</span> &#123;</span><br><span class="line">    <span class="type">sem_t</span> finished[<span class="number">2</span>];</span><br><span class="line">    <span class="type">pthread_mutex_t</span> mutex;</span><br><span class="line">    <span class="type">sem_t</span> wakeup;</span><br><span class="line">    <span class="type">int</span> counter;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中要初始化为多进程之间的锁</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// init</span></span><br><span class="line"><span class="type">pthread_mutexattr_t</span> mutexattr;</span><br><span class="line"><span class="built_in">pthread_mutexattr_init</span>(&amp;mutexattr);</span><br><span class="line"><span class="built_in">pthread_mutexattr_setpshared</span>(&amp;mutexattr, PTHREAD_PROCESS_SHARED);</span><br><span class="line"><span class="built_in">pthread_mutex_init</span>(&amp;shared_data-&gt;mutex,&amp;mutexattr);</span><br><span class="line"><span class="built_in">pthread_mutexattr_destroy</span>(&amp;mutexattr);</span><br></pre></td></tr></table></figure>
-
-<p>使用也很简单</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pthread_mutex_lock</span>(&amp;shared_data-&gt;mutex);</span><br><span class="line">shared_data-&gt;counter++;</span><br><span class="line"><span class="built_in">pthread_mutex_unlock</span>(&amp;shared_data-&gt;mutex);</span><br></pre></td></tr></table></figure>
-
-<p>最终销毁</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pthread_mutex_destroy</span>(&amp;shared_data-&gt;mutex);</span><br></pre></td></tr></table></figure>
-
-<p>这次的结果依然正确, 但是时间下降了接近一半, 只要<code>0.94s</code>, 虽然还是带来了10倍多的overhead, 但是已经快了许多</p>
-<p>提速的原因是因为他会先尝试获取用户态的锁, 获取成功就会直接进入, 如果不成功才会使用futex这些系统调用. 这个具体在TODO中进行分析.</p>
-<h2 id="使用原子操作"><a href="#使用原子操作" class="headerlink" title="使用原子操作"></a>使用原子操作</h2><p>都这样了, 不如直接使用atomic add来原子加法, 估计会比之前的速度都要更快一些.</p>
-<p>可以直接把<code>mutex</code>变量相关的删掉, 把<code>int</code>换成<code>std::atomic_int</code></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SharedData</span> &#123;</span><br><span class="line">    <span class="type">sem_t</span> finished[<span class="number">2</span>];</span><br><span class="line">    <span class="type">sem_t</span> wakeup;</span><br><span class="line">    std::atomic_int counter;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>运行一下, 只有<code>0.24s</code>, 互斥的overhead已经从之前的25倍以上, 10倍以上, 降低到现在的仅有2倍多, 但是这个其实是有些作弊的, 毕竟这只是一个int的value</p>
-<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>原子操作台作弊了, 就用自旋锁, 比较轻量, 应该是最快的了</p>
-<p>首先是定义(依然在之前的结构体中), 初始化和销毁</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">pthread_spinlock_t</span>  mutex;</span><br><span class="line"></span><br><span class="line">pthread_spin_init(&amp;spin, PTHREAD_PROCESS_SHARED);</span><br><span class="line">pthread_spin_destroy(&amp;spin);</span><br></pre></td></tr></table></figure>
-
-<p><code>PTHREAD_PROCESS_SHARED</code>表示是多进程共享的, 如果仅仅是多线程只需要<code>PTHREAD_PROCESS_PRIVATE</code>.</p>
-<p>加锁, 去锁也很简单</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pthread_spin_lock(&amp;shared_data-&gt;mutex);</span><br><span class="line">pthread_spin_unlock(&amp;shared_data-&gt;mutex);</span><br></pre></td></tr></table></figure>
-
-<p>最后结果非常Amazing, <code>0.17s</code>就得到了正确结果, 可以做到比原子操作更快.</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>多进程访问so中的global variable不会共享, 可以使用mmap来映射一段共享内存. 互斥访问就是多进程中的互斥, 分别使用了信号量(1.87s), 互斥锁(0.94s), 原子操作(0.24s), 自旋锁(0.17s)解决了问题, 但是依然有很多疑问:</p>
-<ul>
-<li>如何不使用额外的命令行参数, 自动 安全 优雅地为进程分配编号?</li>
-<li>这些调用背后做了哪些工作, 为什么差别这么大? 自旋锁为什么比原子操作还要快.</li>
-<li>还有就是最初的问题还是没有解决, 就是如何实现Peterson算法, 如何在现代计算机中如何实现Peterson算法?</li>
-</ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/478533/why-are-program-images-and-shared-libraries-considered-private-to-a-process">Why are “program images and shared libraries” “considered private to a process” but “shared (SHR) by the kernel”?</a>  </li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37047977/which-segments-are-affected-by-a-copy-on-write">Which segments are affected by a copy-on-write?</a>  </li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/5095781/how-pthread-mutex-lock-is-implemented">How pthread_mutex_lock is implemented</a>  </li>
-<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_13267193/5370574">Linux 同步机制：自旋锁</a>  </li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/526524232">面试必备之Linux内核自旋锁</a>  </li>
-<li><a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man3/pthread_spin_init.3.html">pthread_spin_init(3) — Linux manual page</a></li>
-</ol>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/" rel="prev" title="Peterson算法之一--在So中互斥访问变量">
+      <i class="fa fa-chevron-left"></i> Peterson算法之一--在So中互斥访问变量
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2023/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="zombie12138">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zombie's">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-06-12 17:14:07" itemprop="dateCreated datePublished" datetime="2023-06-12T17:14:07+08:00">2023-06-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 20:59:55" itemprop="dateModified" datetime="2021-09-10T20:59:55+08:00">2021-09-10</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -740,6 +534,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NUMA"><span class="nav-number">1.</span> <span class="nav-text">NUMA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E7%9A%84NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5"><span class="nav-number">2.</span> <span class="nav-text">Linux的NUMA内存分配策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#First-Touch%E6%B5%8B%E8%AF%95%E5%90%91%E9%87%8F%E5%8A%A0%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">First Touch测试向量加法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E6%9D%A5%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.</span> <span class="nav-text">一个线程来初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#128%E4%B8%AA%E7%BA%BF%E7%A8%8B%E6%9D%A5%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">128个线程来初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#First-Touch%E5%87%BA%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">First Touch出问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strace"><span class="nav-number">4.1.</span> <span class="nav-text">Strace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Malloc%E4%B8%ADmmap%E7%9A%84allign-up"><span class="nav-number">4.2.</span> <span class="nav-text">Malloc中mmap的allign up</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-number">5.</span> <span class="nav-text">核心亲和性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#taskset%E5%92%8Cnumactl"><span class="nav-number">5.1.</span> <span class="nav-text">taskset和numactl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E8%AE%BE%E7%BD%AE%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-number">5.2.</span> <span class="nav-text">手动设置亲和性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenMP%E5%92%8CMPI%E7%BB%91%E5%AE%9A%E6%A0%B8%E5%BF%83"><span class="nav-number">5.3.</span> <span class="nav-text">OpenMP和MPI绑定核心</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MPI"><span class="nav-number">5.3.1.</span> <span class="nav-text">MPI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenMP"><span class="nav-number">5.3.2.</span> <span class="nav-text">OpenMP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%9B%9E%E5%88%B0First-Touch%E5%87%BA%E9%97%AE%E9%A2%98%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-number">6.</span> <span class="nav-text">重新回到First Touch出问题的地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E8%AF%A1%E5%BC%82%E7%9A%84%E4%BA%8B%E6%83%85"><span class="nav-number">7.</span> <span class="nav-text">更诡异的事情</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GDB%E8%B0%83%E8%AF%95"><span class="nav-number">7.1.</span> <span class="nav-text">GDB调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A1%E5%BC%82%E5%88%B0%E6%94%BE%E5%BC%83"><span class="nav-number">7.2.</span> <span class="nav-text">诡异到放弃</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#libnuma"><span class="nav-number">7.3.</span> <span class="nav-text">libnuma</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%90%E6%A7%BD"><span class="nav-number">8.</span> <span class="nav-text">吐槽</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NUMA-1"><span class="nav-number">9.1.</span> <span class="nav-text">NUMA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#First-Touch"><span class="nav-number">9.2.</span> <span class="nav-text">First Touch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Malloc"><span class="nav-number">9.3.</span> <span class="nav-text">Malloc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bind-Core"><span class="nav-number">9.4.</span> <span class="nav-text">Bind Core</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#libnuma-1"><span class="nav-number">9.5.</span> <span class="nav-text">libnuma</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

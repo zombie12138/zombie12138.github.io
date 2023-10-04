@@ -1,0 +1,646 @@
+$ strace ./sum > /tmp/1
+execve("./sum", ["./sum"], 0xfffffb27e430 /* 44 vars */) = 0
+brk(NULL)                               = 0xd380000
+faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/tls/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/tls", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64", {st_mode=S_IFDIR|S_ISGID|0755, st_size=4096, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/tls/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/tls", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/tls/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/tls", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib", {st_mode=S_IFDIR|0775, st_size=178, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/tls/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/tls", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build", {st_mode=S_IFDIR|0755, st_size=286, ...}, 0) = 0
+openat(AT_FDCWD, "tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/tls/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/usr/local/lib/tls/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/tls/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/usr/local/lib/tls", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/aarch64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/usr/local/lib/aarch64", 0xfffffe6aa250, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/libnuma.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/usr/local/lib", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=86270, ...}) = 0
+mmap(NULL, 86270, PROT_READ, MAP_PRIVATE, 3, 0) = 0x4000158f0000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib64/libnuma.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\00004\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=71208, ...}) = 0
+mmap(NULL, 149088, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400015910000
+mmap(0x400015920000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x400015920000
+close(3)                                = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libgomp.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0pu\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1171008, ...}) = 0
+mmap(NULL, 263592, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400015940000
+mmap(0x400015970000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x20000) = 0x400015970000
+close(3)                                = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/aarch64/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "aarch64/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/libpthread.so.0", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib64/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\0j\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=184376, ...}) = 0
+mmap(NULL, 213912, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400015990000
+mmap(0x4000159b0000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x10000) = 0x4000159b0000
+close(3)                                = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/aarch64/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "aarch64/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib64/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0H\30\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1865776, ...}) = 0
+mmap(NULL, 1594240, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x4000159d0000
+mmap(0x400015b40000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x160000) = 0x400015b40000
+close(3)                                = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\320+\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=737920, ...}) = 0
+mmap(NULL, 197696, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400015b60000
+mmap(0x400015b80000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x10000) = 0x400015b80000
+close(3)                                = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib", {st_mode=S_IFDIR|S_ISGID|0755, st_size=17, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpc-1.1.0-2pd2thvlymklfiiftfy3gvgug2jgbsnu/lib", {st_mode=S_IFDIR|S_ISGID|0755, st_size=81, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/mpfr-3.1.6-whc7cn47qf6iqrjqbufwg5vwxykqkkqr/lib", {st_mode=S_IFDIR|S_ISGID|0755, st_size=85, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gmp-6.2.1-66wtjprvgfmdld2rm3mjsbdsqi2d3fgs/lib", {st_mode=S_IFDIR|S_ISGID|0755, st_size=183, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/zlib-1.2.13-aovvqk7jkeypt7qoyhyqy36dhmvj2v5q/lib", {st_mode=S_IFDIR|S_ISGID|0755, st_size=91, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib/gcc/aarch64-unknown-linux-gnu/7.5.0", {st_mode=S_IFDIR|0775, st_size=302, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/tls/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/tls", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/aarch64", 0xfffffe6aa000, 0) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/home/nscc-gz/guoych/local/lib64", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/spack/opt/spack/linux-centos7-aarch64/gcc-7.5.0/gcc-7.5.0-jgj56pzbhcc7c5ltarj6nrmqrkrzaoia/lib64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OMPI/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/guoych/local/OBLAS/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/home/nscc-gz/hzj/inference/build/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "tls/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "aarch64/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/usr/local/lib/libdl.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib64/libdl.so.2", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0\267\0\1\0\0\0\20\16\0\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=73984, ...}) = 0
+mmap(NULL, 131296, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x400015ba0000
+mmap(0x400015bb0000, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x400015bb0000
+close(3)                                = 0
+mprotect(0x400015b40000, 65536, PROT_READ) = 0
+mprotect(0x400015bb0000, 65536, PROT_READ) = 0
+mprotect(0x400015b80000, 65536, PROT_READ) = 0
+mprotect(0x4000159b0000, 65536, PROT_READ) = 0
+mprotect(0x400015970000, 65536, PROT_READ) = 0
+mprotect(0x400015920000, 65536, PROT_READ) = 0
+mprotect(0x410000, 65536, PROT_READ)    = 0
+mprotect(0x4000158b0000, 65536, PROT_READ) = 0
+munmap(0x4000158f0000, 86270)           = 0
+set_tid_address(0x4000158c6210)         = 951
+set_robust_list(0x4000158c6220, 24)     = 0
+rt_sigaction(SIGRTMIN, {sa_handler=0x4000159964a4, sa_mask=[], sa_flags=SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {sa_handler=0x400015996584, sa_mask=[], sa_flags=SA_RESTART|SA_SIGINFO}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=RLIM64_INFINITY, rlim_max=RLIM64_INFINITY}) = 0
+openat(AT_FDCWD, "/sys/devices/system/cpu", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+brk(NULL)                               = 0xd380000
+brk(0xd3b0000)                          = 0xd3b0000
+getdents64(3, /* 144 entries */, 32768) = 4520
+getdents64(3, /* 0 entries */, 32768)   = 0
+close(3)                                = 0
+sched_getaffinity(951, 16, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127]) = 16
+openat(AT_FDCWD, "/proc/self/status", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(3, "Name:\tsum\nUmask:\t0002\nState:\tR ("..., 1024) = 1024
+close(3)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+openat(AT_FDCWD, "/sys/devices/system/node", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+getdents64(3, /* 13 entries */, 32768)  = 408
+openat(AT_FDCWD, "/sys/devices/system/node/node2/meminfo", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0444, st_size=65536, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(4, "Node 2 MemTotal:       67036992 "..., 8192) = 1070
+read(4, "", 8192)                       = 0
+close(4)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+openat(AT_FDCWD, "/sys/devices/system/node/node0/meminfo", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0444, st_size=65536, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(4, "Node 0 MemTotal:       66138240 "..., 8192) = 1070
+read(4, "", 8192)                       = 0
+close(4)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+openat(AT_FDCWD, "/sys/devices/system/node/node3/meminfo", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0444, st_size=65536, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(4, "Node 3 MemTotal:       67034176 "..., 8192) = 1070
+read(4, "", 8192)                       = 0
+close(4)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+openat(AT_FDCWD, "/sys/devices/system/node/node1/meminfo", O_RDONLY) = 4
+fstat(4, {st_mode=S_IFREG|0444, st_size=65536, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(4, "Node 1 MemTotal:       67037120 "..., 8192) = 1070
+read(4, "", 8192)                       = 0
+close(4)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+getdents64(3, /* 0 entries */, 32768)   = 0
+close(3)                                = 0
+sched_getaffinity(0, 512, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, ...]) = 512
+openat(AT_FDCWD, "/sys/devices/system/cpu", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+getdents64(3, /* 144 entries */, 32768) = 4520
+getdents64(3, /* 0 entries */, 32768)   = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/proc/self/status", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+read(3, "Name:\tsum\nUmask:\t0002\nState:\tR ("..., 1024) = 1024
+read(3, "switches:\t484\nnonvoluntary_ctxt_"..., 1024) = 44
+read(3, "", 1024)                       = 0
+close(3)                                = 0
+munmap(0x4000158f0000, 65536)           = 0
+fstat(1, {st_mode=S_IFREG|0664, st_size=0, ...}) = 0
+mmap(NULL, 65536, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000158f0000
+mmap(NULL, 2147549184, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x400015bd0000
+mmap(NULL, 2147549184, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x400095be0000
+mmap(NULL, 2147549184, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x400115bf0000
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400195c00000
+mprotect(0x400195c00000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400195e0ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400195e0f250, tls=0x400195e0f870, child_tidptr=0x400195e0f250) = 952
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400195e10000
+mprotect(0x400195e10000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019601ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019601f250, tls=0x40019601f870, child_tidptr=0x40019601f250) = 953
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196020000
+mprotect(0x400196020000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019622ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019622f250, tls=0x40019622f870, child_tidptr=0x40019622f250) = 954
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196230000
+mprotect(0x400196230000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019643ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019643f250, tls=0x40019643f870, child_tidptr=0x40019643f250) = 955
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196440000
+mprotect(0x400196440000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019664ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019664f250, tls=0x40019664f870, child_tidptr=0x40019664f250) = 956
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196650000
+mprotect(0x400196650000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019685ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019685f250, tls=0x40019685f870, child_tidptr=0x40019685f250) = 957
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196860000
+mprotect(0x400196860000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400196a6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400196a6f250, tls=0x400196a6f870, child_tidptr=0x400196a6f250) = 958
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196a70000
+mprotect(0x400196a70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400196c7ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400196c7f250, tls=0x400196c7f870, child_tidptr=0x400196c7f250) = 959
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196c80000
+mprotect(0x400196c80000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400196e8ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400196e8f250, tls=0x400196e8f870, child_tidptr=0x400196e8f250) = 960
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400196e90000
+mprotect(0x400196e90000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019709ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019709f250, tls=0x40019709f870, child_tidptr=0x40019709f250) = 961
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001970a0000
+mprotect(0x4001970a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001972aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001972af250, tls=0x4001972af870, child_tidptr=0x4001972af250) = 962
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001972b0000
+mprotect(0x4001972b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001974bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001974bf250, tls=0x4001974bf870, child_tidptr=0x4001974bf250) = 963
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001974c0000
+mprotect(0x4001974c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001976cea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001976cf250, tls=0x4001976cf870, child_tidptr=0x4001976cf250) = 964
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001976d0000
+mprotect(0x4001976d0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001978dea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001978df250, tls=0x4001978df870, child_tidptr=0x4001978df250) = 965
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001978e0000
+mprotect(0x4001978e0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400197aeea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400197aef250, tls=0x400197aef870, child_tidptr=0x400197aef250) = 966
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400197af0000
+mprotect(0x400197af0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400197cfea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400197cff250, tls=0x400197cff870, child_tidptr=0x400197cff250) = 967
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400197d00000
+mprotect(0x400197d00000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400197f0ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400197f0f250, tls=0x400197f0f870, child_tidptr=0x400197f0f250) = 968
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400197f10000
+mprotect(0x400197f10000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019811ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019811f250, tls=0x40019811f870, child_tidptr=0x40019811f250) = 969
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198120000
+mprotect(0x400198120000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019832ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019832f250, tls=0x40019832f870, child_tidptr=0x40019832f250) = 975
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198330000
+mprotect(0x400198330000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019853ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019853f250, tls=0x40019853f870, child_tidptr=0x40019853f250) = 976
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198540000
+mprotect(0x400198540000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019874ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019874f250, tls=0x40019874f870, child_tidptr=0x40019874f250) = 977
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198750000
+mprotect(0x400198750000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019895ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019895f250, tls=0x40019895f870, child_tidptr=0x40019895f250) = 978
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198960000
+mprotect(0x400198960000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400198b6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400198b6f250, tls=0x400198b6f870, child_tidptr=0x400198b6f250) = 979
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198b70000
+mprotect(0x400198b70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400198d7ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400198d7f250, tls=0x400198d7f870, child_tidptr=0x400198d7f250) = 980
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198d80000
+mprotect(0x400198d80000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400198f8ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400198f8f250, tls=0x400198f8f870, child_tidptr=0x400198f8f250) = 981
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400198f90000
+mprotect(0x400198f90000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019919ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019919f250, tls=0x40019919f870, child_tidptr=0x40019919f250) = 982
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001991a0000
+mprotect(0x4001991a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001993aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001993af250, tls=0x4001993af870, child_tidptr=0x4001993af250) = 983
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001993b0000
+mprotect(0x4001993b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001995bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001995bf250, tls=0x4001995bf870, child_tidptr=0x4001995bf250) = 984
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001995c0000
+mprotect(0x4001995c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001997cea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001997cf250, tls=0x4001997cf870, child_tidptr=0x4001997cf250) = 985
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001997d0000
+mprotect(0x4001997d0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001999dea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001999df250, tls=0x4001999df870, child_tidptr=0x4001999df250) = 986
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001999e0000
+mprotect(0x4001999e0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400199beea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400199bef250, tls=0x400199bef870, child_tidptr=0x400199bef250) = 987
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400199bf0000
+mprotect(0x400199bf0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x400199dfea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x400199dff250, tls=0x400199dff870, child_tidptr=0x400199dff250) = 988
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x400199e00000
+mprotect(0x400199e00000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019a00ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019a00f250, tls=0x40019a00f870, child_tidptr=0x40019a00f250) = 989
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019a010000
+mprotect(0x40019a010000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019a21ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019a21f250, tls=0x40019a21f870, child_tidptr=0x40019a21f250) = 990
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019a220000
+mprotect(0x40019a220000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019a42ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019a42f250, tls=0x40019a42f870, child_tidptr=0x40019a42f250) = 991
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019a430000
+mprotect(0x40019a430000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019a63ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019a63f250, tls=0x40019a63f870, child_tidptr=0x40019a63f250) = 992
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019a640000
+mprotect(0x40019a640000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019a84ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019a84f250, tls=0x40019a84f870, child_tidptr=0x40019a84f250) = 993
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019a850000
+mprotect(0x40019a850000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019aa5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019aa5f250, tls=0x40019aa5f870, child_tidptr=0x40019aa5f250) = 994
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019aa60000
+mprotect(0x40019aa60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ac6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ac6f250, tls=0x40019ac6f870, child_tidptr=0x40019ac6f250) = 995
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ac70000
+mprotect(0x40019ac70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ae7ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ae7f250, tls=0x40019ae7f870, child_tidptr=0x40019ae7f250) = 996
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ae80000
+mprotect(0x40019ae80000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019b08ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019b08f250, tls=0x40019b08f870, child_tidptr=0x40019b08f250) = 997
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019b090000
+mprotect(0x40019b090000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019b29ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019b29f250, tls=0x40019b29f870, child_tidptr=0x40019b29f250) = 998
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019b2a0000
+mprotect(0x40019b2a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019b4aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019b4af250, tls=0x40019b4af870, child_tidptr=0x40019b4af250) = 999
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019b4b0000
+mprotect(0x40019b4b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019b6bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019b6bf250, tls=0x40019b6bf870, child_tidptr=0x40019b6bf250) = 1000
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019b6c0000
+mprotect(0x40019b6c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019b8cea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019b8cf250, tls=0x40019b8cf870, child_tidptr=0x40019b8cf250) = 1001
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019b8d0000
+mprotect(0x40019b8d0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019badea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019badf250, tls=0x40019badf870, child_tidptr=0x40019badf250) = 1002
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019bae0000
+mprotect(0x40019bae0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019bceea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019bcef250, tls=0x40019bcef870, child_tidptr=0x40019bcef250) = 1003
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019bcf0000
+mprotect(0x40019bcf0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019befea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019beff250, tls=0x40019beff870, child_tidptr=0x40019beff250) = 1004
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019bf00000
+mprotect(0x40019bf00000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019c10ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019c10f250, tls=0x40019c10f870, child_tidptr=0x40019c10f250) = 1005
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019c110000
+mprotect(0x40019c110000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019c31ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019c31f250, tls=0x40019c31f870, child_tidptr=0x40019c31f250) = 1006
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019c320000
+mprotect(0x40019c320000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019c52ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019c52f250, tls=0x40019c52f870, child_tidptr=0x40019c52f250) = 1007
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019c530000
+mprotect(0x40019c530000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019c73ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019c73f250, tls=0x40019c73f870, child_tidptr=0x40019c73f250) = 1008
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019c740000
+mprotect(0x40019c740000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019c94ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019c94f250, tls=0x40019c94f870, child_tidptr=0x40019c94f250) = 1009
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019c950000
+mprotect(0x40019c950000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019cb5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019cb5f250, tls=0x40019cb5f870, child_tidptr=0x40019cb5f250) = 1010
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019cb60000
+mprotect(0x40019cb60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019cd6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019cd6f250, tls=0x40019cd6f870, child_tidptr=0x40019cd6f250) = 1011
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019cd70000
+mprotect(0x40019cd70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019cf7ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019cf7f250, tls=0x40019cf7f870, child_tidptr=0x40019cf7f250) = 1012
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019cf80000
+mprotect(0x40019cf80000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019d18ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019d18f250, tls=0x40019d18f870, child_tidptr=0x40019d18f250) = 1013
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019d190000
+mprotect(0x40019d190000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019d39ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019d39f250, tls=0x40019d39f870, child_tidptr=0x40019d39f250) = 1014
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019d3a0000
+mprotect(0x40019d3a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019d5aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019d5af250, tls=0x40019d5af870, child_tidptr=0x40019d5af250) = 1015
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019d5b0000
+mprotect(0x40019d5b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019d7bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019d7bf250, tls=0x40019d7bf870, child_tidptr=0x40019d7bf250) = 1016
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019d7c0000
+mprotect(0x40019d7c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019d9cea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019d9cf250, tls=0x40019d9cf870, child_tidptr=0x40019d9cf250) = 1021
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019d9d0000
+mprotect(0x40019d9d0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019dbdea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019dbdf250, tls=0x40019dbdf870, child_tidptr=0x40019dbdf250) = 1022
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019dbe0000
+mprotect(0x40019dbe0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ddeea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ddef250, tls=0x40019ddef870, child_tidptr=0x40019ddef250) = 1023
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ddf0000
+mprotect(0x40019ddf0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019dffea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019dfff250, tls=0x40019dfff870, child_tidptr=0x40019dfff250) = 1024
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019e000000
+mprotect(0x40019e000000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019e20ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019e20f250, tls=0x40019e20f870, child_tidptr=0x40019e20f250) = 1025
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019e210000
+mprotect(0x40019e210000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019e41ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019e41f250, tls=0x40019e41f870, child_tidptr=0x40019e41f250) = 1026
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019e420000
+mprotect(0x40019e420000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019e62ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019e62f250, tls=0x40019e62f870, child_tidptr=0x40019e62f250) = 1027
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019e630000
+mprotect(0x40019e630000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019e83ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019e83f250, tls=0x40019e83f870, child_tidptr=0x40019e83f250) = 1028
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019e840000
+mprotect(0x40019e840000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ea4ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ea4f250, tls=0x40019ea4f870, child_tidptr=0x40019ea4f250) = 1029
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ea50000
+mprotect(0x40019ea50000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ec5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ec5f250, tls=0x40019ec5f870, child_tidptr=0x40019ec5f250) = 1030
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ec60000
+mprotect(0x40019ec60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019ee6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019ee6f250, tls=0x40019ee6f870, child_tidptr=0x40019ee6f250) = 1031
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019ee70000
+mprotect(0x40019ee70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019f07ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019f07f250, tls=0x40019f07f870, child_tidptr=0x40019f07f250) = 1032
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019f080000
+mprotect(0x40019f080000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019f28ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019f28f250, tls=0x40019f28f870, child_tidptr=0x40019f28f250) = 1033
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019f290000
+mprotect(0x40019f290000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019f49ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019f49f250, tls=0x40019f49f870, child_tidptr=0x40019f49f250) = 1034
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019f4a0000
+mprotect(0x40019f4a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019f6aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019f6af250, tls=0x40019f6af870, child_tidptr=0x40019f6af250) = 1035
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019f6b0000
+mprotect(0x40019f6b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019f8bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019f8bf250, tls=0x40019f8bf870, child_tidptr=0x40019f8bf250) = 1036
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019f8c0000
+mprotect(0x40019f8c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019facea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019facf250, tls=0x40019facf870, child_tidptr=0x40019facf250) = 1037
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019fad0000
+mprotect(0x40019fad0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019fcdea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019fcdf250, tls=0x40019fcdf870, child_tidptr=0x40019fcdf250) = 1038
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019fce0000
+mprotect(0x40019fce0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x40019feeea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x40019feef250, tls=0x40019feef870, child_tidptr=0x40019feef250) = 1039
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x40019fef0000
+mprotect(0x40019fef0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a00fea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a00ff250, tls=0x4001a00ff870, child_tidptr=0x4001a00ff250) = 1040
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0100000
+mprotect(0x4001a0100000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a030ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a030f250, tls=0x4001a030f870, child_tidptr=0x4001a030f250) = 1041
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0310000
+mprotect(0x4001a0310000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a051ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a051f250, tls=0x4001a051f870, child_tidptr=0x4001a051f250) = 1048
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0520000
+mprotect(0x4001a0520000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a072ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a072f250, tls=0x4001a072f870, child_tidptr=0x4001a072f250) = 1053
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0730000
+mprotect(0x4001a0730000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a093ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a093f250, tls=0x4001a093f870, child_tidptr=0x4001a093f250) = 1054
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0940000
+mprotect(0x4001a0940000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a0b4ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a0b4f250, tls=0x4001a0b4f870, child_tidptr=0x4001a0b4f250) = 1055
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0b50000
+mprotect(0x4001a0b50000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a0d5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a0d5f250, tls=0x4001a0d5f870, child_tidptr=0x4001a0d5f250) = 1057
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0d60000
+mprotect(0x4001a0d60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a0f6ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a0f6f250, tls=0x4001a0f6f870, child_tidptr=0x4001a0f6f250) = 1058
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a0f70000
+mprotect(0x4001a0f70000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a117ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a117f250, tls=0x4001a117f870, child_tidptr=0x4001a117f250) = 1059
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a1180000
+mprotect(0x4001a1180000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a138ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a138f250, tls=0x4001a138f870, child_tidptr=0x4001a138f250) = 1060
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a1390000
+mprotect(0x4001a1390000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a159ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a159f250, tls=0x4001a159f870, child_tidptr=0x4001a159f250) = 1061
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a15a0000
+mprotect(0x4001a15a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a17aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a17af250, tls=0x4001a17af870, child_tidptr=0x4001a17af250) = 1062
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a17b0000
+mprotect(0x4001a17b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a19bea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a19bf250, tls=0x4001a19bf870, child_tidptr=0x4001a19bf250) = 1063
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a19c0000
+mprotect(0x4001a19c0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a1bcea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a1bcf250, tls=0x4001a1bcf870, child_tidptr=0x4001a1bcf250) = 1064
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a1bd0000
+mprotect(0x4001a1bd0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a1ddea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a1ddf250, tls=0x4001a1ddf870, child_tidptr=0x4001a1ddf250) = 1065
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a1de0000
+mprotect(0x4001a1de0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a1feea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a1fef250, tls=0x4001a1fef870, child_tidptr=0x4001a1fef250) = 1066
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a1ff0000
+mprotect(0x4001a1ff0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a21fea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a21ff250, tls=0x4001a21ff870, child_tidptr=0x4001a21ff250) = 1067
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2200000
+mprotect(0x4001a2200000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a240ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a240f250, tls=0x4001a240f870, child_tidptr=0x4001a240f250) = 1068
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2410000
+mprotect(0x4001a2410000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a261ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a261f250, tls=0x4001a261f870, child_tidptr=0x4001a261f250) = 1069
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2620000
+mprotect(0x4001a2620000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a282ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a282f250, tls=0x4001a282f870, child_tidptr=0x4001a282f250) = 1070
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2830000
+mprotect(0x4001a2830000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a2a3ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a2a3f250, tls=0x4001a2a3f870, child_tidptr=0x4001a2a3f250) = 1071
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2a40000
+mprotect(0x4001a2a40000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a2c4ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a2c4f250, tls=0x4001a2c4f870, child_tidptr=0x4001a2c4f250) = 1072
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2c50000
+mprotect(0x4001a2c50000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a2e5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a2e5f250, tls=0x4001a2e5f870, child_tidptr=0x4001a2e5f250) = 1073
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a2e60000
+mprotect(0x4001a2e60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a306ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a306f250, tls=0x4001a306f870, child_tidptr=0x4001a306f250) = 1074
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3070000
+mprotect(0x4001a3070000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a327ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a327f250, tls=0x4001a327f870, child_tidptr=0x4001a327f250) = 1075
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3280000
+mprotect(0x4001a3280000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a348ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a348f250, tls=0x4001a348f870, child_tidptr=0x4001a348f250) = 1076
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3490000
+mprotect(0x4001a3490000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a369ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a369f250, tls=0x4001a369f870, child_tidptr=0x4001a369f250) = 1077
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a36a0000
+mprotect(0x4001a36a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a38aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a38af250, tls=0x4001a38af870, child_tidptr=0x4001a38af250) = 1078
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a38b0000
+mprotect(0x4001a38b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a3abea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a3abf250, tls=0x4001a3abf870, child_tidptr=0x4001a3abf250) = 1079
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3ac0000
+mprotect(0x4001a3ac0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a3ccea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a3ccf250, tls=0x4001a3ccf870, child_tidptr=0x4001a3ccf250) = 1080
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3cd0000
+mprotect(0x4001a3cd0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a3edea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a3edf250, tls=0x4001a3edf870, child_tidptr=0x4001a3edf250) = 1081
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a3ee0000
+mprotect(0x4001a3ee0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a40eea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a40ef250, tls=0x4001a40ef870, child_tidptr=0x4001a40ef250) = 1082
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a40f0000
+mprotect(0x4001a40f0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a42fea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a42ff250, tls=0x4001a42ff870, child_tidptr=0x4001a42ff250) = 1083
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4300000
+mprotect(0x4001a4300000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a450ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a450f250, tls=0x4001a450f870, child_tidptr=0x4001a450f250) = 1084
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4510000
+mprotect(0x4001a4510000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a471ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a471f250, tls=0x4001a471f870, child_tidptr=0x4001a471f250) = 1085
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4720000
+mprotect(0x4001a4720000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a492ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a492f250, tls=0x4001a492f870, child_tidptr=0x4001a492f250) = 1086
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4930000
+mprotect(0x4001a4930000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a4b3ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a4b3f250, tls=0x4001a4b3f870, child_tidptr=0x4001a4b3f250) = 1087
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4b40000
+mprotect(0x4001a4b40000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a4d4ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a4d4f250, tls=0x4001a4d4f870, child_tidptr=0x4001a4d4f250) = 1088
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4d50000
+mprotect(0x4001a4d50000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a4f5ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a4f5f250, tls=0x4001a4f5f870, child_tidptr=0x4001a4f5f250) = 1089
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a4f60000
+mprotect(0x4001a4f60000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a516ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a516f250, tls=0x4001a516f870, child_tidptr=0x4001a516f250) = 1090
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5170000
+mprotect(0x4001a5170000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a537ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a537f250, tls=0x4001a537f870, child_tidptr=0x4001a537f250) = 1091
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5380000
+mprotect(0x4001a5380000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a558ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a558f250, tls=0x4001a558f870, child_tidptr=0x4001a558f250) = 1092
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5590000
+mprotect(0x4001a5590000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a579ea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a579f250, tls=0x4001a579f870, child_tidptr=0x4001a579f250) = 1093
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a57a0000
+mprotect(0x4001a57a0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a59aea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a59af250, tls=0x4001a59af870, child_tidptr=0x4001a59af250) = 1094
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a59b0000
+mprotect(0x4001a59b0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a5bbea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a5bbf250, tls=0x4001a5bbf870, child_tidptr=0x4001a5bbf250) = 1095
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5bc0000
+mprotect(0x4001a5bc0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a5dcea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a5dcf250, tls=0x4001a5dcf870, child_tidptr=0x4001a5dcf250) = 1096
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5dd0000
+mprotect(0x4001a5dd0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a5fdea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a5fdf250, tls=0x4001a5fdf870, child_tidptr=0x4001a5fdf250) = 1097
+mmap(NULL, 2162688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x4001a5fe0000
+mprotect(0x4001a5fe0000, 65536, PROT_NONE) = 0
+clone(child_stack=0x4001a61eea90, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x4001a61ef250, tls=0x4001a61ef870, child_tidptr=0x4001a61ef250) = 1098
+futex(0xd380804, FUTEX_WAKE_PRIVATE, 2147483647) = 125
+getcpu([52], NULL, NULL)                = 0
+futex(0xd380914, FUTEX_WAIT_PRIVATE, 0, NULL) = 0
+futex(0xd380914, FUTEX_WAIT_PRIVATE, 8, NULL) = 0
+futex(0xd380804, FUTEX_WAKE_PRIVATE, 2147483647) = 61
+getcpu([50], NULL, NULL)                = 0
+get_mempolicy([MPOL_PREFERRED], NULL, 0, 0x400095be0010, MPOL_F_NODE|MPOL_F_ADDR) = 0
+futex(0xd380914, FUTEX_WAIT_PRIVATE, 16, NULL) = 0
+futex(0xd380914, FUTEX_WAKE_PRIVATE, 2147483647) = 20
+munmap(0x400015bd0000, 2147549184)      = 0
+munmap(0x400095be0000, 2147549184)      = 0
+munmap(0x400115bf0000, 2147549184)      = 0
+write(1, "n node 0\nThread 104 is running o"..., 2427) = 2427
+exit_group(0)                           = ?
++++ exited with 0 +++
