@@ -181,7 +181,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-06 13:41:39" itemprop="dateModified" datetime="2023-10-06T13:41:39+08:00">2023-10-06</time>
+                <time title="修改时间：2023-10-13 15:47:59" itemprop="dateModified" datetime="2023-10-13T15:47:59+08:00">2023-10-13</time>
               </span>
 
           
@@ -332,10 +332,11 @@
 <p>上面的这个是绑定策略, 但是线程和核心的映射依然是混乱的. 想要控制内存映射需要使用<code>--map-by &lt;arg&gt;</code>, 参数可以是slot, hwthread, core, L1cache, L2cache, L3cache, socket, numa, board, node, sequential, distance, and ppr… </p>
 <p><code> mpirun -np 8 --bind-to core --map-by node ./mpi</code>理论上会把线程按照04, 15, 26, 37这样分配到四个socket中, 并且绑定每个核心. 但是这个还是段错误<code> signal 11 (Segmentation fault: address not mapped to object at address 0x2e392e312d6682)</code>感觉是libc版本的问题, 有时候地址甚至是0x14之类的… 先不管这个了… 之后再研究(#TODO)</p>
 <h4 id="OpenMP"><a href="#OpenMP" class="headerlink" title="OpenMP"></a>OpenMP</h4><p>OpenMP的核心绑定其实也很简单… 首先OpenMP的线程其实也只是启动一次, 如果手动绑定线程的分配手动配置亲和性其实就可以了, 但是这个可能会影响调度(瞎说的 #TODO), 并且也会有一点点的开销. 最好就是使用OpenMP的核心绑定.</p>
-<p>OpenMP可以使用环境变量或者progma来配置. 就还是使用之前最开始的向量加法的程序来进行输出. MPI是轮询<code>map-by</code>, 然后绑定到上面的某个<code>bind-to</code>集合上, 其实是相当于OpenMP的Spread. OpenMP有spread, close, master, true. Spread就是类似MPI的方式, 但是bind-to都是核心; Close是轮流分配, 分配完一个区域再分配下一个区域; master就是使用主线程来执行. 每一个区域可以是线程, 核心, socket. 绑定的方式可以使用<code>OMP_PROC_BIND</code>指定, 区域可以使用<code>OMP_PLACES</code>来进行指定.</p>
+<p>OpenMP可以使用环境变量或者progma来配置. 就还是使用之前最开始的向量加法的程序来进行输出. MPI是轮询<code>map-by</code>, 然后绑定到上面的某个<code>bind-to</code>集合上, 其实是相当于OpenMP的Spread. OpenMP有spread, close, master, true, numa_domains, ll_caches. Spread就是类似MPI的方式, 但是bind-to都是核心; Close是轮流分配, 分配完一个区域再分配下一个区域; master就是使用主线程来执行. 每一个区域可以是线程, 核心, socket. 绑定的方式可以使用<code>OMP_PROC_BIND</code>指定, 区域可以使用<code>OMP_PLACES</code>来进行指定.</p>
 <p>下图是一个4C8T的多线程, <code>OMP_PLACES</code>设置为<code>orce</code>, 那么每个Core有两个线程, 使用<code>spread</code>和<code>close</code>其线程和核心的映射分布如下(方框表示OpenMP Place，数字表示线程ID):</p>
 <img src="/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/bind.png" class="" title="OMP_PROC_BIND">
 
+<p>如果想要更细粒度的绑定, 比如根据LLC之类的, 可以自己配置<code>OMP_PLACES</code>， 比如<code>OMP_PLACES=&quot;&#123;0&#125;,&#123;1&#125;,&#123;2&#125;,&#123;3&#125;&quot;</code>表示4个PLACE, 每一个地方是一个线程, <code>OMP_PLACES=&quot;&#123;0:2&#125;:32:8&quot;</code>表示, 开始是<code>0:2</code>, 0开始的2个线程, 就是0和1, 32表示有32个Places, 就是一共使用了64线程, 8表示间隔, 第一个PLACE是0和1, 第二个是8和9, 以此类推. 也可以组合使用, 比如<code>export OMP_PLACES=“&#123;0&#125;:4:1,&#123;78&#125;:4:1”</code>, 定义了8个Place, 分别是0, 1, 2, 3, 78, 79, 80, 81号线程.</p>
 <h2 id="重新回到First-Touch出问题的地方"><a href="#重新回到First-Touch出问题的地方" class="headerlink" title="重新回到First Touch出问题的地方"></a>重新回到First Touch出问题的地方</h2><p>想到可能是再各种地方执行的… 所以… 可能就是很多再Node0上绑定的… 所以使用绑定之后</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ OMP_PROC_BIND=close ./sum  | grep node | awk <span class="string">&#x27;&#123;print $11&#125;&#x27;</span> | <span class="built_in">sort</span> | <span class="built_in">uniq</span> -c</span><br><span class="line">     50 0</span><br><span class="line">     32 1</span><br><span class="line">     32 2</span><br><span class="line">     14 3</span><br></pre></td></tr></table></figure>
 
@@ -431,6 +432,8 @@
 <li><a target="_blank" rel="noopener" href="https://www.ibm.com/docs/en/xl-fortran-linux/16.1.0?topic=openmp-omp-proc-bind">OMP_PROC_BIND - IBM Documentation</a></li>
 <li><a target="_blank" rel="noopener" href="https://hpc-wiki.info/hpc/Binding/Pinning">Binding&#x2F;Pinning - HPCWiki</a></li>
 <li><a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E60778_01/html/E60751/goztg.html">OMP_PLACES and OMP_PROC_BIND - Oracle</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.openmp.org/wp-content/uploads/SC18-BoothTalks-vanderPas.pdf">How To Befriend NUMA - OpenMP</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.rwth-aachen.de/itc-events/files/2021/02/13-openmp-CT-NUMA.pdf">Programming OpenMP - NUMA - Christian Terboven</a></li>
 </ul>
 <h3 id="libnuma-1"><a href="#libnuma-1" class="headerlink" title="libnuma"></a>libnuma</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/7986903/can-i-get-the-numa-node-from-a-pointer-address-in-c-on-linux">StackOverflow - Can I get the NUMA node from a pointer address (in C on Linux)?</a></li>
@@ -486,7 +489,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-07 18:16:06" itemprop="dateModified" datetime="2023-10-07T18:16:06+08:00">2023-10-07</time>
+                <time title="修改时间：2023-10-13 15:52:45" itemprop="dateModified" datetime="2023-10-13T15:52:45+08:00">2023-10-13</time>
               </span>
 
           
@@ -636,7 +639,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-13 11:37:20" itemprop="dateModified" datetime="2023-09-13T11:37:20+08:00">2023-09-13</time>
+                <time title="修改时间：2023-10-08 12:25:24" itemprop="dateModified" datetime="2023-10-08T12:25:24+08:00">2023-10-08</time>
               </span>
 
           
@@ -800,7 +803,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-10 20:59:55" itemprop="dateModified" datetime="2021-09-10T20:59:55+08:00">2021-09-10</time>
+                <time title="修改时间：2023-10-13 17:09:36" itemprop="dateModified" datetime="2023-10-13T17:09:36+08:00">2023-10-13</time>
               </span>
 
           
@@ -814,8 +817,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>. <sup class="refplus-num"><a href="#ref-self">[1]</a></sup></p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
@@ -827,7 +830,29 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<ul id="refplus"><li id="ref-self" data-num="1">[1]  <a href="/2023/hello-world/" title="[hello-world]">[hello-world]</a></li></ul>
 
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    
       
     </div>
 
@@ -913,7 +938,7 @@
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
