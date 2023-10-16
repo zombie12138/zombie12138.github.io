@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zombie12138.github.io/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/</loc>
+    
+    <lastmod>2023-10-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2023/hello-world/</loc>
     
     <lastmod>2023-10-13</lastmod>
@@ -40,92 +49,106 @@
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
+    <loc>https://zombie12138.github.io/tags/ARM/</loc>
+    <lastmod>2023-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/tags/Kunpeng/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/CPU/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/HPC/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/C/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/C/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Linux-Programming/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/NUMA/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/OpenMP/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/OS/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Folly/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Cpp-Magic/</loc>
-    <lastmod>2023-10-13</lastmod>
+    <lastmod>2023-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/SIMD/</loc>
+    <lastmod>2023-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
