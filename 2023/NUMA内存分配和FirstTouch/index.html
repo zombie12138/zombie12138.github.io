@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统CentOS Linux release 7.9.2009 (AltArch), 内核版本4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17 NUMA一般的个人电脑都是UMA(Uni">
+  <meta name="description" content="最近看的NUMA绑核的这些比较多, 来盘点一下NUMA, 绑核, 以及NUMA系统中分配策略(First Touch), 以及遇到的一些坑.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NUMA内存分配, FirstTouch从接触到放弃">
 <meta property="og:url" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统CentOS Linux release 7.9.2009 (AltArch), 内核版本4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17 NUMA一般的个人电脑都是UMA(Uni">
+<meta property="og:description" content="最近看的NUMA绑核的这些比较多, 来盘点一下NUMA, 绑核, 以及NUMA系统中分配策略(First Touch), 以及遇到的一些坑.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng910-chipset-solution.png">
 <meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng-numa.png">
 <meta property="og:image" content="https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/bind.png">
 <meta property="article:published_time" content="2023-09-17T07:47:09.000Z">
-<meta property="article:modified_time" content="2023-10-16T13:57:14.980Z">
+<meta property="article:modified_time" content="2023-10-17T07:09:42.416Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Kunpeng">
 <meta property="article:tag" content="HPC">
@@ -196,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-16 21:57:14" itemprop="dateModified" datetime="2023-10-16T21:57:14+08:00">2023-10-16</time>
+                <time title="修改时间：2023-10-17 15:09:42" itemprop="dateModified" datetime="2023-10-17T15:09:42+08:00">2023-10-17</time>
               </span>
 
           
@@ -210,10 +210,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统<code>CentOS Linux release 7.9.2009 (AltArch)</code>, 内核版本<code>4.14.0-115.el7a.0.1.aarch64</code>, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17</p>
-<h2 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h2><p>一般的个人电脑都是UMA(Uniform Memory Access), 不同的核心访问速度是相同的, 但是在服务器CPU中, 可能有多个CPU socket, CPU访问另一个处理器上的内存会更慢一些, 但是访问本地的内存会快一些， 这就是NUMA(Non-Uniform Memory Access), 当然, 为了提高单个处理器的带宽, 让他能匹配不断增长的核心数, 一些厂商也会处于拓展性等考虑把单个处理器上的核心分为几组, 每一组是一个NUMA Node. 核心自己所在的Node叫Local Node; 其他的Node就是Remote Node, 访存延迟和带宽都会更加受限; 有一些会把相同Socket不同的Node成为Neighbour Node， 速度介于两者之间.</p>
+        <p>最近看的NUMA绑核的这些比较多, 来盘点一下NUMA, 绑核, 以及NUMA系统中分配策略(First Touch), 以及遇到的一些坑.</p>
 <span id="more"></span>
 
+<p>实验在2Socket * 鲲鹏920-Server(一共128C 256G 4NUMA)进行, 操作系统<code>CentOS Linux release 7.9.2009 (AltArch)</code>, 内核版本<code>4.14.0-115.el7a.0.1.aarch64</code>, GCC 7.5.0, 开启了Page Size(65536, 64KB), (GNU libc) 2.17</p>
+<h2 id="NUMA"><a href="#NUMA" class="headerlink" title="NUMA"></a>NUMA</h2><p>一般的个人电脑都是UMA(Uniform Memory Access), 不同的核心访问速度是相同的, 但是在服务器CPU中, 可能有多个CPU socket, CPU访问另一个处理器上的内存会更慢一些, 但是访问本地的内存会快一些， 这就是NUMA(Non-Uniform Memory Access), 当然, 为了提高单个处理器的带宽, 让他能匹配不断增长的核心数, 一些厂商也会处于拓展性等考虑把单个处理器上的核心分为几组, 每一组是一个NUMA Node. 核心自己所在的Node叫Local Node; 其他的Node就是Remote Node, 访存延迟和带宽都会更加受限; 有一些会把相同Socket不同的Node成为Neighbour Node， 速度介于两者之间.</p>
 <p>比如下图的鲲鹏920-Server, 每一个SoC拥有两个CPU-Compute Die, 每一个CPU Compute Die拥有两对, 4个DDR控制器, 一个SoC有8个DDR控制器, 可以达到200GB&#x2F;s的带宽. 如图所示, 多个鲲鹏SoC就会有4个NUMA Node.</p>
 <img src="/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/kunpeng910-chipset-solution.png" class="" title="kunpeng910-chipset-solution">
 
@@ -559,12 +560,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
