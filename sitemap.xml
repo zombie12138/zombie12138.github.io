@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zombie12138.github.io/google23c740a152df370e.html</loc>
-    
-    <lastmod>2023-11-16</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/</loc>
     
     <lastmod>2023-10-27</lastmod>
@@ -132,7 +123,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/C/</loc>
+    <loc>https://zombie12138.github.io/tags/OS/</loc>
     <lastmod>2023-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -153,6 +144,20 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
+    <lastmod>2023-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/C/</loc>
+    <lastmod>2023-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/tags/NUMA/</loc>
     <lastmod>2023-11-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -161,20 +166,6 @@
   
   <url>
     <loc>https://zombie12138.github.io/tags/OpenMP/</loc>
-    <lastmod>2023-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/OS/</loc>
-    <lastmod>2023-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
     <lastmod>2023-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
