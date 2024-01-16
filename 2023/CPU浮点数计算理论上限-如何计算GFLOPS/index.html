@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://zombie12138.github.io/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/KunpengGFlopsEva.png">
 <meta property="og:image" content="https://zombie12138.github.io/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/huawei-cloud.png">
 <meta property="article:published_time" content="2023-10-16T00:16:44.000Z">
-<meta property="article:modified_time" content="2024-01-16T03:41:28.372Z">
+<meta property="article:modified_time" content="2024-01-16T06:06:38.248Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Kunpeng">
@@ -196,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-16 11:41:28" itemprop="dateModified" datetime="2024-01-16T11:41:28+08:00">2024-01-16</time>
+                <time title="修改时间：2024-01-16 14:06:38" itemprop="dateModified" datetime="2024-01-16T14:06:38+08:00">2024-01-16</time>
               </span>
 
           
@@ -252,14 +252,15 @@
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perf: 10.396307</span><br></pre></td></tr></table></figure>
 
 <p>单核性能是10.4Gflops, 所以, 一个Kunpeng960-6426的双精度浮点计算的性能是665.6Gflops, 就是我们的理论上限<code>665.6GFLOPS</code>.</p>
-<p>测一下单精度, 汇编寄存器改成<code>s</code>, 计算的过程每一轮循环是<code>128</code>次单精度的计算.</p>
+<p>测一下单精度, 汇编寄存器改成<code>4s</code>, 计算的过程每一轮循环是<code>128</code>次单精度的计算.</p>
 <p>得到SP的单核性能是<code>41.583994GFLOPS</code>多核心就是<code>2661.4GFLOPS</code>非常接近<code>2662.4GFLOPS</code></p>
 <h3 id="多核"><a href="#多核" class="headerlink" title="多核"></a>多核</h3><p>加上一层OpenMP的<code>#pragma omp parallel</code>, 先预热, 再进行计时.</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> OP_FLOATS (64.0*128)</span></span><br><span class="line"><span class="meta"># <span class="keyword">pragma</span> omp parallel</span></span><br><span class="line">{</span><br><span class="line">    FPCALC(LOOP);</span><br><span class="line">}</span><br><span class="line">clock_gettime(CLOCK_MONOTONIC_RAW, &amp;start);</span><br><span class="line"><span class="meta"># <span class="keyword">pragma</span> omp parallel</span></span><br><span class="line">{</span><br><span class="line">    FPCALC(LOOP);</span><br><span class="line">}</span><br><span class="line">clock_gettime(CLOCK_MONOTONIC_RAW, &amp;end);</span><br></pre></td></tr></table></figure>
 
 <p>最终得到双精度计算为<code>1271.590910GFLOPS</code>, 就是说单个SOC达到了<code>635.795455GFLOPS</code>以上(包含一些等待和同步的时间), 非常接近上限<code>665.6GFLOPS</code></p>
 <p>单精度也是<code>5085.4412485GFLOPS</code>, 单个SOC达到了<code>2542.72062425GFLOPS</code>以上, 非常接近<code>2662GFLOPS</code></p>
-<p>所以不太懂上海交大测量的单核和多核性能为什么比理论峰值差的这么多.</p>
+<p>对于<code>fmul</code>和<code>fadd</code>吞吐也是和<code>fmla</code>完全一样的, 也就是说如果乘法和加法不均衡, 无法使用<code>fmla</code>的话,会少一半FLOPS, 单双精度吞吐分别1331和332.7</p>
+<p>如果使用标量的话, 单双精度吞吐都是2 IPC, 也就是都是332.7附件</p>
 <h2 id="AMD-EPYC-7302"><a href="#AMD-EPYC-7302" class="headerlink" title="AMD EPYC 7302"></a>AMD EPYC 7302</h2><p>这个先测试单线程, 过程类似:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">.globl FPCALC</span><br><span class="line"></span><br><span class="line">FPCALC:</span><br><span class="line">.loop2:</span><br><span class="line">    vfmadd231pd %ymm0, %ymm0, %ymm0</span><br><span class="line">    ...</span><br><span class="line">    vfmadd231pd %ymm15, %ymm15, %ymm15</span><br><span class="line"></span><br><span class="line">    decq %rdi</span><br><span class="line"></span><br><span class="line">    vfmadd231pd %ymm0, %ymm0, %ymm0</span><br><span class="line">    ...</span><br><span class="line">    vfmadd231pd %ymm15, %ymm15, %ymm15</span><br><span class="line"></span><br><span class="line">    jnz .loop2</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
 
