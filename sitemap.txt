@@ -11,12 +11,12 @@ https://zombie12138.github.io/tags/Survey/
 https://zombie12138.github.io/tags/Kunpeng/
 https://zombie12138.github.io/tags/CPU/
 https://zombie12138.github.io/tags/HPC/
-https://zombie12138.github.io/tags/SIMD/
 https://zombie12138.github.io/tags/C/
 https://zombie12138.github.io/tags/C/
 https://zombie12138.github.io/tags/Linux-Programming/
 https://zombie12138.github.io/tags/NUMA/
 https://zombie12138.github.io/tags/OpenMP/
+https://zombie12138.github.io/tags/SIMD/
 https://zombie12138.github.io/tags/OS/
 https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/
 https://zombie12138.github.io/tags/Folly/
