@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="年轻人的第一个Linux Patch -- Typo">
+<meta property="og:url" content="https://zombie12138.github.io/2024/FirstLinuxPatch/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-02-11T18:30:44.000Z">
+<meta property="article:modified_time" content="2024-02-11T18:30:44.764Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zombie12138.github.io/2024/FirstLinuxPatch/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>年轻人的第一个Linux Patch -- Typo | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/FirstLinuxPatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          年轻人的第一个Linux Patch -- Typo
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-02-12 02:30:44" itemprop="dateCreated datePublished" datetime="2024-02-12T02:30:44+08:00">2024-02-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…</p>
+<span id="more"></span>
+
+<h2 id="TYPO"><a href="#TYPO" class="headerlink" title="TYPO"></a>TYPO</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ dmesg | grep 5651</span><br><span class="line">[    8.153312] rt5651 1-001a: Failed to reguest IRQ 0: -22</span><br><span class="line">[    8.277394] input: realtek,rt5651-codec Headphones as /devices/platform/rt5651-sound/sound/card1/input4</span><br></pre></td></tr></table></figure>
+
+<p>Reguest是什么鬼, 应该是Request… 下载So了一下, 导出都是这个Typo, 有15个地方都是.</p>
+<p>于是问一下GPT怎么去提交…</p>
+<h2 id="Patch"><a href="#Patch" class="headerlink" title="Patch"></a>Patch</h2><p>参考<a target="_blank" rel="noopener" href="https://hackmd.io/@kevinjone25/HJUFg8-CY">blog</a>, <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/613082289">知乎</a>, <a target="_blank" rel="noopener" href="https://docs.kernel.org/process/submitting-patches.html">Linux Docs</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch develop</span><br><span class="line">git checkout develop</span><br></pre></td></tr></table></figure>
+
+<p>之后修改代码, 在Linux目录下设置email和username(不要global)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git-email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 增加在 .gitconfig</span></span><br><span class="line">[sendemail]</span><br><span class="line">	smtpEncryption = ssl</span><br><span class="line">	smtpServer = smtp.exmail.qq.com</span><br><span class="line">	smtpUser = youremail@gmail.com(你要用的email)</span><br><span class="line">	smtpServerPort = 465</span><br><span class="line">    smtpPass = 客户端token</span><br><span class="line"></span><br><span class="line">git add sound/*</span><br><span class="line">git add drivers/*</span><br><span class="line">git config --global core.editor <span class="string">"vim"</span></span><br><span class="line">git commit -s -v</span><br></pre></td></tr></table></figure>
+
+<p>之后就是commit正文</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Subject: [PATCH] sound: drivers: fix typo 'reguest' to 'request'</span><br><span class="line"></span><br><span class="line">This patch fixes a widespread spelling mistake of the word "request"</span><br><span class="line">(incorrectly spelled as "reguest") across multiple files. </span><br><span class="line"></span><br><span class="line"># 下面就是自动生成的</span><br><span class="line">Signed-off-by: Name &lt;mail&gt;</span><br></pre></td></tr></table></figure>
+
+<p>生成补丁</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git format-patch master</span><br><span class="line"><span class="comment"># check</span></span><br><span class="line">./scripts/checkpatch.pl 0001-Subject-PATCH-sound-drivers-fix-typo-reguest-to-requ.patch</span><br></pre></td></tr></table></figure>
+
+<p>之后就是找发件人了, 但是我的typo涉及很多很多文件, 正常是</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拿我當範例</span></span><br><span class="line">./scripts/get_maintainer.pl -f path/to/file</span><br></pre></td></tr></table></figure>
+
+<p>写一个脚本来处理, 最终得到一堆(20+)</p>
+<p>就是这么多… so了一下, gpt, google和文档都没给出, 就硬着头皮都发一下吧(什么骚扰邮件) </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">lighthouse@VM-16-2-ubuntu:~/linux$ ./scripts/get_maintainer.pl drivers/mfd/da9063-irq.c</span><br><span class="line">Support Opensource &lt;support.opensource@diasemi.com&gt; (supporter:DIALOG SEMICONDUCTOR DRIVERS)</span><br><span class="line">Lee Jones &lt;lee.jones@linaro.org&gt; (supporter:MULTIFUNCTION DEVICES (MFD))</span><br><span class="line">linux-kernel@vger.kernel.org (open list)</span><br><span class="line"></span><br><span class="line">lighthouse@VM-16-2-ubuntu:~/linux$ ./scripts/get_maintainer.pl drivers/scsi/lpfc</span><br><span class="line">James Smart &lt;james.smart@broadcom.com&gt; (supporter:EMULEX/BROADCOM LPFC FC/FCOE SCSI DRIVER)</span><br><span class="line">Dick Kennedy &lt;dick.kennedy@broadcom.com&gt; (supporter:EMULEX/BROADCOM LPFC FC/FCOE SCSI DRIVER)</span><br><span class="line"><span class="string">"James E.J. Bottomley"</span> &lt;jejb@linux.ibm.com&gt; (maintainer:SCSI SUBSYSTEM)</span><br><span class="line"><span class="string">"Martin K. Petersen"</span> &lt;martin.petersen@oracle.com&gt; (maintainer:SCSI SUBSYSTEM)</span><br><span class="line">linux-scsi@vger.kernel.org (open list:EMULEX/BROADCOM LPFC FC/FCOE SCSI DRIVER)</span><br><span class="line">linux-kernel@vger.kernel.org (open list)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">lighthouse@VM-16-2-ubuntu:~/linux$ ./scripts/get_maintainer.pl drivers/tty/serial</span><br><span class="line">Greg Kroah-Hartman &lt;gregkh@linuxfoundation.org&gt; (maintainer:SERIAL DRIVERS)</span><br><span class="line">Jiri Slaby &lt;jirislaby@kernel.org&gt; (supporter:TTY LAYER)</span><br><span class="line">linux-serial@vger.kernel.org (open list:SERIAL DRIVERS)</span><br><span class="line">linux-kernel@vger.kernel.org (open list)</span><br><span class="line"></span><br><span class="line">lighthouse@VM-16-2-ubuntu:~/linux$ ./scripts/get_maintainer.pl sound/soc/codecs</span><br><span class="line">Liam Girdwood &lt;lgirdwood@gmail.com&gt; (supporter:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...)</span><br><span class="line">Mark Brown &lt;broonie@kernel.org&gt; (supporter:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...)</span><br><span class="line">Jaroslav Kysela &lt;perex@perex.cz&gt; (maintainer:SOUND)</span><br><span class="line">Takashi Iwai &lt;tiwai@suse.com&gt; (maintainer:SOUND)</span><br><span class="line">alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...)</span><br><span class="line">linux-kernel@vger.kernel.org (open list)</span><br></pre></td></tr></table></figure>
+
+<p>想了想, 这种简单的就发最简单的两个吧, 应该不需要这么多具体的人, 找了一个是sound下面的, 一个是</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">git send-email --to=linux-kernel@vger.kernel.org \</span><br><span class="line">--cc=lee.jones@linaro.org \</span><br><span class="line">\</span><br><span class="line">--cc=james.smart@broadcom.com \</span><br><span class="line">--cc=dick.kennedy@broadcom.com \</span><br><span class="line">--cc=jejb@linux.ibm.com \</span><br><span class="line">--cc=martin.petersen@oracle.com \</span><br><span class="line">\</span><br><span class="line">--cc=gregkh@linuxfoundation.org \</span><br><span class="line">--cc=jirislaby@kernel.org \</span><br><span class="line">\</span><br><span class="line">--cc=lgirdwood@gmail.com \</span><br><span class="line">--cc=broonie@kernel.org \</span><br><span class="line">--cc=perex@perex.cz \</span><br><span class="line">--cc=tiwai@suse.com \</span><br><span class="line">--cc=alsa-devel@alsa-project.org \</span><br><span class="line">0001-Subject-PATCH-sound-drivers-fix-typo-reguest-to-requ.patch</span><br></pre></td></tr></table></figure>
+
+<p>先试试自己</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git send-email --to=mail1 \</span><br><span class="line">--cc=mail2 \</span><br><span class="line">0001-Subject-PATCH-sound-drivers-fix-typo-reguest-to-requ.patch</span><br></pre></td></tr></table></figure>
+
+<p>发现是没有正文的, 只有一个垃圾patch, 就这样吧… </p>
+<p>可能过几天才会收到回复吧…</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>感觉就是浪费人家时间(</p>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="prev" title="AMD IPU初体验">
+      <i class="fa fa-chevron-left"></i> AMD IPU初体验
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TYPO"><span class="nav-number">1.</span> <span class="nav-text">TYPO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Patch"><span class="nav-number">2.</span> <span class="nav-text">Patch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
