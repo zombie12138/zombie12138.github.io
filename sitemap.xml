@@ -127,6 +127,13 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/tags/Linux/</loc>
+    <lastmod>2024-02-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/tags/Git/</loc>
     <lastmod>2024-02-13</lastmod>
     <changefreq>weekly</changefreq>
@@ -162,7 +169,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/OS/</loc>
+    <loc>https://zombie12138.github.io/tags/C/</loc>
     <lastmod>2024-02-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -183,20 +190,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
-    <lastmod>2024-02-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/C/</loc>
-    <lastmod>2024-02-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/tags/NUMA/</loc>
     <lastmod>2024-02-13</lastmod>
     <changefreq>weekly</changefreq>
@@ -205,6 +198,20 @@
   
   <url>
     <loc>https://zombie12138.github.io/tags/OpenMP/</loc>
+    <lastmod>2024-02-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/OS/</loc>
+    <lastmod>2024-02-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
     <lastmod>2024-02-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -240,13 +247,6 @@
   
   <url>
     <loc>https://zombie12138.github.io/tags/Cloud-Computing/</loc>
-    <lastmod>2024-02-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Linux/</loc>
     <lastmod>2024-02-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
