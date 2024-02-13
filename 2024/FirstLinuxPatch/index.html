@@ -28,7 +28,7 @@
 <meta property="og:description" content="之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-11T18:30:44.764Z">
-<meta property="article:modified_time" content="2024-02-13T07:25:28.480Z">
+<meta property="article:modified_time" content="2024-02-13T08:23:52.296Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Git">
@@ -187,7 +187,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-13 15:25:28" itemprop="dateModified" datetime="2024-02-13T15:25:28+08:00">2024-02-13</time>
+                <time title="修改时间：2024-02-13 16:23:52" itemprop="dateModified" datetime="2024-02-13T16:23:52+08:00">2024-02-13</time>
               </span>
 
           
@@ -226,15 +226,15 @@
 <p>上面设置了tocmd和cccmd就不需要手动设置收件人和抄送</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git send-email \</span><br><span class="line"> 0001-ASoC-codecs-fix-TYPO-reguest-to-request-in-error-log.patch</span><br></pre></td></tr></table></figure>
 
-<h2 id="response"><a href="#response" class="headerlink" title="response"></a>response</h2><p>第二天就受到了</p>
+<h2 id="response"><a href="#response" class="headerlink" title="response"></a>response</h2><p>第二天就收到了<a target="_blank" rel="noopener" href="https://lore.kernel.org/all/170777293077.73793.4917696227318704930.b4-ty@kernel.org/">邮件</a></p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Applied to</span><br><span class="line"></span><br><span class="line">   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next</span><br><span class="line"></span><br><span class="line">Thanks!</span><br><span class="line"></span><br><span class="line">[1/1] ASoC: codecs: fix TYPO 'reguest' to 'request' in error log</span><br><span class="line">      commit: 00933c4993f132a53d31f995a011945b3835826c</span><br><span class="line"></span><br><span class="line">All being well this means that it will be integrated into the linux-next</span><br><span class="line">tree (usually sometime in the next 24 hours) and sent to Linus during</span><br><span class="line">the next merge window (or sooner if it is a bug fix), however if</span><br><span class="line">problems are discovered then the patch may be dropped or reverted.</span><br><span class="line"></span><br><span class="line">You may get further e-mails resulting from automated or manual testing</span><br><span class="line">and review of the tree, please engage with people reporting problems and</span><br><span class="line">send followup patches addressing any issues that are reported if needed.</span><br><span class="line"></span><br><span class="line">If any updates are required or you are submitting further changes they</span><br><span class="line">should be sent as incremental updates against current git, existing</span><br><span class="line">patches will not be replaced.</span><br><span class="line"></span><br><span class="line">Please add any relevant lists and maintainers to the CCs when replying</span><br><span class="line">to this mail.</span><br><span class="line"></span><br><span class="line">Thanks,</span><br><span class="line">Mark</span><br></pre></td></tr></table></figure>
 
 <h2 id="剩余的typo"><a href="#剩余的typo" class="headerlink" title="剩余的typo"></a>剩余的typo</h2><p>同样的错误drivers下面还有很多, 虽然很水, 但是以后发过去吧</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>感觉就是浪费人家时间… 而且很恐怖很恐怖的是, 这简直是公开处刑…</p>
 <p>这群人效率真的很高… 而且很耐心</p>
 <ul>
-<li>如果需要重新提交不要引用之前的提交流程</li>
 <li>提交之前的subsystem需要查名字可以直接github之类的看一下日志, 看一下别人是怎么写的</li>
+<li>如果需要重新提交不要引用之前的提交流程</li>
 <li>所有的工作流都有对应的脚本, 比如找收件人, 完全可以自动进行</li>
 </ul>
 
@@ -280,7 +280,10 @@
     <a href="/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="prev" title="AMD IPU初体验">
       <i class="fa fa-chevron-left"></i> AMD IPU初体验
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/RemoteCommand/" rel="next" title="RemoteCommand--在多人账户下保持优雅">
+      RemoteCommand--在多人账户下保持优雅 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -353,12 +356,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
