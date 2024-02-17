@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="最近用&amp;#71;&amp;#x43;&amp;#x43;&amp;#x40;&amp;#49;&amp;#51;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+  <meta name="description" content="最近用&amp;#71;&amp;#67;&amp;#x43;&amp;#x40;&amp;#x31;&amp;#51;&amp;#46;&amp;#x32;&amp;#x2e;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:type" content="article">
 <meta property="og:title" content="强符号, 弱符号 -- 语言中的各种强和弱">
 <meta property="og:url" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="最近用&amp;#71;&amp;#x43;&amp;#x43;&amp;#x40;&amp;#49;&amp;#51;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+<meta property="og:description" content="最近用&amp;#71;&amp;#67;&amp;#x43;&amp;#x40;&amp;#x31;&amp;#51;&amp;#46;&amp;#x32;&amp;#x2e;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
 <meta property="article:published_time" content="2024-02-17T10:11:46.000Z">
-<meta property="article:modified_time" content="2024-02-17T10:27:09.380Z">
+<meta property="article:modified_time" content="2024-02-17T11:13:08.004Z">
 <meta property="article:author" content="zombie12138">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
@@ -181,7 +181,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-02-17 18:11:46 / 修改时间：18:27:09" itemprop="dateCreated datePublished" datetime="2024-02-17T18:11:46+08:00">2024-02-17</time>
+              <time title="创建时间：2024-02-17 18:11:46 / 修改时间：19:13:08" itemprop="dateCreated datePublished" datetime="2024-02-17T18:11:46+08:00">2024-02-17</time>
             </span>
 
           
@@ -195,7 +195,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近用<a href="mailto:&#71;&#x43;&#x43;&#x40;&#49;&#51;&#46;&#x32;&#46;&#x30;">&#71;&#x43;&#x43;&#x40;&#49;&#51;&#46;&#x32;&#46;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
+        <p>最近用<a href="mailto:&#71;&#67;&#x43;&#x40;&#x31;&#51;&#46;&#x32;&#x2e;&#x30;">&#71;&#67;&#x43;&#x40;&#x31;&#51;&#46;&#x32;&#x2e;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
 <span id="more"></span>
 
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>执行命令:</p>
@@ -231,11 +231,15 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add_impl</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>&#123; <span class="keyword">return</span> a+b; &#125;</span><br><span class="line">__attribute__ ((weakref, alias (<span class="string">&quot;add_impl&quot;</span>))) <span class="type">static</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>如果引用(<code>add_impl</code>)不存在函数入口(<code>add</code>)就是0, 也就是注释掉<code>add_impl</code>就不会执行加法, 这就是如何实现自动适配多线程版本, 如果没有链接多线程的库, 自动不使用</p>
+<p>链接之后这个符号就不见了. 但是如果生成obj文件, 可以看到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ nm ref.o</span><br><span class="line">                 w func</span><br><span class="line">0000000000000000 T main</span><br><span class="line">                 U <span class="built_in">printf</span></span><br></pre></td></tr></table></figure>
+
+<p>w表示<code> The symbol is a weak symbol that has not been specifically tagged as a weak object symbol.</code> 所以, 也是弱符号.</p>
 <hr>
 <p>此外<a target="_blank" rel="noopener" href="https://blog.csdn.net/wang1902568721/article/details/71159699">有人</a>讲到可以用弱符号解决这个问题(函数声明必须public, 即non static)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> ref.c</span><br><span class="line">__attribute__ ((weak)) int add(int a, int b);</span><br><span class="line">int <span class="function"><span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(1, 2));</span><br><span class="line">&#125;</span><br><span class="line">$ gcc ref.c</span><br><span class="line"><span class="comment"># some warning</span></span><br><span class="line">$ ./a.out</span><br><span class="line">0</span><br><span class="line">$ nm a.out | grep add</span><br><span class="line">                 w add</span><br></pre></td></tr></table></figure>
 
-<p>w表示<code> The symbol is a weak symbol that has not been specifically tagged as a weak object symbol.</code> 所以, 还是弱符号</p>
+<p>编译链接出来也是弱符号, 所以上面的<code>weakref</code>应该是单独优化掉了?</p>
 <h2 id="Strong-Weak-Type-Static-Dynamic-Type"><a href="#Strong-Weak-Type-Static-Dynamic-Type" class="headerlink" title="Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type"></a>Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</h2><p>这两个主要是容易混淆, strong, weak指的是类型转换. 而我们容易误以为是动态, 静态类型</p>
 <p>这是一个经典的图:</p>
 <img src="/2024/StrongSymbol-WeekSymbol/type.png" class="" title="type">
