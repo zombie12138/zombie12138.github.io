@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近用&amp;#71;&amp;#67;&amp;#67;&amp;#x40;&amp;#49;&amp;#x33;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强符号, 弱符号 -- 语言中的各种强和弱">
+<meta property="og:url" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="最近用&amp;#71;&amp;#67;&amp;#67;&amp;#x40;&amp;#49;&amp;#x33;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
+<meta property="article:published_time" content="2024-02-17T10:11:46.000Z">
+<meta property="article:modified_time" content="2024-02-17T10:16:23.412Z">
+<meta property="article:author" content="zombie12138">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>强符号, 弱符号 -- 语言中的各种强和弱 | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          强符号, 弱符号 -- 语言中的各种强和弱
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-02-17 18:11:46 / 修改时间：18:16:23" itemprop="dateCreated datePublished" datetime="2024-02-17T18:11:46+08:00">2024-02-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近用<a href="mailto:&#71;&#67;&#67;&#x40;&#49;&#x33;&#46;&#x32;&#46;&#x30;">&#71;&#67;&#67;&#x40;&#49;&#x33;&#46;&#x32;&#46;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
+<span id="more"></span>
+
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>执行命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">mpicc -Drestrict=__restrict__ -O3 -DGRAPH_GENERATOR_MPI -DREUSE_CSR_FOR_VALIDATION -I../aml -DSSSP -pthread -o graph500_reference_bfs_sssp bfs_reference.c sssp_reference.c csr_reference.c main.c utils.c validate.c ../aml/aml.c ../generator/graph_generator.c ../generator/make_graph.c ../generator/splittable_mrg.c ../generator/utils.c -lm </span><br><span class="line">/tmp/ccfToPfi.o:(.bss+0x10): multiple definition of `weights<span class="string">&#x27;</span></span><br><span class="line"><span class="string">/tmp/cc4uSqIL.o:(.bss+0x18): first defined here</span></span><br><span class="line"><span class="string">/tmp/ccfToPfi.o:(.bss+0x8): multiple definition of `column&#x27;</span></span><br><span class="line">/tmp/ccF31unt.o:(.bss+0x70): first defined here</span><br><span class="line">collect2: error: ld returned 1 <span class="built_in">exit</span> status</span><br><span class="line">make: *** [graph500_reference_bfs_sssp] Error 1</span><br></pre></td></tr></table></figure>
+
+<p>但是是什么原因呢, 这个就是符号重定义, 打开vscode, 搜索<code>.h</code>或者<code>.c</code>中这个符号(<code>weights</code>)的定义, 发现其定义<code>float *weights;</code>同时存在与<code>csr_reference.c</code>和<code>sssp_reference.c</code>, <code>column</code>同时出现在三个地方.</p>
+<p>一开始就大概就猜到是什么原因了</p>
+<p>有两种解决办法, 最简单的就是使用<code>extern</code>把除了一个之外的其他所有的定义改成声明, 顺利编译通过. 这个用法的弊端是, 如果这个仅仅声明的文件被单独使用, 会找不到这个符号.</p>
+<p>还有一种办法就是在除了一个之外的其他所有的定义或者全部定义同时使用<code>__attribute((weak))</code>, 这样就能顺利编译通过(可能会产生Warning)</p>
+<h2 id="Strong-Symbol-Week-Symbol"><a href="#Strong-Symbol-Week-Symbol" class="headerlink" title="Strong Symbol, Week Symbol"></a>Strong Symbol, Week Symbol</h2><p>但是一个符号, 在多个文件中定义为全局变量, 这个怎么会可以在之前的版本通过编译的. 这个就是未初始化的全局变量本身是弱符号. </p>
+<p>这个概念是在&lt;程序员的自我修养&gt;这一本书, P92中看到的, 对于一段C&#x2F;C++, 未初始化的全局符号就是弱符号</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> ext; <span class="comment">// 只是声明, 对于外部符号的引用</span></span><br><span class="line"><span class="type">int</span> a;  <span class="comment">// strong, 书里面说这个是Weak, 但是其实也是强符号</span></span><br><span class="line"><span class="type">int</span> b = <span class="number">0</span>; <span class="comment">// strong</span></span><br><span class="line">__attribute__((weak)) <span class="type">int</span> gcc_weak = <span class="number">1</span>; <span class="comment">// weak, 书里面没写int, 我个人认为是写错了...</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>多个强符号会报错</li>
+<li>多个弱符号会选择空间最大的一个</li>
+<li>如果只有一个是强符号则选择强符号</li>
+</ol>
+<p>但是测试的时候发现, 除了<code>attribute</code>手动指定, 似乎都是强符号.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ nm a.o</span><br><span class="line">0000000000000000 T main</span><br><span class="line">0000000000000000 D strong</span><br><span class="line">0000000000000008 B strong2</span><br><span class="line">0000000000000000 B weak</span><br><span class="line">0000000000000004 V weak2</span><br></pre></td></tr></table></figure>
+
+<p><code>man nm</code>可以看到, <code>T</code>是text代码段, D是initialized data section, <code>B</code>是BSS data section, <code>V</code>是The symbol is a weak object.</p>
+<p>此外, 翻gcc手册发现一个标志, 但是似乎没什么作用:</p>
+<h2 id="Strong-Reference-Weak-Reference"><a href="#Strong-Reference-Weak-Reference" class="headerlink" title="Strong Reference, Weak Reference"></a>Strong Reference, Weak Reference</h2><p>除此之外, 还提到了一个概念是强引用, 弱引用.</p>
+<p>这个一个就是解决循环引用, 不参与引用计数的引用, 这个在各个语言中都有体现, Python, Java, Cpp也有Weakptr也类似</p>
+<p>还有就是这里要讲的, 也是自我修养这本书讲到的.</p>
+<p>对于一般的函数声明, 函数定义不在链接中出现, 会报错的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只有链接了add函数定义才可以.</p>
+<p>但是如果使用<code>weakref</code>, 就可以在没有定义的时候让函数指针为<code>NULL</code>.</p>
+<p>但是测试出问题了… 即使<code>__attribute__((weakref)) int add(int a, int b);</code>也不可以.</p>
+<p>查了手册, 想用弱引用就要(必须static), 同时指出引用的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add_impl</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>&#123; <span class="keyword">return</span> a+b; &#125;</span><br><span class="line">__attribute__ ((weakref, alias (<span class="string">&quot;add_impl&quot;</span>))) <span class="type">static</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果引用(<code>add_impl</code>)不存在函数入口(<code>add</code>)就是0, 也就是注释掉<code>add_impl</code>就不会执行加法, 这就是如何实现自动适配多线程版本, 如果没有链接多线程的库, 自动不使用</p>
+<hr>
+<p>此外<a target="_blank" rel="noopener" href="https://blog.csdn.net/wang1902568721/article/details/71159699">有人</a>讲到可以用弱符号解决这个问题(函数声明必须public, 即non static)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> ref.c</span><br><span class="line">__attribute__ ((weak)) int add(int a, int b);</span><br><span class="line">int <span class="function"><span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(1, 2));</span><br><span class="line">&#125;</span><br><span class="line">$ gcc ref.c</span><br><span class="line"><span class="comment"># some warning</span></span><br><span class="line">$ ./a.out</span><br><span class="line">0</span><br><span class="line">$ nm a.out | grep add</span><br><span class="line">                 w add</span><br></pre></td></tr></table></figure>
+
+<p>w表示<code> The symbol is a weak symbol that has not been specifically tagged as a weak object symbol.</code> 所以, 还是弱符号</p>
+<h2 id="Strong-Weak-Type-Static-Dynamic-Type"><a href="#Strong-Weak-Type-Static-Dynamic-Type" class="headerlink" title="Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type"></a>Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</h2><p>这两个主要是容易混淆, strong, weak指的是类型转换. 而我们容易误以为是动态, 静态类型</p>
+<p>这是一个经典的图:</p>
+<img src="/2024/StrongSymbol-WeekSymbol/type.png" class="" title="type">
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>此外还有动态, 静态<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%8D%E5%AD%97%E7%BB%91%E5%AE%9A">绑定</a>, 这种乱七八糟的概念好多, 而且发现自我修养这本书里错误挺多的…</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/RemoteCommand/" rel="prev" title="RemoteCommand--在多人账户下保持优雅">
+      <i class="fa fa-chevron-left"></i> RemoteCommand--在多人账户下保持优雅
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Symbol-Week-Symbol"><span class="nav-number">2.</span> <span class="nav-text">Strong Symbol, Week Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Reference-Weak-Reference"><span class="nav-number">3.</span> <span class="nav-text">Strong Reference, Weak Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Weak-Type-Static-Dynamic-Type"><span class="nav-number">4.</span> <span class="nav-text">Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
