@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="最近用&amp;#71;&amp;#67;&amp;#67;&amp;#x40;&amp;#49;&amp;#x33;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+  <meta name="description" content="最近用&amp;#71;&amp;#x43;&amp;#x43;&amp;#x40;&amp;#49;&amp;#51;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:type" content="article">
 <meta property="og:title" content="强符号, 弱符号 -- 语言中的各种强和弱">
 <meta property="og:url" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="最近用&amp;#71;&amp;#67;&amp;#67;&amp;#x40;&amp;#49;&amp;#x33;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+<meta property="og:description" content="最近用&amp;#71;&amp;#x43;&amp;#x43;&amp;#x40;&amp;#49;&amp;#51;&amp;#46;&amp;#x32;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
 <meta property="article:published_time" content="2024-02-17T10:11:46.000Z">
-<meta property="article:modified_time" content="2024-02-17T10:16:23.412Z">
+<meta property="article:modified_time" content="2024-02-17T10:27:09.380Z">
 <meta property="article:author" content="zombie12138">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/type.png">
@@ -181,7 +181,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-02-17 18:11:46 / 修改时间：18:16:23" itemprop="dateCreated datePublished" datetime="2024-02-17T18:11:46+08:00">2024-02-17</time>
+              <time title="创建时间：2024-02-17 18:11:46 / 修改时间：18:27:09" itemprop="dateCreated datePublished" datetime="2024-02-17T18:11:46+08:00">2024-02-17</time>
             </span>
 
           
@@ -195,18 +195,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近用<a href="mailto:&#71;&#67;&#67;&#x40;&#49;&#x33;&#46;&#x32;&#46;&#x30;">&#71;&#67;&#67;&#x40;&#49;&#x33;&#46;&#x32;&#46;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
+        <p>最近用<a href="mailto:&#71;&#x43;&#x43;&#x40;&#49;&#51;&#46;&#x32;&#46;&#x30;">&#71;&#x43;&#x43;&#x40;&#49;&#51;&#46;&#x32;&#46;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
 <span id="more"></span>
 
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>执行命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">mpicc -Drestrict=__restrict__ -O3 -DGRAPH_GENERATOR_MPI -DREUSE_CSR_FOR_VALIDATION -I../aml -DSSSP -pthread -o graph500_reference_bfs_sssp bfs_reference.c sssp_reference.c csr_reference.c main.c utils.c validate.c ../aml/aml.c ../generator/graph_generator.c ../generator/make_graph.c ../generator/splittable_mrg.c ../generator/utils.c -lm </span><br><span class="line">/tmp/ccfToPfi.o:(.bss+0x10): multiple definition of `weights<span class="string">&#x27;</span></span><br><span class="line"><span class="string">/tmp/cc4uSqIL.o:(.bss+0x18): first defined here</span></span><br><span class="line"><span class="string">/tmp/ccfToPfi.o:(.bss+0x8): multiple definition of `column&#x27;</span></span><br><span class="line">/tmp/ccF31unt.o:(.bss+0x70): first defined here</span><br><span class="line">collect2: error: ld returned 1 <span class="built_in">exit</span> status</span><br><span class="line">make: *** [graph500_reference_bfs_sssp] Error 1</span><br></pre></td></tr></table></figure>
 
-<p>但是是什么原因呢, 这个就是符号重定义, 打开vscode, 搜索<code>.h</code>或者<code>.c</code>中这个符号(<code>weights</code>)的定义, 发现其定义<code>float *weights;</code>同时存在与<code>csr_reference.c</code>和<code>sssp_reference.c</code>, <code>column</code>同时出现在三个地方.</p>
+<p>这个就是符号重定义, 打开vscode, 搜索<code>.h</code>或者<code>.c</code>中这个符号(<code>weights</code>)的定义, 发现其定义<code>float *weights;</code>同时存在与<code>csr_reference.c</code>和<code>sssp_reference.c</code>, <code>column</code>同时出现在三个地方.</p>
 <p>一开始就大概就猜到是什么原因了</p>
 <p>有两种解决办法, 最简单的就是使用<code>extern</code>把除了一个之外的其他所有的定义改成声明, 顺利编译通过. 这个用法的弊端是, 如果这个仅仅声明的文件被单独使用, 会找不到这个符号.</p>
 <p>还有一种办法就是在除了一个之外的其他所有的定义或者全部定义同时使用<code>__attribute((weak))</code>, 这样就能顺利编译通过(可能会产生Warning)</p>
 <h2 id="Strong-Symbol-Week-Symbol"><a href="#Strong-Symbol-Week-Symbol" class="headerlink" title="Strong Symbol, Week Symbol"></a>Strong Symbol, Week Symbol</h2><p>但是一个符号, 在多个文件中定义为全局变量, 这个怎么会可以在之前的版本通过编译的. 这个就是未初始化的全局变量本身是弱符号. </p>
-<p>这个概念是在&lt;程序员的自我修养&gt;这一本书, P92中看到的, 对于一段C&#x2F;C++, 未初始化的全局符号就是弱符号</p>
+<p>这个概念是在&lt;程序员的自我修养&gt;这一本书, P92中看到的, 对于一段C&#x2F;C++, 未初始化的全局符号就是弱符号(书中这样说, 但是似乎只有手动指定才可以)</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> ext; <span class="comment">// 只是声明, 对于外部符号的引用</span></span><br><span class="line"><span class="type">int</span> a;  <span class="comment">// strong, 书里面说这个是Weak, 但是其实也是强符号</span></span><br><span class="line"><span class="type">int</span> b = <span class="number">0</span>; <span class="comment">// strong</span></span><br><span class="line">__attribute__((weak)) <span class="type">int</span> gcc_weak = <span class="number">1</span>; <span class="comment">// weak, 书里面没写int, 我个人认为是写错了...</span></span><br></pre></td></tr></table></figure>
 
 <ol>
@@ -218,7 +218,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ nm a.o</span><br><span class="line">0000000000000000 T main</span><br><span class="line">0000000000000000 D strong</span><br><span class="line">0000000000000008 B strong2</span><br><span class="line">0000000000000000 B weak</span><br><span class="line">0000000000000004 V weak2</span><br></pre></td></tr></table></figure>
 
 <p><code>man nm</code>可以看到, <code>T</code>是text代码段, D是initialized data section, <code>B</code>是BSS data section, <code>V</code>是The symbol is a weak object.</p>
-<p>此外, 翻gcc手册发现一个标志, 但是似乎没什么作用:</p>
 <h2 id="Strong-Reference-Weak-Reference"><a href="#Strong-Reference-Weak-Reference" class="headerlink" title="Strong Reference, Weak Reference"></a>Strong Reference, Weak Reference</h2><p>除此之外, 还提到了一个概念是强引用, 弱引用.</p>
 <p>这个一个就是解决循环引用, 不参与引用计数的引用, 这个在各个语言中都有体现, Python, Java, Cpp也有Weakptr也类似</p>
 <p>还有就是这里要讲的, 也是自我修养这本书讲到的.</p>
