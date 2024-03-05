@@ -1,3 +1,4 @@
+https://zombie12138.github.io/2024/TVM-LIBCXX/
 https://zombie12138.github.io/2023/NUMA%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CFirstTouch/
 https://zombie12138.github.io/2024/StrongSymbol-WeekSymbol/
 https://zombie12138.github.io/2024/FirstLinuxPatch/
@@ -35,3 +36,6 @@ https://zombie12138.github.io/tags/Performance/
 https://zombie12138.github.io/tags/Cloud-Computing/
 https://zombie12138.github.io/tags/Tips/
 https://zombie12138.github.io/tags/Shell/
+https://zombie12138.github.io/tags/TVM/
+https://zombie12138.github.io/tags/Link/
+https://zombie12138.github.io/tags/Load/
