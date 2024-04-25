@@ -1,3 +1,4 @@
+https://zombie12138.github.io/2024/interview-mistakes/
 https://zombie12138.github.io/2024/wireguard-x-qbittorrent/
 https://zombie12138.github.io/2024/frpc-in-docker/
 https://zombie12138.github.io/2024/ddns/
@@ -52,3 +53,7 @@ https://zombie12138.github.io/tags/Redis/
 https://zombie12138.github.io/tags/Performance/
 https://zombie12138.github.io/tags/Cloud-Computing/
 https://zombie12138.github.io/tags/Survey/
+https://zombie12138.github.io/tags/Database/
+https://zombie12138.github.io/tags/Operatoring-System/
+https://zombie12138.github.io/tags/Mysql/
+https://zombie12138.github.io/tags/Interview/
