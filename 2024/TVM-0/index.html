@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="来系统看一下TVM的教程, 本文将包含安装和一些基本的使用, 基本上参考照抄tvm官方文档和中文文档">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TVM入门 -- 0 Hello World">
+<meta property="og:url" content="https://zombie12138.github.io/2024/TVM-0/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="来系统看一下TVM的教程, 本文将包含安装和一些基本的使用, 基本上参考照抄tvm官方文档和中文文档">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2024/TVM-0/tvm.png">
+<meta property="article:published_time" content="2024-05-03T13:35:44.000Z">
+<meta property="article:modified_time" content="2024-05-03T13:35:44.412Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="TVM">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Inference">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2024/TVM-0/tvm.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2024/TVM-0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TVM入门 -- 0 Hello World | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/TVM-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TVM入门 -- 0 Hello World
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-05-03 21:35:44" itemprop="dateCreated datePublished" datetime="2024-05-03T21:35:44+08:00">2024-05-03</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>来系统看一下TVM的教程, 本文将包含安装和一些基本的使用, 基本上参考<strike>照抄</strike><a target="_blank" rel="noopener" href="https://tvm.apache.org/docs/">tvm官方文档</a>和<a target="_blank" rel="noopener" href="https://tvm.hyper.ai/docs/">中文文档</a></p>
+<span id="more"></span>
+
+<p>其实是为了熟悉一下怎么使用, 之前用过, 生成的模型在BatchSize大的时候很慢</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>TVM是一个深度学习编译器, 但是很怀疑有什么用, 因为之前生成Kernel时候, batch size大的时候, 性能总是很差, 稍微学习一下到底是什么东西.</p>
+<p>其步骤原理就是:</p>
+<ol>
+<li>从TF, Torch, 或者ONNX的模型, 导入</li>
+<li>把模型翻译成Relay IR, 会加入一些图优化 </li>
+<li>降级为TE (Tensor Expression), FuseOps pass会把模型切分为小图.</li>
+<li>使用auto-tuning模块AutoTVM或AutoScheduler搜索最佳schedule进行一些循环优化(切分, 融合, 展开等), 并行化之类的优化</li>
+<li>生成JSON的调优记录, 为每个子图选择schedule</li>
+<li>降级为TensorIR, 进一步优化(降级到硬件)</li>
+<li>生成机器码</li>
+</ol>
+<img src="/2024/TVM-0/tvm.png" class="" title="tvm">
+
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><p>跟着教程就行了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive git@github.com:apache/tvm.git tvm</span><br><span class="line"><span class="comment"># 都已经安装了</span></span><br><span class="line"><span class="comment"># sudo apt-get install -y python3 python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential cmake libedit-dev libxml2-dev</span></span><br><span class="line"><span class="built_in">cd</span> tvm</span><br><span class="line"><span class="built_in">mkdir</span> build</span><br><span class="line"><span class="built_in">cp</span> cmake/config.cmake build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line"><span class="comment"># 编辑config.cmake</span></span><br><span class="line">cmake ..</span><br><span class="line">make -j64</span><br><span class="line"><span class="comment"># 配置python</span></span><br><span class="line"><span class="built_in">export</span> TVM_HOME=/path/to/tvm</span><br><span class="line"><span class="built_in">export</span> PYTHONPATH=<span class="variable">$TVM_HOME</span>/python:<span class="variable">$&#123;PYTHONPATH&#125;</span></span><br><span class="line"><span class="comment"># python3.9的venv</span></span><br><span class="line">pip3 install numpy decorator attrs psutil typing_extensions scipy tornado  <span class="string">&#x27;xgboost&gt;=1.1.0&#x27;</span> cloudpickle pytest</span><br></pre></td></tr></table></figure>
+
+<p>注意Cmake要3.20以上. 我开启了CUDA, NCCL, NVTX, OpenCL, OpenMP, RELAY_DEBUG和LLVM, 一些库没有就可以在<code>CMakeList.txt</code>里面添加一些<code>link_directories</code>或者<code>include_directories</code>来解决</p>
+<p>最终效果就是python里面能<code>import tvm</code>, 并且能执行<code>python -m tvm.driver.tvmc</code></p>
+<p>比较坑的是llvm版本, 官网只说了4.0以上, 但是17不可以, 下面的时候会Segment Fault, 14就可以… 搜了一下, 官网没有进行其他额外的说明, 而且也没有搜到什么要求.</p>
+<h2 id="TVMC编译"><a href="#TVMC编译" class="headerlink" title="TVMC编译"></a>TVMC编译</h2><p>下载模型</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/onnx/models/raw/b9a54e89508f101a1611cd64f4ef56b9cb62c7cf/vision/classification/resnet/model/resnet50-v2-7.onnx</span><br><span class="line"><span class="comment"># 编译</span></span><br><span class="line">tvmc compile \</span><br><span class="line">--target <span class="string">&quot;llvm&quot;</span> \</span><br><span class="line">--input-shapes <span class="string">&quot;data:[1,3,224,224]&quot;</span> \</span><br><span class="line">--output resnet50-v2-7-tvm.tar \</span><br><span class="line">resnet50-v2-7.onnx</span><br></pre></td></tr></table></figure>
+
+<p>得到一个<code>tar</code>包, 打开就可以看到<code>mod.json</code>, <code>mod.params</code>和<code>mod.so</code>三个文件. 分别是调度的json, 参数, 以及运行的Kernel</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> model</span><br><span class="line">tar -xvf resnet50-v2-7-tvm.tar -C model</span><br><span class="line"><span class="built_in">ls</span> model</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>nm model/mod.so</code>的时候, 就可以看见许多编译出来的算子:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">0000000000002150 T tvmgen_default_fused_add_layout_transform</span><br><span class="line">0000000000015a80 t tvmgen_default_fused_add_layout_transform_compute_</span><br><span class="line">0000000000002610 T tvmgen_default_fused_add_nn_relu_layout_transform</span><br><span class="line">0000000000002b20 T tvmgen_default_fused_add_nn_relu_layout_transform_1</span><br><span class="line">00000000000165d0 t tvmgen_default_fused_add_nn_relu_layout_transform_1_compute_</span><br><span class="line">0000000000003030 T tvmgen_default_fused_add_nn_relu_layout_transform_2</span><br><span class="line">0000000000016710 t tvmgen_default_fused_add_nn_relu_layout_transform_2_compute_</span><br><span class="line">0000000000003540 T tvmgen_default_fused_add_nn_relu_layout_transform_3</span><br><span class="line">00000000000168a0 t tvmgen_default_fused_add_nn_relu_layout_transform_3_compute_</span><br><span class="line">0000000000015b90 t tvmgen_default_fused_add_nn_relu_layout_transform_compute_</span><br><span class="line">0000000000003a50 T tvmgen_default_fused_layout_transform</span><br><span class="line">0000000000003e20 T tvmgen_default_fused_layout_transform_1</span><br><span class="line">00000000000041f0 T tvmgen_default_fused_layout_transform_10</span><br><span class="line">0000000000016d60 t tvmgen_default_fused_layout_transform_10_compute_</span><br><span class="line">00000000000045c0 T tvmgen_default_fused_layout_transform_11</span><br><span class="line">0000000000017040 t tvmgen_default_fused_layout_transform_11_compute_</span><br><span class="line">0000000000004990 T tvmgen_default_fused_layout_transform_12</span><br><span class="line">00000000000171a0 t tvmgen_default_fused_layout_transform_12_compute_</span><br><span class="line">0000000000004d60 T tvmgen_default_fused_layout_transform_13</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><code>hexdump -C model/mod.params</code>可以看到一开始似乎是参数+偏移量的一个索引, 后面就是大量的参数</p>
+<p>还有一个json文件, 里面就是具体的执行的方案:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;op&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tvm_op&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tvmgen_default_fused_nn_contrib_conv2d_NCHWc_add_nn_relu_3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;attrs&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;num_outputs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;num_inputs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;flatten_data&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;func_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tvmgen_default_fused_nn_contrib_conv2d_NCHWc_add_nn_relu_3&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;out_layout&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NCHW32c&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;data_layout&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NCHW256c&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;kernel_layout&quot;</span><span class="punctuation">:</span> <span class="string">&quot;OIHW256i32o&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;hash&quot;</span><span class="punctuation">:</span> <span class="string">&quot;f02e92d81f597ee5&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;inputs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">[</span></span><br><span class="line">        <span class="number">24</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span></span><br><span class="line">      <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">[</span></span><br><span class="line">        <span class="number">25</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span></span><br><span class="line">      <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">[</span></span><br><span class="line">        <span class="number">26</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="number">0</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="推理图像"><a href="#推理图像" class="headerlink" title="推理图像"></a>推理图像</h2><p>先下载, 转化成张量形式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!python ./preprocess.py</span></span><br><span class="line">from tvm.contrib.download import download_testdata</span><br><span class="line">from PIL import Image</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">img_url = <span class="string">&quot;https://s3.amazonaws.com/model-server/inputs/kitten.jpg&quot;</span></span><br><span class="line">img_path = download_testdata(img_url, <span class="string">&quot;imagenet_cat.png&quot;</span>, module=<span class="string">&quot;data&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重设大小为 224x224</span></span><br><span class="line">resized_image = Image.open(img_path).resize((<span class="number">224</span>, <span class="number">224</span>))</span><br><span class="line">img_data = np.asarray(resized_image).astype(<span class="string">&quot;float32&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ONNX 需要 NCHW 输入, 因此对数组进行转换</span></span><br><span class="line">img_data = np.transpose(img_data, (2, 0, 1))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据 ImageNet 进行标准化</span></span><br><span class="line">imagenet_mean = np.array([0.485, 0.456, 0.406])</span><br><span class="line">imagenet_stddev = np.array([0.229, 0.224, 0.225])</span><br><span class="line">norm_img_data = np.zeros(img_data.shape).astype(<span class="string">&quot;float32&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(img_data.shape[0]):</span><br><span class="line">      norm_img_data[i, :, :] = (img_data[i, :, :] / 255 - imagenet_mean[i]) / imagenet_stddev[i]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加 batch 维度</span></span><br><span class="line">img_data = np.expand_dims(norm_img_data, axis=0)</span><br><span class="line"><span class="comment"># 保存为 .npz（输出 imagenet_cat.npz）</span></span><br><span class="line">np.savez(<span class="string">&quot;imagenet_cat&quot;</span>, data=img_data)</span><br></pre></td></tr></table></figure>
+
+<p>tvmc预测:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz \</span><br><span class="line">resnet50-v2-7-tvm.tar</span><br></pre></td></tr></table></figure>
+
+<p>处理predictions输出的标签</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!python ./postprocess.py</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> softmax</span><br><span class="line"><span class="keyword">from</span> tvm.contrib.download <span class="keyword">import</span> download_testdata</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载标签列表</span></span><br><span class="line">labels_url = <span class="string">&quot;https://s3.amazonaws.com/onnx-model-zoo/synset.txt&quot;</span></span><br><span class="line">labels_path = download_testdata(labels_url, <span class="string">&quot;synset.txt&quot;</span>, module=<span class="string">&quot;data&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(labels_path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    labels = [l.rstrip() <span class="keyword">for</span> l <span class="keyword">in</span> f]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开并读入输出张量</span></span><br><span class="line"><span class="keyword">with</span> np.load(<span class="string">&quot;predictions.npz&quot;</span>) <span class="keyword">as</span> data:</span><br><span class="line">    scores = softmax(data[<span class="string">&quot;output_0&quot;</span>])</span><br><span class="line">    scores = np.squeeze(scores)</span><br><span class="line">    ranks = np.argsort(scores)[::-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> rank <span class="keyword">in</span> ranks[<span class="number">0</span>:<span class="number">5</span>]:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;class=&#x27;%s&#x27; with probability=%f&quot;</span> % (labels[rank], scores[rank]))</span><br></pre></td></tr></table></figure>
+
+<p>得到大概率是小猫</p>
+<h2 id="Tune"><a href="#Tune" class="headerlink" title="Tune"></a>Tune</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tvmc tune \</span><br><span class="line">--target <span class="string">&quot;llvm -mcpu=znver2&quot;</span> \</span><br><span class="line">--output resnet50-v2-7-autotuner_records.json \</span><br><span class="line">resnet50-v2-7.onnx</span><br></pre></td></tr></table></figure>
+
+<p>在<code>AMD EPYC 7742</code>看起来越来越菜:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[Task  1/25]  Current/Best:  290.24/ 758.06 GFLOPS | Progress: (40/40) | 22.77 s Done.</span><br><span class="line">[Task  2/25]  Current/Best:   48.62/ 391.92 GFLOPS | Progress: (40/40) | 17.37 s Done.</span><br><span class="line">[Task  3/25]  Current/Best:  119.78/ 633.58 GFLOPS | Progress: (40/40) | 16.93 s Done.</span><br><span class="line">[Task  4/25]  Current/Best:  171.79/ 888.60 GFLOPS | Progress: (40/40) | 22.39 s Done.</span><br><span class="line">[Task  5/25]  Current/Best:  383.39/ 987.25 GFLOPS | Progress: (40/40) | 18.38 s Done.</span><br><span class="line">[Task  6/25]  Current/Best:  217.90/ 944.68 GFLOPS | Progress: (40/40) | 20.27 s Done.</span><br><span class="line">[Task  7/25]  Current/Best:  246.02/ 549.39 GFLOPS | Progress: (40/40) | 18.15 s Done.</span><br><span class="line">[Task  8/25]  Current/Best:  127.11/ 843.05 GFLOPS | Progress: (40/40) | 25.48 s Done.</span><br><span class="line">[Task 10/25]  Current/Best:   65.70/ 623.75 GFLOPS | Progress: (40/40) | 18.79 s Done.</span><br><span class="line">[Task 11/25]  Current/Best:  133.07/ 798.74 GFLOPS | Progress: (40/40) | 17.44 s Done.</span><br><span class="line">[Task 12/25]  Current/Best:  236.94/ 966.90 GFLOPS | Progress: (40/40) | 20.05 s Done.</span><br><span class="line">[Task 13/25]  Current/Best:   99.23/ 580.25 GFLOPS | Progress: (40/40) | 18.79 s Done.</span><br><span class="line">[Task 14/25]  Current/Best:  134.33/1154.21 GFLOPS | Progress: (40/40) | 25.90 s Done.</span><br><span class="line">[Task 15/25]  Current/Best:   89.56/ 368.44 GFLOPS | Progress: (40/40) | 26.26 s Done.</span><br><span class="line">[Task 16/25]  Current/Best:  125.53/ 916.39 GFLOPS | Progress: (40/40) | 17.77 s Done.</span><br><span class="line">[Task 17/25]  Current/Best:  294.19/ 761.15 GFLOPS | Progress: (40/40) | 18.67 s Done.</span><br><span class="line">[Task 18/25]  Current/Best:   91.82/1146.81 GFLOPS | Progress: (40/40) | 20.61 s Done.</span><br><span class="line">[Task 19/25]  Current/Best:  215.21/ 667.51 GFLOPS | Progress: (40/40) | 20.71 s Done.</span><br><span class="line">[Task 20/25]  Current/Best:  315.34/ 892.59 GFLOPS | Progress: (40/40) | 25.41 s Done.</span><br><span class="line">[Task 21/25]  Current/Best:   57.18/ 363.08 GFLOPS | Progress: (40/40) | 21.82 s Done.</span><br><span class="line">[Task 22/25]  Current/Best:   30.80/ 599.88 GFLOPS | Progress: (40/40) | 18.65 s Done.</span><br><span class="line">[Task 23/25]  Current/Best:   45.65/ 815.07 GFLOPS | Progress: (40/40) | 20.48 s Done.</span><br><span class="line">[Task 25/25]  Current/Best:   12.54/  77.48 GFLOPS | Progress: (40/40) | 29.62 s Done.</span><br></pre></td></tr></table></figure>
+
+<p>输出文件里面是不同次运行的, 主要包含输入输出的分块, 循环展开的配置和其测量得到的性能.</p>
+<h2 id="Inference-Using-Tuneing-Records"><a href="#Inference-Using-Tuneing-Records" class="headerlink" title="Inference Using Tuneing Records"></a>Inference Using Tuneing Records</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tvmc compile \</span><br><span class="line">--target <span class="string">&quot;llvm&quot;</span> \</span><br><span class="line">--tuning-records resnet50-v2-7-autotuner_records.json  \</span><br><span class="line">--output resnet50-v2-7-tvm_autotuned.tar \</span><br><span class="line">resnet50-v2-7.onnx</span><br></pre></td></tr></table></figure>
+
+<p>得到一个新的模型, 可以来推理一下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm_autotuned.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 19:59:32.011 INFO load_module /tmp/tmpmy3voerq/mod.so</span><br><span class="line">Execution time summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.2880      36.8965      98.5295      35.6189       7.2424</span><br><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 20:02:27.667 INFO load_module /tmp/tmp1gsehsq_/mod.so</span><br><span class="line">Execution time summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.7429      38.2934      50.9800      34.8669       2.9679</span><br></pre></td></tr></table></figure>
+
+<p>看到结果似乎没有什么提升, 甚至下降了, 但是他的标准差似乎是小了一点点.</p>
+<p>可以自己选择一下自己的使用的调优的策略等.</p>
+<h2 id="Python-API"><a href="#Python-API" class="headerlink" title="Python API"></a>Python API</h2><p>这个还是用了Autoscheduler:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tvm.driver <span class="keyword">import</span> tvmc</span><br><span class="line">model = tvmc.load(<span class="string">&#x27;resnet50-v2-7.onnx&#x27;</span>) <span class="comment"># 第 1 步：加载</span></span><br><span class="line">model.summary()</span><br><span class="line">tvmc.tune(model, target=<span class="string">&quot;llvm -mcpu=znver2&quot;</span>, enable_autoscheduler=<span class="literal">True</span>, trials=<span class="number">9000</span>, timeout=<span class="number">10</span>, tuning_records=<span class="string">&quot;pythun_tune_records.json&quot;</span>) <span class="comment"># 第 1.5 步：可选 Tune</span></span><br><span class="line">package = tvmc.<span class="built_in">compile</span>(model, target=<span class="string">&quot;llvm -mcpu=znver2&quot;</span>, package_path=<span class="string">&quot;python_tune.tar&quot;</span>) <span class="comment"># 第 2 步：编译</span></span><br></pre></td></tr></table></figure>
+
+<p>还可以打印出来不同Kernel的GFLOPS, 同样可以按照上面的方法, 编译产生模型包, 性能, 得到:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Execution time summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  33.6029      32.7148      61.0482      31.5559       3.7816</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>简单安装, 使用了tvm, 并且使用tvmc来tune和compile模型.</p>
+<p>后面准备用C++来驱动这个模型, 以及手动的解析schedue, 手动驱动.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TVM/" rel="tag"># TVM</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/Inference/" rel="tag"># Inference</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/udp2raw/" rel="prev" title="udp2raw的使用 | 增加DNS功能">
+      <i class="fa fa-chevron-left"></i> udp2raw的使用 | 增加DNS功能
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Install"><span class="nav-number">2.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TVMC%E7%BC%96%E8%AF%91"><span class="nav-number">3.</span> <span class="nav-text">TVMC编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E5%9B%BE%E5%83%8F"><span class="nav-number">4.</span> <span class="nav-text">推理图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tune"><span class="nav-number">5.</span> <span class="nav-text">Tune</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inference-Using-Tuneing-Records"><span class="nav-number">6.</span> <span class="nav-text">Inference Using Tuneing Records</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-API"><span class="nav-number">7.</span> <span class="nav-text">Python API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
