@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="最近用&amp;#x47;&amp;#x43;&amp;#x43;&amp;#64;&amp;#x31;&amp;#51;&amp;#x2e;&amp;#50;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+  <meta name="description" content="最近用&amp;#71;&amp;#x43;&amp;#67;&amp;#x40;&amp;#x31;&amp;#51;&amp;#46;&amp;#50;&amp;#x2e;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:type" content="article">
 <meta property="og:title" content="强符号, 弱符号 -- 语言中的各种强和弱">
 <meta property="og:url" content="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="最近用&amp;#x47;&amp;#x43;&amp;#x43;&amp;#64;&amp;#x31;&amp;#51;&amp;#x2e;&amp;#50;&amp;#46;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
+<meta property="og:description" content="最近用&amp;#71;&amp;#x43;&amp;#67;&amp;#x40;&amp;#x31;&amp;#51;&amp;#46;&amp;#50;&amp;#x2e;&amp;#x30;去编译Graph500, 发生了报错符号重定义. 结果竟然是…">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/type.png">
 <meta property="article:published_time" content="2024-02-17T10:11:46.000Z">
@@ -201,7 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近用<a href="mailto:&#x47;&#x43;&#x43;&#64;&#x31;&#51;&#x2e;&#50;&#46;&#x30;">&#x47;&#x43;&#x43;&#64;&#x31;&#51;&#x2e;&#50;&#46;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
+        <p>最近用<a href="mailto:&#71;&#x43;&#67;&#x40;&#x31;&#51;&#46;&#50;&#x2e;&#x30;">&#71;&#x43;&#67;&#x40;&#x31;&#51;&#46;&#50;&#x2e;&#x30;</a>去编译Graph500, 发生了报错符号重定义. 结果竟然是…</p>
 <span id="more"></span>
 
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>执行命令:</p>
@@ -224,7 +224,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ nm a.o</span><br><span class="line">0000000000000000 T main</span><br><span class="line">0000000000000000 D strong</span><br><span class="line">0000000000000008 B strong2</span><br><span class="line">0000000000000000 B weak</span><br><span class="line">0000000000000004 V weak2</span><br></pre></td></tr></table></figure>
 
 <p><code>man nm</code>可以看到, <code>T</code>是text代码段, D是initialized data section, <code>B</code>是BSS data section, <code>V</code>是The symbol is a weak object.</p>
-<p>这个还会在模板中广泛使用, 配合COMDAT段来避免模板多个实例化的定义错误. 可以参见<a href="/2024/loaders/" title="链接器器这篇文章">链接器器这篇文章</a>, 里面MOLD链接器的部分提到了模板和弱符号是如何实现的.</p>
+<p>这个还会在模板中广泛使用, 配合COMDAT段来避免模板多个实例化的定义错误. 可以参见<a href="#">Post not found: loaders 链接器器这篇文章</a>, 里面MOLD链接器的部分提到了模板和弱符号是如何实现的.</p>
 <h2 id="Strong-Reference-Weak-Reference"><a href="#Strong-Reference-Weak-Reference" class="headerlink" title="Strong Reference, Weak Reference"></a>Strong Reference, Weak Reference</h2><p>除此之外, 还提到了一个概念是强引用, 弱引用.</p>
 <p>这个一个就是解决循环引用, 不参与引用计数的引用, 这个在各个语言中都有体现, Python, Java, Cpp也有Weakptr也类似</p>
 <p>还有就是这里要讲的, 也是自我修养这本书讲到的.</p>
@@ -346,7 +346,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
