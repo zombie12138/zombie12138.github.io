@@ -1,3 +1,4 @@
+https://zombie12138.github.io/2024/linkers/
 https://zombie12138.github.io/2024/mysql-index/
 https://zombie12138.github.io/2024/loaders/
 https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/
