@@ -22,13 +22,13 @@
 
   <meta name="description" content="总结以下面试中遇到的面试官的错误…">
 <meta property="og:type" content="article">
-<meta property="og:title" content="面试和面经中的一些错误">
+<meta property="og:title" content="面试中的错误">
 <meta property="og:url" content="https://zombie12138.github.io/2024/interview-mistakes/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
 <meta property="og:description" content="总结以下面试中遇到的面试官的错误…">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-04-25T14:00:15.000Z">
-<meta property="article:modified_time" content="2024-05-04T08:55:11.668Z">
+<meta property="article:modified_time" content="2024-05-06T12:12:57.900Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Water">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>面试和面经中的一些错误 | zombie's</title>
+  <title>面试中的错误 | zombie's</title>
   
 
 
@@ -171,7 +171,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          面试和面经中的一些错误
+          面试中的错误
         </h1>
 
         <div class="post-meta">
@@ -188,7 +188,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-04 16:55:11" itemprop="dateModified" datetime="2024-05-04T16:55:11+08:00">2024-05-04</time>
+                <time title="修改时间：2024-05-06 20:12:57" itemprop="dateModified" datetime="2024-05-06T20:12:57+08:00">2024-05-06</time>
               </span>
 
           
@@ -205,7 +205,7 @@
         <p>总结以下面试中遇到的面试官的错误…</p>
 <span id="more"></span>
 
-<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><h3 id="文远某行-树的直径"><a href="#文远某行-树的直径" class="headerlink" title="文远某行 - 树的直径"></a>文远某行 - 树的直径</h3><p>求树的直径.</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><h3 id="文远某行-树的直径"><a href="#文远某行-树的直径" class="headerlink" title="文远某行 - 树的直径"></a>文远某行 - 树的直径</h3><p>求树的直径. 这个不算错误, 应该是误解</p>
 <p>我不刷Leetcode的, 我还以为, 从<strong>每个节点可以做Root, 层次遍历, 元素最多的层次的元素个数, 然后选择直径最大的情况作为树的直径</strong>. 于是我告诉面试官可以BFS搜索, 但是因为每次搜索有重复的部分, 可以进行记忆化搜索, 记录该路径方向下(比如-a-b-, a存在左边的方向和右边的方向), 不同层次的宽度(直径), 所以需要记录的元素太多, 每个节点记录n个可能, 所以空间复杂度要O(n^2), 并且每个节点都需要传递和记录这个宽度, 因此会非常复杂, 事件复杂度也要O(n^2)之类的</p>
 <p>但是面试官跟我说的是可以记忆化搜索, 也可以DP, 但是时间复杂度O(n), 直接傻眼了, 面试官很无奈说可能太难了, 最后做了个链表, 草草把我挂了…</p>
 <p>某天突然还是感觉不可思议, 怎么可能O(n)的, so了一下, 原来<strong>树的直径是树中最长的路径</strong>…</p>
@@ -315,12 +315,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

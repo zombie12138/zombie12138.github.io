@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="之前使用Esp8266做了一个控制床头灯的小玩具, 可以控制灯的开, 关, 闪烁和定时任务(闹钟).并且做了个APP来控制, 此外还让GPT写了一个网页端. 之前一直使用手机的via浏览器, 使用网页端设置定时任务. 但是突然有一天, via浏览器无法设置了. 以为坏掉了, 后来发现, 手机浏览器在开启电脑模式之后是可以正常设置的.来查看一下到底是什么原因.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ESPAsyncWebSrv">
+<meta property="og:url" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="之前使用Esp8266做了一个控制床头灯的小玩具, 可以控制灯的开, 关, 闪烁和定时任务(闹钟).并且做了个APP来控制, 此外还让GPT写了一个网页端. 之前一直使用手机的via浏览器, 使用网页端设置定时任务. 但是突然有一天, via浏览器无法设置了. 以为坏掉了, 后来发现, 手机浏览器在开启电脑模式之后是可以正常设置的.来查看一下到底是什么原因.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/via_phone.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/via_pc.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/Topology.drawio.svg">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/cap1.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/cap2.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/config.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/image.png">
+<meta property="article:published_time" content="2024-05-20T11:04:21.000Z">
+<meta property="article:modified_time" content="2024-06-14T06:18:57.264Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Arduino">
+<meta property="article:tag" content="WebServer">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/via_phone.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2024/ESPAsyncWebSrv/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ESPAsyncWebSrv | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/ESPAsyncWebSrv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ESPAsyncWebSrv
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-05-20 19:04:21" itemprop="dateCreated datePublished" datetime="2024-05-20T19:04:21+08:00">2024-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-06-14 14:18:57" itemprop="dateModified" datetime="2024-06-14T14:18:57+08:00">2024-06-14</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>之前使用Esp8266做了一个控制床头灯的小玩具, 可以控制灯的开, 关, 闪烁和定时任务(闹钟).<br>并且做了个APP来控制, 此外还让GPT写了一个网页端.</p>
+<p>之前一直使用手机的via浏览器, 使用网页端设置定时任务. 但是突然有一天, via浏览器无法设置了. 以为坏掉了, 后来发现, 手机浏览器在开启电脑模式之后是可以正常设置的.<br>来查看一下到底是什么原因.</p>
+<span id="more"></span>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>这个最诡异的就是手机浏览器不可以正常使用, 但是手机浏览器开了电脑模式就可以, 真的很怪</p>
+<h3 id="ESP8266代码"><a href="#ESP8266代码" class="headerlink" title="ESP8266代码"></a>ESP8266代码</h3><p>ESP8266的Arduino代码很简单, 就是接收一个post请求, 然后根据请求里面的<strong>定时的秒数</strong>, 以及定时<strong>执行的任务</strong>. ESP8266收到后会设置定时任务.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ESPAsyncTCP.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ESPAsyncWebSrv.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ArduinoJson.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">AsyncWebServer <span class="title">server</span><span class="params">(<span class="number">80</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// 5. Set delay time and server status with JSON</span></span><br><span class="line">  server.<span class="built_in">on</span>(<span class="string">&quot;/set_task&quot;</span>, HTTP_POST, [](AsyncWebServerRequest *request)&#123;&#125;, <span class="literal">NULL</span>, </span><br><span class="line">  [](AsyncWebServerRequest *request, <span class="type">uint8_t</span> *data, <span class="type">size_t</span> len, <span class="type">size_t</span> index, <span class="type">size_t</span> total)&#123;</span><br><span class="line">    <span class="keyword">if</span> (len) &#123; </span><br><span class="line">      <span class="comment">// Convert to null-terminated string</span></span><br><span class="line">      <span class="type">char</span>* temp = <span class="keyword">new</span> <span class="type">char</span>[len + <span class="number">1</span>];</span><br><span class="line">      <span class="built_in">memcpy</span>(temp, data, len);</span><br><span class="line">      temp[len] = <span class="string">&#x27;\0&#x27;</span>; <span class="comment">// null character</span></span><br><span class="line">      String body = <span class="built_in">String</span>(temp);</span><br><span class="line">      <span class="keyword">delete</span>[] temp; <span class="comment">// clean up</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment">// Check if POST request body exists</span></span><br><span class="line">      DynamicJsonDocument <span class="built_in">doc</span>(<span class="number">128</span>);</span><br><span class="line">      <span class="keyword">auto</span> error = <span class="built_in">deserializeJson</span>(doc, body);</span><br><span class="line">      <span class="keyword">if</span> (!error) &#123;</span><br><span class="line">        <span class="keyword">if</span> (doc.<span class="built_in">containsKey</span>(<span class="string">&quot;time&quot;</span>) &amp;&amp; doc.<span class="built_in">containsKey</span>(<span class="string">&quot;status&quot;</span>) &amp;&amp; <span class="built_in">str2Status</span>(doc[<span class="string">&quot;status&quot;</span>]) != LightStatus::UNDEFINED) &#123;</span><br><span class="line">          <span class="type">int</span> taskTime = doc[<span class="string">&quot;time&quot;</span>];</span><br><span class="line">          String taskLightStatusStr = doc[<span class="string">&quot;status&quot;</span>];</span><br><span class="line">          LightStatus taskLightStatus = <span class="built_in">str2Status</span>(taskLightStatusStr.<span class="built_in">c_str</span>());</span><br><span class="line">          <span class="built_in">setNextLightTask</span>(taskTime, taskLightStatus);</span><br><span class="line">          request-&gt;<span class="built_in">send</span>(<span class="number">200</span>); <span class="comment">// OK</span></span><br><span class="line">          <span class="built_in">log2SerialAlert</span>(<span class="string">&quot;200 OK | Set light task: %d - %s&quot;</span>, taskTime, taskLightStatusStr);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          request-&gt;<span class="built_in">send</span>(<span class="number">400</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;Invalid JSON&quot;</span>); <span class="comment">// Bad Request</span></span><br><span class="line">          <span class="built_in">log2SerialAlert</span>(<span class="string">&quot;400 | Set light status Invalid Json: %s&quot;</span>, body.<span class="built_in">c_str</span>());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        request-&gt;<span class="built_in">send</span>(<span class="number">400</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;Could not parse JSON&quot;</span>); <span class="comment">// Bad Request-</span></span><br><span class="line">        <span class="built_in">log2SerialAlert</span>(<span class="string">&quot;400 | Set light status Parse error: %s&quot;</span>, body.<span class="built_in">c_str</span>());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      request-&gt;<span class="built_in">send</span>(<span class="number">400</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;Missing body&quot;</span>); <span class="comment">// Bad Request</span></span><br><span class="line">      <span class="built_in">log2SerialAlert</span>(<span class="string">&quot;400 | Set light status: Missing body.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>返回的不是一个json之类的, 可能不是很规范, 但是这是GPT写的(甩锅). 里面就是拷贝过来body, 然后用json解析.</p>
+<h3 id="手机抓包"><a href="#手机抓包" class="headerlink" title="手机抓包"></a>手机抓包</h3><p>首先抓个包看看是不是正常, 但是via浏览器似乎只能看到request的url和类型. 我们使用抓包工具来抓一下.</p>
+<p>下面抓到的是via出现错误时候的包, 首先是请求设置定时任务, 之后是查询定时任务. 可以看到返回的结果是无法解析Json</p>
+<img src="/2024/ESPAsyncWebSrv/via_phone.png" class="" title="via手机模式抓的包">
+
+<p>但是如果我的via浏览器开启了电脑模式就功能正常, 抓到下面的包. 可以看到只是http requests headers变了, 但是这次成功了.</p>
+<img src="/2024/ESPAsyncWebSrv/via_pc.png" class="" title="via电脑模式抓的包">
+
+<h3 id="串口输出"><a href="#串口输出" class="headerlink" title="串口输出"></a>串口输出</h3><p>既然是json无法解析, 那么就来看一下串口输出的post的body吧. 连接串口之后, 每次手机模式下发送定时请求都会收到两个body, 一个是<code>&#123;&quot;time&quot;:xxxxx,</code>, 一个是<code>&quot;status&quot;: &quot;xxx&quot;&#125;</code>.</p>
+<h3 id="重新抓包"><a href="#重新抓包" class="headerlink" title="重新抓包"></a>重新抓包</h3><p>这次选择抓取ESP8266收到的包.</p>
+<p>在抓包之前首先看一下拓扑, 所有的设备都在一个局域网中, 只有其中的做Web Server的Nginx是在Docker中, 暴露端口1314. Nginx来回应静态网页, 对于ESP8266的API则是直接转发给ESP8266.</p>
+<img src="/2024/ESPAsyncWebSrv/Topology.drawio.svg" class="" title="我的网络拓扑">
+
+<p>这次我们使用<code>tcpdump</code>来抓包, 由于远端也有1314端口的调用, 所以我们使用host名字来抓包.</p>
+<p>在RK3399上(NGINX docker所在的主机)抓包手机和ESP8266的包.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机到NGINX的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.197 -w phone</span><br><span class="line"><span class="comment"># NGINX到ESP8266的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.241 -w esp</span><br></pre></td></tr></table></figure>
+
+<p>这次一看, 手机上发的都是正常的包; via浏览器是电脑模式时候包也是正常并且完整的. 但是在via浏览器没有开启电脑模式时候, HTTP的tcp是分两次发送出去的. 可能知道原因了…</p>
+<img src="/2024/ESPAsyncWebSrv/cap1.png" class="" title="NGINX到ESP8266的抓包">
+
+<p>首先看到的是4~5确实是把http request的tcp分成了两个包(TCP segment of a reassembled PDU), 因此下面返回了两个Bad Request. 最后还出现了两个RST, 这个可能是因为第二个Bad Request的回应返回太慢了, 在FIN之后, 这个时候TCP已经要关闭了. 比如下面第二次尝试相同的操作, 两个400的response发送的快, 就执行了正常的四次挥手.</p>
+<img src="/2024/ESPAsyncWebSrv/cap2.png" class="" title="NGINX到ESP8266的抓包">
+
+<p>但是为什么会分包呢, 可以注意到上面TCP三次握手的时候, ESP返回的SYN-ACK的包(第二次握手), 设置了MSS(Maximum Segment Size)为536B, 因此下面NGINX执行转发的时候, TCP就自动分包了.</p>
+<h3 id="水落石出"><a href="#水落石出" class="headerlink" title="水落石出"></a>水落石出</h3><p>很简单了, 就是ESP8266笨了吧唧的, 设置MSS为536B.<br>如果是电脑模式, HTTP header不是很长, TCP不会拆分成两个; 但是手机模式, 有更长的HTTP header, 恰好超过了MSS, Body分成了两片.<br>而我的代码并不太能处理两个IP包中的TCP消息. </p>
+<p>这就是两个问题, 一个是谁设置MSS为536B的.</p>
+<p>另一个就是为什么不能处理分片的TCP.<br>这个可能是ESPAsyncWebSrv库的问题, 收到一个分片没有处理直接就提交上去了. 但是两次个TCP分片都是发送到同一个API接口来处理, 说明这个库记得之前的消息, 可能是需要手动来实现… 这个要看一下官方的代码和示例代码</p>
+<p>搜索<code>ESP8266 MSS 536</code>会发现其实两种配置, 在<a target="_blank" rel="noopener" href="https://arduino-esp8266.readthedocs.io/en/3.1.0/ideoptions.html">官方文档</a>中有说明.</p>
+<img src="/2024/ESPAsyncWebSrv/config.png" class="" title="Arduino中的配置">
+
+<p>重新配置就设置了更大的MSS, 其实这里就已经解决了, 起码能用</p>
+<h2 id="ESPAsyncWebSrv"><a href="#ESPAsyncWebSrv" class="headerlink" title="ESPAsyncWebSrv"></a>ESPAsyncWebSrv</h2><p>这个也很烦, 它知道这个IP包属于哪里, 但是它就是直接提交给应用代码了, 应用层要自己组装Body… 来看看怎么写的…</p>
+<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><p>首先初始化两个动作, 一个是构造, 还有一个调用<code>on</code>来监听指定的路径.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">AsyncWebServer::<span class="built_in">AsyncWebServer</span>(<span class="type">uint16_t</span> port)</span><br><span class="line">  : _server(port)</span><br><span class="line">  , _rewrites(<span class="built_in">LinkedList</span>&lt;AsyncWebRewrite*&gt;([](AsyncWebRewrite* r)&#123; <span class="keyword">delete</span> r; &#125;))</span><br><span class="line">  , _handlers(<span class="built_in">LinkedList</span>&lt;AsyncWebHandler*&gt;([](AsyncWebHandler* h)&#123; <span class="keyword">delete</span> h; &#125;))</span><br><span class="line">&#123;</span><br><span class="line">  _catchAllHandler = <span class="keyword">new</span> <span class="built_in">AsyncCallbackWebHandler</span>();</span><br><span class="line">  <span class="keyword">if</span>(_catchAllHandler == <span class="literal">NULL</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  _server.<span class="built_in">onClient</span>([](<span class="type">void</span> *s, AsyncClient* c)&#123;</span><br><span class="line">    <span class="keyword">if</span>(c == <span class="literal">NULL</span>)</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    c-&gt;<span class="built_in">setRxTimeout</span>(<span class="number">3</span>);</span><br><span class="line">    AsyncWebServerRequest *r = <span class="keyword">new</span> <span class="built_in">AsyncWebServerRequest</span>((AsyncWebServer*)s, c);</span><br><span class="line">    <span class="keyword">if</span>(r == <span class="literal">NULL</span>)&#123;</span><br><span class="line">      c-&gt;<span class="built_in">close</span>(<span class="literal">true</span>);</span><br><span class="line">      c-&gt;<span class="built_in">free</span>();</span><br><span class="line">      <span class="keyword">delete</span> c;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">AsyncCallbackWebHandler&amp; <span class="title">AsyncWebServer::on</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* uri, WebRequestMethodComposite method, ArRequestHandlerFunction onRequest)</span></span>&#123;</span><br><span class="line">  AsyncCallbackWebHandler* handler = <span class="keyword">new</span> <span class="built_in">AsyncCallbackWebHandler</span>();</span><br><span class="line">  handler-&gt;<span class="built_in">setUri</span>(uri);</span><br><span class="line">  handler-&gt;<span class="built_in">setMethod</span>(method);</span><br><span class="line">  handler-&gt;<span class="built_in">onRequest</span>(onRequest);</span><br><span class="line">  <span class="built_in">addHandler</span>(handler);</span><br><span class="line">  <span class="keyword">return</span> *handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="AsyncWebServerRequest"><a href="#AsyncWebServerRequest" class="headerlink" title="AsyncWebServerRequest"></a>AsyncWebServerRequest</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AsyncServer _server;</span><br></pre></td></tr></table></figure>
+
+<p>按说应该是在<code>onClient</code>处理的socket请求.<br>这里是<code>AsyncServer</code>的一个回调函数, 猜测每次收到request都会new一个.<br>new的时候传入了一个<code>AsyncClient</code>和当前的WebServer, 然后这个Request记录当前的Server和Clinet, 并且注册了一系列的函数.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">AsyncWebServerRequest::<span class="built_in">AsyncWebServerRequest</span>(AsyncWebServer* s, AsyncClient* c)</span><br><span class="line">  : _client(c)</span><br><span class="line">  , _server(s)  </span><br><span class="line">  , _handler(<span class="literal">NULL</span>)</span><br><span class="line">  , _response(<span class="literal">NULL</span>)</span><br><span class="line">  , _temp()</span><br><span class="line">  , _parseState(<span class="number">0</span>)</span><br><span class="line">  , _version(<span class="number">0</span>)</span><br><span class="line">  , _method(HTTP_ANY)</span><br><span class="line">  , _url()</span><br><span class="line">  , _host()</span><br><span class="line">  , _contentType()</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  , _tempObject(<span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">  c-&gt;<span class="built_in">onError</span>([](<span class="type">void</span> *r, AsyncClient* c, <span class="type">int8_t</span> error)&#123; (<span class="type">void</span>)c; AsyncWebServerRequest *req = (AsyncWebServerRequest*)r; req-&gt;_onError(error); &#125;, <span class="keyword">this</span>);</span><br><span class="line">  c-&gt;<span class="built_in">onAck</span>([](<span class="type">void</span> *r, AsyncClient* c, <span class="type">size_t</span> len, <span class="type">uint32_t</span> time)&#123; (<span class="type">void</span>)c; AsyncWebServerRequest *req = (AsyncWebServerRequest*)r; req-&gt;_onAck(len, time); &#125;, <span class="keyword">this</span>);</span><br><span class="line">  c-&gt;<span class="built_in">onDisconnect</span>([](<span class="type">void</span> *r, AsyncClient* c)&#123; AsyncWebServerRequest *req = (AsyncWebServerRequest*)r; req-&gt;_onDisconnect(); <span class="keyword">delete</span> c; &#125;, <span class="keyword">this</span>);</span><br><span class="line">  c-&gt;<span class="built_in">onTimeout</span>([](<span class="type">void</span> *r, AsyncClient* c, <span class="type">uint32_t</span> time)&#123; (<span class="type">void</span>)c; AsyncWebServerRequest *req = (AsyncWebServerRequest*)r; req-&gt;_onTimeout(time); &#125;, <span class="keyword">this</span>);</span><br><span class="line">  c-&gt;<span class="built_in">onData</span>([](<span class="type">void</span> *r, AsyncClient* c, <span class="type">void</span> *buf, <span class="type">size_t</span> len)&#123; (<span class="type">void</span>)c; AsyncWebServerRequest *req = (AsyncWebServerRequest*)r; req-&gt;_onData(buf, len); &#125;, <span class="keyword">this</span>);</span><br><span class="line">  c-&gt;<span class="built_in">onPoll</span>([](<span class="type">void</span> *r, AsyncClient* c)&#123; (<span class="type">void</span>)c; AsyncWebServerRequest *req = ( AsyncWebServerRequest*)r; req-&gt;_onPoll(); &#125;, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关注的就是这个<code>onData</code>了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123; PARSE_REQ_START, PARSE_REQ_HEADERS, PARSE_REQ_BODY, PARSE_REQ_END, PARSE_REQ_FAIL &#125;;</span><br><span class="line"><span class="type">void</span> AsyncWebServerRequest::_onData(<span class="type">void</span> *buf, <span class="type">size_t</span> len)&#123;</span><br><span class="line">  <span class="type">size_t</span> i = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(_parseState &lt; PARSE_REQ_BODY)&#123;</span><br><span class="line">    <span class="comment">// Find new line in buf</span></span><br><span class="line">    <span class="type">char</span> *str = (<span class="type">char</span>*)buf;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (str[i] == <span class="string">&#x27;\n&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i == len) &#123; <span class="comment">// No new line, just add the buffer in _temp</span></span><br><span class="line">      <span class="type">char</span> ch = str[len<span class="number">-1</span>];</span><br><span class="line">      str[len<span class="number">-1</span>] = <span class="number">0</span>;</span><br><span class="line">      _temp.<span class="built_in">reserve</span>(_temp.<span class="built_in">length</span>()+len);</span><br><span class="line">      _temp.<span class="built_in">concat</span>(str);</span><br><span class="line">      _temp.<span class="built_in">concat</span>(ch);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// Found new line - extract it and parse</span></span><br><span class="line">      str[i] = <span class="number">0</span>; <span class="comment">// Terminate the string at the end of the line.</span></span><br><span class="line">      _temp.<span class="built_in">concat</span>(str);</span><br><span class="line">      _temp.<span class="built_in">trim</span>();</span><br><span class="line">      _parseLine();</span><br><span class="line">      <span class="keyword">if</span> (++i &lt; len) &#123;</span><br><span class="line">        <span class="comment">// Still have more buffer to process</span></span><br><span class="line">        buf = str+i;</span><br><span class="line">        len-= i;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(_parseState == PARSE_REQ_BODY)&#123;</span><br><span class="line">    <span class="comment">// A handler should be already attached at this point in _parseLine function.</span></span><br><span class="line">    <span class="comment">// If handler does nothing (_onRequest is NULL), we don&#x27;t need to really parse the body.</span></span><br><span class="line">    <span class="type">const</span> <span class="type">bool</span> needParse = _handler &amp;&amp; !_handler-&gt;<span class="built_in">isRequestHandlerTrivial</span>();</span><br><span class="line">    <span class="keyword">if</span>(_isMultipart)&#123;</span><br><span class="line">      <span class="keyword">if</span>(needParse)&#123;</span><br><span class="line">        <span class="type">size_t</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">          _parseMultipartPostByte(((<span class="type">uint8_t</span>*)buf)[i], i == len - <span class="number">1</span>);</span><br><span class="line">          _parsedLength++;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span></span><br><span class="line">          _parsedLength += len;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(_parsedLength == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(_contentType.<span class="built_in">startsWith</span>(<span class="string">&quot;application/x-www-form-urlencoded&quot;</span>))&#123;</span><br><span class="line">          _isPlainPost = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(_contentType == <span class="string">&quot;text/plain&quot;</span> &amp;&amp; __is_param_char(((<span class="type">char</span>*)buf)[<span class="number">0</span>]))&#123;</span><br><span class="line">          <span class="type">size_t</span> i = <span class="number">0</span>;</span><br><span class="line">          <span class="keyword">while</span> (i&lt;len &amp;&amp; __is_param_char(((<span class="type">char</span>*)buf)[i++]));</span><br><span class="line">          <span class="keyword">if</span>(i &lt; len &amp;&amp; ((<span class="type">char</span>*)buf)[i<span class="number">-1</span>] == <span class="string">&#x27;=&#x27;</span>)&#123;</span><br><span class="line">            _isPlainPost = <span class="literal">true</span>;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span>(!_isPlainPost) &#123;</span><br><span class="line">        <span class="comment">//check if authenticated before calling the body</span></span><br><span class="line">        <span class="keyword">if</span>(_handler) _handler-&gt;<span class="built_in">handleBody</span>(<span class="keyword">this</span>, (<span class="type">uint8_t</span>*)buf, len, _parsedLength, _contentLength);</span><br><span class="line">        _parsedLength += len;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span>(needParse) &#123;</span><br><span class="line">        <span class="type">size_t</span> i;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;len; i++)&#123;</span><br><span class="line">          _parsedLength++;</span><br><span class="line">          _parsePlainPostChar(((<span class="type">uint8_t</span>*)buf)[i]);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        _parsedLength += len;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(_parsedLength == _contentLength)&#123;</span><br><span class="line">      _parseState = PARSE_REQ_END;</span><br><span class="line">      <span class="comment">//check if authenticated before calling handleRequest and request auth instead</span></span><br><span class="line">      <span class="keyword">if</span>(_handler) _handler-&gt;<span class="built_in">handleRequest</span>(<span class="keyword">this</span>);</span><br><span class="line">      <span class="keyword">else</span> <span class="built_in">send</span>(<span class="number">501</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以及实际执行解析的</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> AsyncWebServerRequest::_parseLine()&#123;</span><br><span class="line">  <span class="keyword">if</span>(_parseState == PARSE_REQ_START)&#123;</span><br><span class="line">    <span class="keyword">if</span>(!_temp.<span class="built_in">length</span>())&#123;</span><br><span class="line">      _parseState = PARSE_REQ_FAIL;</span><br><span class="line">      _client-&gt;<span class="built_in">close</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      _parseReqHead();</span><br><span class="line">      _parseState = PARSE_REQ_HEADERS;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(_parseState == PARSE_REQ_HEADERS)&#123;</span><br><span class="line">    <span class="keyword">if</span>(!_temp.<span class="built_in">length</span>())&#123;</span><br><span class="line">      <span class="comment">//end of headers</span></span><br><span class="line">      _server-&gt;_rewriteRequest(<span class="keyword">this</span>);</span><br><span class="line">      _server-&gt;_attachHandler(<span class="keyword">this</span>);</span><br><span class="line">      _removeNotInterestingHeaders();</span><br><span class="line">      <span class="keyword">if</span>(_expectingContinue)&#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">char</span> * response = <span class="string">&quot;HTTP/1.1 100 Continue\r\n\r\n&quot;</span>;</span><br><span class="line">        _client-&gt;<span class="built_in">write</span>(response, <span class="built_in">os_strlen</span>(response));</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//check handler for authentication</span></span><br><span class="line">      <span class="keyword">if</span>(_contentLength)&#123;</span><br><span class="line">        _parseState = PARSE_REQ_BODY;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        _parseState = PARSE_REQ_END;</span><br><span class="line">        <span class="keyword">if</span>(_handler) _handler-&gt;<span class="built_in">handleRequest</span>(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">send</span>(<span class="number">501</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> _parseReqHeader();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而parse的header是存在这个request的内部.</p>
+<p>每次新的TCP请求, 才会触发<code>onClient</code>, 注册一个<code>request</code>. 这时候会解析出来内容长度… 然后处理Body, 当处理结束的时候, 就是处理完所有内容时, 才会执行下面的操作, 调用设置的回调函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(_parsedLength == _contentLength)&#123;</span><br><span class="line">  _parseState = PARSE_REQ_END;</span><br><span class="line">  <span class="comment">//check if authenticated before calling handleRequest and request auth instead</span></span><br><span class="line">  <span class="keyword">if</span>(_handler) _handler-&gt;<span class="built_in">handleRequest</span>(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">else</span> <span class="built_in">send</span>(<span class="number">501</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="真正的原因"><a href="#真正的原因" class="headerlink" title="真正的原因"></a>真正的原因</h3><p>看起来能用的代码怎么会这样呢, 这个AsyncWebServer是基于AsyncTCP来实现的, Debug会很麻烦, 所以采用直接修改库源代码, 然后打log输出的方式(此外Arduino的IDE很难用, 直接学编译调试工具感觉不值得(虽然看起来也是gnu这一套)).</p>
+<p>首先尝试在所有的<code>_parsedLength</code>变动的地方打log, 查看输出, 主要的都是在中执行的处理, 计数也正常, 但是无法处理Post被分为两个包的情况.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!_isPlainPost) &#123;</span><br><span class="line">  <span class="comment">//check if authenticated before calling the body</span></span><br><span class="line">  <span class="keyword">if</span>(_handler) _handler-&gt;<span class="built_in">handleBody</span>(<span class="keyword">this</span>, (<span class="type">uint8_t</span>*)buf, len, _parsedLength, _contentLength);</span><br><span class="line">  _parsedLength += len;</span><br><span class="line">  Serial.<span class="built_in">printf</span>(<span class="string">&quot;&lt;DebugInfo: _parsedLength=%u in _isnotPlainPost&gt;&quot;</span>, _parsedLength);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重新arduino中这段代码, 发现结构是:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> server.<span class="built_in">on</span>(<span class="string">&quot;/set_task&quot;</span>, HTTP_POST, [](AsyncWebServerRequest *request)&#123;&#125;, <span class="literal">NULL</span>, </span><br><span class="line">  [](AsyncWebServerRequest *request, <span class="type">uint8_t</span> *data, <span class="type">size_t</span> len, <span class="type">size_t</span> index, <span class="type">size_t</span> total)&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看一下代码中这个的定义, 分别是<code>onRequest</code>, <code>onUpload</code>, <code>onBody</code>.</p>
+<p>而每次接收到Post的Body(每个TCP包), 都会执行<code>if(_handler) _handler-&gt;handleBody(this, (uint8_t*)buf, len, _parsedLength, _contentLength);</code>上报一部分数据, 最终收到之后执行<code> _handler-&gt;handleRequest(this);</code>对整个Request进行处理.</p>
+<p>最好的写法是参考官方示例, 但是我的是Json格式也懒得改了…</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> server.<span class="built_in">on</span>(<span class="string">&quot;/post&quot;</span>, HTTP_POST, [](AsyncWebServerRequest *request)&#123;</span><br><span class="line">    String message;</span><br><span class="line">    <span class="keyword">if</span> (request-&gt;<span class="built_in">hasParam</span>(PARAM_MESSAGE, <span class="literal">true</span>)) &#123;</span><br><span class="line">        message = request-&gt;<span class="built_in">getParam</span>(PARAM_MESSAGE, <span class="literal">true</span>)-&gt;<span class="built_in">value</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        message = <span class="string">&quot;No message sent&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    request-&gt;<span class="built_in">send</span>(<span class="number">200</span>, <span class="string">&quot;text/plain&quot;</span>, <span class="string">&quot;Hello, POST: &quot;</span> + message);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>下面是几种解决办法:</p>
+<ol>
+<li>从Json(<code>&#123;&quot;a&quot;:1,&quot;b&quot;:2&#125;</code>)的格式全部换成Post参数的格式(<code>a=1&amp;b=2</code>), 这个改的地方太多. </li>
+<li>应用级别设置缓存区, 收到部分Post Data就缓存起来, 如果Request就全部解析. 但是问题是需要设置Ticker来控制延迟, 如果定时没有结束, 就清空之前的缓存. 这样定时器还有两个, 需要设置一个Pool来管理, 并且Ticker的时间要设置好.</li>
+<li>设置一个缓存Request的缓存, 使用LRU进行驱逐, 或者抽样驱逐超时请求, 而不是准确的定时驱逐.</li>
+<li>修改源码, 提供存储PostData的选项, 就像解析data一样, socket超时的同时释放资源.</li>
+<li>直接摆烂, 反正现在MTU大了, MSS大了就可以用了</li>
+</ol>
+<p>我肯定选择5, 毕竟:</p>
+<img src="/2024/ESPAsyncWebSrv/image.png" class="" title="又不是不能用.jpg">
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>GPT害人</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+              <a href="/tags/WebServer/" rel="tag"># WebServer</a>
+              <a href="/tags/Network/" rel="tag"># Network</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/linkers/" rel="prev" title="并行/增量链接 -- ld.bfd, ld.gold, lld, mold的设计">
+      <i class="fa fa-chevron-left"></i> 并行/增量链接 -- ld.bfd, ld.gold, lld, mold的设计
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.</span> <span class="nav-text">问题定位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ESP8266%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">ESP8266代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%9C%BA%E6%8A%93%E5%8C%85"><span class="nav-number">1.2.</span> <span class="nav-text">手机抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E8%BE%93%E5%87%BA"><span class="nav-number">1.3.</span> <span class="nav-text">串口输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E6%8A%93%E5%8C%85"><span class="nav-number">1.4.</span> <span class="nav-text">重新抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B4%E8%90%BD%E7%9F%B3%E5%87%BA"><span class="nav-number">1.5.</span> <span class="nav-text">水落石出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ESPAsyncWebSrv"><span class="nav-number">2.</span> <span class="nav-text">ESPAsyncWebSrv</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Setup"><span class="nav-number">2.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AsyncWebServerRequest"><span class="nav-number">2.2.</span> <span class="nav-text">AsyncWebServerRequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">2.3.</span> <span class="nav-text">真正的原因</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
