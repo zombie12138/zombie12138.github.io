@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:  我们现在遇到一个问题, 在SO中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?  自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用, 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,但是忘记了最终的实现, 甚至忘记了算法名字… 这个可以拆成几个">
+  <meta name="description" content="之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:  我们现在遇到一个问题, 在动态链接库中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?  自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用. 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,但是忘记了算法的具体实现, 甚至忘记了算法名字… 这个可">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Peterson算法之一--在So中互斥访问变量">
 <meta property="og:url" content="https://zombie12138.github.io/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:  我们现在遇到一个问题, 在SO中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?  自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用, 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,但是忘记了最终的实现, 甚至忘记了算法名字… 这个可以拆成几个">
+<meta property="og:description" content="之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:  我们现在遇到一个问题, 在动态链接库中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?  自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用. 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,但是忘记了算法的具体实现, 甚至忘记了算法名字… 这个可">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-08-03T12:55:35.000Z">
-<meta property="article:modified_time" content="2024-04-09T14:12:21.680Z">
+<meta property="article:modified_time" content="2024-06-17T15:15:09.176Z">
 <meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="OS">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Linux Programming">
-<meta property="article:tag" content="OS">
 <meta property="article:tag" content="Peterson Algorithm Serial">
 <meta name="twitter:card" content="summary">
 
@@ -189,7 +189,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-04-09 22:12:21" itemprop="dateModified" datetime="2024-04-09T22:12:21+08:00">2024-04-09</time>
+                <time title="修改时间：2024-06-17 23:15:09" itemprop="dateModified" datetime="2024-06-17T23:15:09+08:00">2024-06-17</time>
               </span>
 
           
@@ -205,16 +205,16 @@
       
         <p>之前面试某公司的暑期实习, 聊到共享库的时候, 面试官问了一个问题:</p>
 <blockquote>
-<p>我们现在遇到一个问题, 在SO中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?</p>
+<p>我们现在遇到一个问题, 在动态链接库中共享一个全局变量, 我们想要互斥访问这个全局变量, 应该怎么做?</p>
 </blockquote>
-<p>自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用, 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,<br>但是忘记了最终的实现, 甚至忘记了算法名字…</p>
+<p>自己想的肯定是互斥加锁就可以了, 肯定有对应的系统调用. 但是面试官坚持说如果没有现成的互斥锁应该如何访问共享的变量? 只记得操作系统课程中讲过软件实现互斥锁的算法,<br>但是忘记了算法的具体实现, 甚至忘记了算法名字…</p>
 <p>这个可以拆成几个问题</p>
 <ol>
 <li>So中如何共享一个变量</li>
 <li>有哪些机制可以实现互斥访问</li>
 <li>Peterson算法的实现</li>
 </ol>
-<p>这个问题比较简单(虽然没怎么回答好就是了), 但是可以学习的地方有很多, 这一章先来讨论So中如何互斥地共享某个变量. 如何多进程中互斥.</p>
+<p>这个问题比较简单(虽然没怎么回答好), 但是可以学习的地方有很多, 这一章先来讨论So中如何互斥地共享某个变量. 如何多进程中互斥.</p>
 <span id="more"></span>
 
 <p>所有的代码参见我的<a target="_blank" rel="noopener" href="https://github.com/zombie12138/SharedMemoryMutexExample">仓库</a>, 使用的是腾讯云4C4G的轻量应用服务器(KVM over Intel Xeon Gold 6133 CPU)</p>
@@ -238,7 +238,7 @@
 <p>大概的流程是这样的</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">program1 init &amp; wait</span><br><span class="line">start program2 &amp; wakeup program1</span><br><span class="line"></span><br><span class="line">Increase shared int together</span><br><span class="line"></span><br><span class="line">wait for the other to finish</span><br><span class="line">check whether the int value == 1e6</span><br></pre></td></tr></table></figure>
 
-<p>具体来说是通过给Program A添加一个参数, 来设置不同的进程编号, 这就是部分Makefile</p>
+<p>具体来说是通过给Program A添加一个参数, 来区分AB进程, 下面是负责运行的部分Makefile</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.PHONY : run cleanp</span><br><span class="line"><span class="section">run:</span></span><br><span class="line">    <span class="comment"># A</span></span><br><span class="line">	@LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH ./program KILL_THIS_THREAD 2&gt;&amp;1 &gt; /dev/null &amp;</span><br><span class="line">    <span class="comment"># B</span></span><br><span class="line">	-@LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH time ./program</span><br><span class="line">	@make cleanp</span><br><span class="line"><span class="section">cleanp:</span></span><br><span class="line">	@ps -aux | grep &#x27;KILL_THIS_THREAD&#x27; | grep -v grep | awk &#x27;&#123;print $$2&#125;&#x27; | xargs -r kill</span><br></pre></td></tr></table></figure>
 
 <p>每个进程进行5e6次加法, 如果正常会得到1e6的结果</p>
@@ -282,7 +282,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SharedData</span> &#123;</span><br><span class="line">    <span class="type">sem_t</span> finished[<span class="number">2</span>];</span><br><span class="line">    <span class="type">sem_t</span> wakeup;</span><br><span class="line">    std::atomic_int counter;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>运行一下, 只有<code>0.24s</code>, 互斥的overhead已经从之前的25倍以上, 10倍以上, 降低到现在的仅有2倍多, 但是这个其实是有些作弊的, 毕竟这只是一个int的value</p>
-<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>原子操作台作弊了, 就用自旋锁, 比较轻量, 应该是最快的了</p>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>原子操作太作弊了, 有些数据不方便使用原子操作, 就可以用自旋锁, 比较轻量, 应该是最快的了</p>
 <p>首先是定义(依然在之前的结构体中), 初始化和销毁</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">pthread_spinlock_t</span>  mutex;</span><br><span class="line"></span><br><span class="line">pthread_spin_init(&amp;spin, PTHREAD_PROCESS_SHARED);</span><br><span class="line">pthread_spin_destroy(&amp;spin);</span><br></pre></td></tr></table></figure>
 
@@ -312,11 +312,45 @@
     
     
 
+      <div> <div class="my-post-copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>Peterson算法之一--在So中互斥访问变量</a></p>
+  <p><span>文章作者:</span></a></p>
+  <p><span>发布时间:</span>2023年08月03日 - 20:55:35</p>
+  <p><span>最后更新:</span>2024年06月17日 - 23:15:09</p>
+  <p><span>原始链接:</span><a href="/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/" title="Peterson算法之一--在So中互斥访问变量">https://zombie12138.github.io/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2023/Peterson%E7%AE%97%E6%B3%95%E4%B9%8B%E4%B8%80--%E5%9C%A8So%E4%B8%AD%E4%BA%92%E6%96%A5%E8%AE%BF%E9%97%AE%E5%8F%98%E9%87%8F/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          html: false,
+          timer: 500,
+          showConfirmButton: false
+        });
+      });
+    }));
+</script>
+ </div>
+
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/OS/" rel="tag"># OS</a>
               <a href="/tags/C/" rel="tag"># C++</a>
               <a href="/tags/Linux-Programming/" rel="tag"># Linux Programming</a>
-              <a href="/tags/OS/" rel="tag"># OS</a>
               <a href="/tags/Peterson-Algorithm-Serial/" rel="tag"># Peterson Algorithm Serial</a>
           </div>
 
@@ -402,12 +436,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
