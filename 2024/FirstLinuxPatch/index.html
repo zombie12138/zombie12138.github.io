@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…">
+  <meta name="description" content="之前某人送了一个 King3399, 但是音频的驱动什么的有点问题…于是 dmsg 看到一个奇怪的单词…">
 <meta property="og:type" content="article">
-<meta property="og:title" content="年轻人的第一个Linux Patch -- Typo">
+<meta property="og:title" content="年轻人的第一个 Linux Patch -- Typo">
 <meta property="og:url" content="https://zombie12138.github.io/2024/FirstLinuxPatch/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…">
+<meta property="og:description" content="之前某人送了一个 King3399, 但是音频的驱动什么的有点问题…于是 dmsg 看到一个奇怪的单词…">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-04-09T14:12:21.684Z">
-<meta property="article:modified_time" content="2024-04-09T14:12:21.684Z">
+<meta property="article:published_time" content="2024-02-12T08:50:25.000Z">
+<meta property="article:modified_time" content="2024-10-05T17:39:56.384Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Git">
 <meta property="article:tag" content="Linux">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>年轻人的第一个Linux Patch -- Typo | zombie's</title>
+  <title>年轻人的第一个 Linux Patch -- Typo | zombie's</title>
   
 
 
@@ -170,7 +170,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          年轻人的第一个Linux Patch -- Typo
+          年轻人的第一个 Linux Patch -- Typo
         </h1>
 
         <div class="post-meta">
@@ -180,8 +180,15 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-04-09 22:12:21" itemprop="dateCreated datePublished" datetime="2024-04-09T22:12:21+08:00">2024-04-09</time>
+              <time title="创建时间：2024-02-12 16:50:25" itemprop="dateCreated datePublished" datetime="2024-02-12T16:50:25+08:00">2024-02-12</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-10-06 01:39:56" itemprop="dateModified" datetime="2024-10-06T01:39:56+08:00">2024-10-06</time>
+              </span>
 
           
 
@@ -194,39 +201,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>之前某人送了一个King3399, 但是音频的驱动什么的有点问题…于是dmsg看到一个奇怪的单词…</p>
+        <p>之前某人送了一个 King3399, 但是音频的驱动什么的有点问题…于是 dmsg 看到一个奇怪的单词…</p>
 <span id="more"></span>
 
 <h2 id="TYPO"><a href="#TYPO" class="headerlink" title="TYPO"></a>TYPO</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ dmesg | grep 5651</span><br><span class="line">[    8.153312] rt5651 1-001a: Failed to reguest IRQ 0: -22</span><br><span class="line">[    8.277394] input: realtek,rt5651-codec Headphones as /devices/platform/rt5651-sound/sound/card1/input4</span><br></pre></td></tr></table></figure>
 
-<p>Reguest是什么鬼, 应该是Request… 下载So了一下, 导出都是这个Typo, 有15个地方都是.</p>
-<p>于是问一下GPT怎么去提交…</p>
-<h2 id="Patch"><a href="#Patch" class="headerlink" title="Patch"></a>Patch</h2><p>参考<a target="_blank" rel="noopener" href="https://www.xcodesucks.top/articles/%E4%B8%BA%20Linux%20%E5%86%85%E6%A0%B8%E6%8F%90%E4%BA%A4%20Patch%EF%BC%9A%E6%9C%80%E7%AE%80%E5%AE%9E%E8%B7%B5.html">blog-最佳实践</a>, <a target="_blank" rel="noopener" href="https://hackmd.io/@kevinjone25/HJUFg8-CY">blog</a>, <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/613082289">知乎</a>, <a target="_blank" rel="noopener" href="https://docs.kernel.org/process/submitting-patches.html">Linux Docs</a>, <a target="_blank" rel="noopener" href="https://lore.kernel.org/all/">公共邮箱</a></p>
+<p>Reguest 是什么鬼, 应该是 Request… 下载源码 So 了一下, 到处都是这个 Typo, 有 15 个地方都是.</p>
+<p>于是问一下 GPT 怎么去提交…</p>
+<h2 id="Patch"><a href="#Patch" class="headerlink" title="Patch"></a>Patch</h2><p>参考<a target="_blank" rel="noopener" href="https://www.xcodesucks.top/articles/%E4%B8%BA%20Linux%20%E5%86%85%E6%A0%B8%E6%8F%90%E4%BA%A4%20Patch%EF%BC%9A%E6%9C%80%E7%AE%80%E5%AE%9E%E8%B7%B5.html">blog - 最佳实践</a>, <a target="_blank" rel="noopener" href="https://hackmd.io/@kevinjone25/HJUFg8-CY">blog</a>, <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/613082289">知乎</a>, <a target="_blank" rel="noopener" href="https://docs.kernel.org/process/submitting-patches.html">Linux Docs</a>, <a target="_blank" rel="noopener" href="https://lore.kernel.org/all/">公共邮箱</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch develop</span><br><span class="line">git checkout develop</span><br></pre></td></tr></table></figure>
 
-<p>之后修改代码, 在Linux目录下设置email和username(不要global)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git-email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 增加在 .gitconfig</span></span><br><span class="line">[sendemail]</span><br><span class="line">	smtpEncryption = ssl</span><br><span class="line">	smtpServer = smtp.exmail.qq.com</span><br><span class="line">	smtpUser = youremail@gmail.com(你要用的email)</span><br><span class="line">	smtpServerPort = 465</span><br><span class="line">	smtpPass = 客户端token</span><br><span class="line">	tocmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nol"</span></span><br><span class="line">	cccmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nom"</span></span><br><span class="line"></span><br><span class="line">git add sound/*</span><br><span class="line">git config --global core.editor <span class="string">"vim"</span></span><br><span class="line">git commit -s -v</span><br></pre></td></tr></table></figure>
+<p>之后修改代码, 在 Linux 目录下设置 email 和 username (不要 global)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git-email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 增加在 .gitconfig</span></span><br><span class="line">[sendemail]</span><br><span class="line">    smtpEncryption = ssl</span><br><span class="line">    smtpServer = smtp.exmail.qq.com</span><br><span class="line">    smtpUser = youremail@gmail.com(你要用的email)</span><br><span class="line">    smtpServerPort = 465</span><br><span class="line">    smtpPass = 客户端token</span><br><span class="line">    tocmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nol"</span></span><br><span class="line">    cccmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nom"</span></span><br><span class="line"></span><br><span class="line">git add sound/*</span><br><span class="line">git config --global core.editor <span class="string">"vim"</span></span><br><span class="line">git commit -s -v</span><br></pre></td></tr></table></figure>
 
-<p>之后就是commit正文</p>
+<p>之后就是 commit 正文</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ASoC: codecs: fix typo 'reguest' to 'request' in error log</span><br><span class="line"></span><br><span class="line">This patch corrects a common misspelling of "request" as "reguest" found</span><br><span class="line">in error log across various files within sound/soc/codecs. </span><br><span class="line"></span><br><span class="line"># 下面就是自动生成的</span><br><span class="line">Signed-off-by: Name &lt;mail&gt;</span><br><span class="line">---</span><br><span class="line">Hi,</span><br><span class="line">   Optinal</span><br><span class="line">Thanks,</span><br><span class="line">Your Name</span><br></pre></td></tr></table></figure>
 
 <p>生成补丁</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git format-patch master</span><br><span class="line"><span class="comment"># check</span></span><br><span class="line">./scripts/checkpatch.pl 0001-ASoC-codecs-fix-TYPO-reguest-to-request-in-error-log.patch</span><br></pre></td></tr></table></figure>
 
-<p>先试试自己(暂时注释掉<code>.git/config</code>的<code>cccmd</code>和<code>tocmd</code>)</p>
+<p>先试试自己 (暂时注释掉 <code>.git/config</code> 的 <code>cccmd</code> 和 <code>tocmd</code>)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git send-email --to=mail1 \</span><br><span class="line">--cc=mail2 \</span><br><span class="line"> 0001-ASoC-codecs-fix-TYPO-reguest-to-request-in-error-log.patch</span><br></pre></td></tr></table></figure>
 
-<p>上面设置了tocmd和cccmd就不需要手动设置收件人和抄送</p>
+<p>上面设置了 tocmd 和 cccmd 就不需要手动设置收件人和抄送</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git send-email \</span><br><span class="line"> 0001-ASoC-codecs-fix-TYPO-reguest-to-request-in-error-log.patch</span><br></pre></td></tr></table></figure>
 
-<h2 id="response"><a href="#response" class="headerlink" title="response"></a>response</h2><p>第二天就收到了<a target="_blank" rel="noopener" href="https://lore.kernel.org/all/170777293077.73793.4917696227318704930.b4-ty@kernel.org/">邮件</a></p>
+<h2 id="response"><a href="#response" class="headerlink" title="response"></a>response</h2><p>第二天就收到了 <a target="_blank" rel="noopener" href="https://lore.kernel.org/all/170777293077.73793.4917696227318704930.b4-ty@kernel.org/">邮件</a></p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Applied to</span><br><span class="line"></span><br><span class="line">   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next</span><br><span class="line"></span><br><span class="line">Thanks!</span><br><span class="line"></span><br><span class="line">[1/1] ASoC: codecs: fix TYPO 'reguest' to 'request' in error log</span><br><span class="line">      commit: 00933c4993f132a53d31f995a011945b3835826c</span><br><span class="line"></span><br><span class="line">All being well this means that it will be integrated into the linux-next</span><br><span class="line">tree (usually sometime in the next 24 hours) and sent to Linus during</span><br><span class="line">the next merge window (or sooner if it is a bug fix), however if</span><br><span class="line">problems are discovered then the patch may be dropped or reverted.</span><br><span class="line"></span><br><span class="line">You may get further e-mails resulting from automated or manual testing</span><br><span class="line">and review of the tree, please engage with people reporting problems and</span><br><span class="line">send followup patches addressing any issues that are reported if needed.</span><br><span class="line"></span><br><span class="line">If any updates are required or you are submitting further changes they</span><br><span class="line">should be sent as incremental updates against current git, existing</span><br><span class="line">patches will not be replaced.</span><br><span class="line"></span><br><span class="line">Please add any relevant lists and maintainers to the CCs when replying</span><br><span class="line">to this mail.</span><br><span class="line"></span><br><span class="line">Thanks,</span><br><span class="line">Mark</span><br></pre></td></tr></table></figure>
 
-<h2 id="剩余的typo"><a href="#剩余的typo" class="headerlink" title="剩余的typo"></a>剩余的typo</h2><p>同样的错误drivers下面还有很多, 虽然很水, 但是以后发过去吧</p>
+<h2 id="剩余的-typo"><a href="#剩余的-typo" class="headerlink" title="剩余的 typo"></a>剩余的 typo</h2><p>同样的错误 drivers 下面还有很多, 虽然很水, 但是以后发过去吧</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>感觉就是浪费人家时间… 而且很恐怖很恐怖的是, 这简直是公开处刑…</p>
 <p>这群人效率真的很高… 而且很耐心</p>
 <ul>
-<li>提交之前的subsystem需要查名字可以直接github之类的看一下日志, 看一下别人是怎么写的</li>
+<li>提交之前的 subsystem 需要查名字可以直接 github 之类的看一下日志, 看一下别人是怎么写的</li>
 <li>如果需要重新提交不要引用之前的提交流程</li>
 <li>所有的工作流都有对应的脚本, 比如找收件人, 完全可以自动进行</li>
 </ul>
@@ -266,11 +273,11 @@
   <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
 
-  <p><span>本文标题:</span>年轻人的第一个Linux Patch -- Typo</a></p>
+  <p><span>本文标题:</span>年轻人的第一个 Linux Patch -- Typo</a></p>
   <p><span>文章作者:</span></a></p>
-  <p><span>发布时间:</span>2024年04月09日 - 22:12:21</p>
-  <p><span>最后更新:</span>2024年04月09日 - 22:12:21</p>
-  <p><span>原始链接:</span><a href="/2024/FirstLinuxPatch/" title="年轻人的第一个Linux Patch -- Typo">https://zombie12138.github.io/2024/FirstLinuxPatch/</a>
+  <p><span>发布时间:</span>2024年02月12日 - 16:50:25</p>
+  <p><span>最后更新:</span>2024年10月06日 - 01:39:56</p>
+  <p><span>原始链接:</span><a href="/2024/FirstLinuxPatch/" title="年轻人的第一个 Linux Patch -- Typo">https://zombie12138.github.io/2024/FirstLinuxPatch/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/FirstLinuxPatch/"  aria-label="复制成功！"></i></span>
   </p>
   <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
@@ -304,12 +311,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/hello-world/" rel="prev" title="Hello World">
-      <i class="fa fa-chevron-left"></i> Hello World
+    <a href="/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="prev" title="AMD IPU 初体验">
+      <i class="fa fa-chevron-left"></i> AMD IPU 初体验
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/ddns/" rel="next" title="使用DDNS | ddclient">
-      使用DDNS | ddclient <i class="fa fa-chevron-right"></i>
+    <a href="/2024/RemoteCommand/" rel="next" title="RemoteCommand -- 在多人账户下保持优雅">
+      RemoteCommand -- 在多人账户下保持优雅 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -369,7 +376,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TYPO"><span class="nav-number">1.</span> <span class="nav-text">TYPO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Patch"><span class="nav-number">2.</span> <span class="nav-text">Patch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#response"><span class="nav-number">3.</span> <span class="nav-text">response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%A9%E4%BD%99%E7%9A%84typo"><span class="nav-number">4.</span> <span class="nav-text">剩余的typo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TYPO"><span class="nav-number">1.</span> <span class="nav-text">TYPO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Patch"><span class="nav-number">2.</span> <span class="nav-text">Patch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#response"><span class="nav-number">3.</span> <span class="nav-text">response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%A9%E4%BD%99%E7%9A%84-typo"><span class="nav-number">4.</span> <span class="nav-text">剩余的 typo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -383,12 +390,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
