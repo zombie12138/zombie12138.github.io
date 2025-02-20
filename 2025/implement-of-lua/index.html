@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0[lua].">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小而美的 Lua 实现 | Impliment of Lua">
+<meta property="og:url" content="https://zombie12138.github.io/2025/implement-of-lua/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0[lua].">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2025/implement-of-lua/lua_table.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/implement-of-lua/upvalue.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/implement-of-lua/instructions.png">
+<meta property="article:published_time" content="2025-02-04T13:38:51.000Z">
+<meta property="article:modified_time" content="2025-02-20T01:11:55.024Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Lua">
+<meta property="article:tag" content="Virtual Machine">
+<meta property="article:tag" content="Compiler">
+<meta property="article:tag" content="Paper Reading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2025/implement-of-lua/lua_table.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2025/implement-of-lua/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>小而美的 Lua 实现 | Impliment of Lua | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2025/implement-of-lua/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小而美的 Lua 实现 | Impliment of Lua
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-02-04 21:38:51" itemprop="dateCreated datePublished" datetime="2025-02-04T21:38:51+08:00">2025-02-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-20 09:11:55" itemprop="dateModified" datetime="2025-02-20T09:11:55+08:00">2025-02-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0<sup class="refplus-num"><a href="#ref-lua">[1]</a></sup>.</p>
+<span id="more"></span>
+
+<h2 id="Lua"><a href="#Lua" class="headerlink" title="Lua"></a>Lua</h2><ul>
+<li>Lua 的设计理念, 也是 Lua 能广泛应用的原因: simple, efficient, portable, and lightweight.</li>
+<li>Lua 的重大变更: 5.0 coroutines, 5.1 incremental garbage collection</li>
+</ul>
+<p>一些 Lua 5.0 相比于 Lua 4.0 新增的东西</p>
+<ul>
+<li>Register based virtual machine</li>
+<li>New algorithm for optimizing tables used as arrays</li>
+<li>The implementation of closures</li>
+<li>The addition of coroutines</li>
+</ul>
+<p>Lua 虚拟机最初是手写的 Scanner 和 Parser, 后来 3.0 换成了 yacc. 并且, Lua 没有正儿八经的 IR, 是 parse 之后直接 emits instructions<br>for the virtual machine on the flight</p>
+<p>此外 Lua 采用 while-switch dispach loop, 而非 direct threaded code, 以保留更好的兼容性. 两者的示例大概如下, DTC 使用到了非标准的 C 拓展<sup class="refplus-num"><a href="#ref-wiki">[2]</a></sup><sup class="refplus-num"><a href="#ref-usenix">[3]</a></sup><sup class="refplus-num"><a href="#ref-Wien">[4]</a></sup>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// direct threaded code</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span>* dispatch_table[] = { &amp;&amp;ADD, &amp;&amp;SUB, &amp;&amp;MUL }; <span class="comment">// goto table</span></span><br><span class="line"><span class="keyword">goto</span> *dispatch_table[opcode];</span><br><span class="line">ADD:</span><br><span class="line">  <span class="comment">// do add here</span></span><br><span class="line">  <span class="keyword">goto</span> *dispatch_table[next_opcode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// while-switch</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) {</span><br><span class="line">    <span class="keyword">switch</span> (opcode) {</span><br><span class="line">        <span class="keyword">case</span> ADD:</span><br><span class="line">            <span class="comment">// do add here</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> ...:</span><br><span class="line">            ...</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// next code</span></span><br><span class="line">    opcode = fetch_next_opcode();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<h2 id="Lua-的数据表示"><a href="#Lua-的数据表示" class="headerlink" title="Lua 的数据表示"></a>Lua 的数据表示</h2><p>Lua 包含几种基本类型: <code>nil</code>, <code>boolean</code>, <code>number</code>, <code>string</code>, <code>table</code>, <code>function</code>, <code>userdata</code> (include heavy and light), and <code>thread</code></p>
+<p>Lua 的数据存储为 tagged unions, 这种设计兼顾可移植性, 空间和性能:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span> </span><br><span class="line">    <span class="type">int</span> t;  <span class="comment">// tag, type of value V</span></span><br><span class="line">    Value v;    <span class="comment">// 除了 nil, 表示值</span></span><br><span class="line">} TObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">    GCObject *gc;   <span class="comment">// gc header</span></span><br><span class="line">    <span class="type">void</span> *p;        <span class="comment">// other</span></span><br><span class="line">    lua_Number n;   <span class="comment">// number (double)</span></span><br><span class="line">    <span class="type">int</span> b;      <span class="comment">// bool</span></span><br><span class="line">} Vaule;</span><br></pre></td></tr></table></figure>
+
+<p>和很多语言的设计一样, lua 中的 internalizes string 是存在 hash 表中, 并且 string 都是 immutable 的.<br>对于很长的 String, 为了节约性能, Lua Hash 不会去关注每一个 Byte.</p>
+<h2 id="Lua-table"><a href="#Lua-table" class="headerlink" title="Lua table"></a>Lua table</h2><p>Table 是 Lua 中的唯一的数据结构, 其性能对于 Lua 至关重要.</p>
+<p>Lua 中的 Table 是一个 associative arrays, 可以使用 nil 外任何数据来作为 key. 其实 Lua 中的 table 就是 array + hashmap, 实现也是.<br>这种实现有以下好处:</p>
+<ol>
+<li>是不需要维护两种数据结构, 保持了本身的紧凑;</li>
+<li>用户不需要做选择;</li>
+<li>对于稀疏的数组更加友好;</li>
+<li>对于存在数组中的元素访问速度会很快</li>
+</ol>
+<img src="/2025/implement-of-lua/lua_table.png" title="Lua table">
+
+<p>4.0 之前, Lua 的 Table 全部都在哈希表中, 5.0 之后, lua 带来了一种上图中的混合的数据结构, 包含一个 Array 和一个 HashMap. Lua 会动态调整这两个部分, 两者可以同时存在.<br>数组和哈希部分都可以扩展, 其中数组会保证新的大小 n 至少有一半 slot 在使用, 并且 <code>[n/2, n)</code> 存在元素.</p>
+<p>哈希部分则是使用的 Brent’s Method 的变体, 具体可以参考这个论文<sup class="refplus-num"><a href="#ref-brent">[5]</a></sup></p>
+<p>具体的实现可以看一下 Lua Table 分析的源代码.</p>
+<h2 id="Lua-的函数和代码"><a href="#Lua-的函数和代码" class="headerlink" title="Lua 的函数和代码"></a>Lua 的函数和代码</h2><p>Lua 在编译函数的时候, 都会创建一个包含机器指令, 变量和调试信息的 <code>prototype</code>.<br>Lua 执行 <code>function...end</code> 语句的时候, 就会产生一个闭包 (<code>closure</code>), 包含 <code>prototype</code> 的引用, 一个用于查询全局变量的 <code>environment</code>, 以及一个 <code>upvalue</code> 的数组.</p>
+<p>除了 C 大部分语言都有闭包的概念, 解决的就是下面, 函数引用外层的局部变量的问题:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span> <span class="params">(x)</span></span> </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="params">(y)</span></span> </span><br><span class="line">        <span class="keyword">return</span> x+y</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- x is a local variable, and it has already gone out of scope</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">add2 = add(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(add2(<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+
+<p>大部分语言处理闭包都加了一些限制, 比如 python 无法引用一个可变的外层局部变量, 除非使用了 <code>unlocal</code>; 一些语言使用更加复杂的机制机制背道而驰</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">outer_function</span>():</span><br><span class="line">    x = <span class="number">10</span>  <span class="comment"># 外部变量</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner_function</span>():</span><br><span class="line">        <span class="keyword">nonlocal</span> x</span><br><span class="line">        x += <span class="number">1</span>  <span class="comment"># 修改外部变量会报错</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    <span class="keyword">return</span> inner_function</span><br><span class="line"></span><br><span class="line">add = outer_function()</span><br><span class="line"><span class="comment"># 报错：UnboundLocalError: local variable 'x' referenced before assignment</span></span><br><span class="line"><span class="built_in">print</span>(add())</span><br></pre></td></tr></table></figure>
+
+<p>Lua 使用了一种 <code>upvalue</code> 的东西来实现的闭包.</p>
+<img src="/2025/implement-of-lua/upvalue.png" title="Lua 的 upvalue">
+
+<p>首先闭包的变量可能存活在一个栈上 (上图左边所示), 这个 upvalue 会引用到栈上的变量; 当栈上变量脱离作用域的时候, 则会拷贝到 upvalue 中.<br>Mutable 的状态在闭包中仅仅创建一次, 所有的 upvalue 串成一个链表 (图上 pending vars 的部分), 插入新的 upvalue 之前, 先遍历数组查看是否存在可复用的 upvalue.</p>
+<p>如果引用外层的外层函数, Lua 使用 Flat Closure 来解决这个问题. 当一个函数引用了外层的外层的变量, 这个变量也会加入外层的闭包. 因此一个函数实例化的时候, 闭包中的变量要么来自于外层的 stack, 要么来自直接外层的函数的 closure.</p>
+<h2 id="Coroutines"><a href="#Coroutines" class="headerlink" title="Coroutines"></a>Coroutines</h2><p>5.1 之后, Lua 实现了一个 asymmetric coroutines / semi-corotion, 实现包含三个 coroutine 下的标准库函数: <code>create</code>, <code>resume</code>, and <code>yield</code>.<br><code>create</code> 创建返回一个 <code>thread</code>; <code>resume</code> 执行; <code>yield</code> 返还控制权.</p>
+<p>一个关键是不能使用 C 语言的 stack 来实现, 也叫 stackless interpreter. 这里有点没看懂, 但是 GPT 的意思是, Lua 使用 C 栈来保持调用关系, 但是 <code>yield</code> 返回的时候除了退出之外, 还保留了虚拟栈的上下文, 下次调用的时候直接恢复.</p>
+<h2 id="Lua-VM"><a href="#Lua-VM" class="headerlink" title="Lua VM"></a>Lua VM</h2><p>Lua 会编译源码到 opcodes, 每个函数 Lua 会编译成成一个 prototype, 包含 Lua 的 opcodes 的数组和一个常量的数组 (Array of TObjects).</p>
+<p>5.0 之前 Lua 使用的是 stack based vm, 之后使用的是 register based vm. 但是 register based VM 也会使用 stack 来分配 activation records, 包含局部变量, 返回值等. 不同是避免了 push, pop 这些 Lua 中昂贵的操作.<br>register based VM 对于内存访问效率更高, 对于 JIT 也更加友好; 但是带来的问题就是 指令操作数更大 (指令数也会少一些), 解码也更加费力 (但是无需计算隐式参数, 如栈顶; 同时也某种程度避免了内存对齐等问题的开销).</p>
+<p>Lua VM 共有 35 个指令. 一条指令 32 bit, 6b 来存放指令类型, 剩下 A, B, C 8+9+9 是操作数. A 一般为返回值结果的寄存器, B 和 C 为操作数 (register / constant), 这样的设计可以使用更少的指令.</p>
+<p>跳转指令则需要比较的两个操作数, 以及一个 offset, 如果存放在一个 instraction 会太小, 只能 9 bit 的跳转长度. 因此 Lua 的跳转也是一个 test 跟着一个跳转指令.</p>
+<p>下面可以看到 Lua 4.0 和 Lua 5.0 实现相同功能, 指令的差距:</p>
+<img src="/2025/implement-of-lua/instructions.png" title="Lua 指令数对比">
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 的 table 也确实非常 unique.</p>
+<p>作者用 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/The_Computer_Language_Benchmarks_Game">The Great Computer Language Shootout</a> 做了一个性能比较, 得益于新的 VM, Lua 的运行时间最多减少了 56%.</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul id="refplus"><li id="ref-lua" data-num="1">[1]  Ierusalimschy, Roberto, Luiz Henrique De Figueiredo, and Waldemar Celes Filho. "The Implementation of Lua 5.0." J. Univers. Comput. Sci. 11.7 (2005): 1159-1176.</li><li id="ref-wiki" data-num="2">[2]  <a href="https://en.wikipedia.org/wiki/Threaded_code" title="" target="">Wikipedia - Threaded code</a></li><li id="ref-usenix" data-num="3">[3]  <a href="https://www.usenix.org/legacy/publications/library/proceedings/jvm01/gagnon/gagnon_html/node4.html" title="" target="">usenix - Threaded Interpreter</a></li><li id="ref-Wien" data-num="4">[4]  <a href="https://www.complang.tuwien.ac.at/forth/threaded-code.html" title="" target="">Technische Universität Wien - Threaded Code</a></li><li id="ref-brent" data-num="5">[5]  <a href="" title="" target="">Zombie's - Brent's Method (TODO) #more</a></li></ul>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    
+    </div>
+
+    
+    
+    
+
+      <div> <div class="my-post-copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>小而美的 Lua 实现 | Impliment of Lua</a></p>
+  <p><span>文章作者:</span></a></p>
+  <p><span>发布时间:</span>2025年02月04日 - 21:38:51</p>
+  <p><span>最后更新:</span>2025年02月20日 - 09:11:55</p>
+  <p><span>原始链接:</span><a href="/2025/implement-of-lua/" title="小而美的 Lua 实现 | Impliment of Lua">https://zombie12138.github.io/2025/implement-of-lua/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2025/implement-of-lua/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          html: false,
+          timer: 500,
+          showConfirmButton: false
+        });
+      });
+    }));
+</script>
+ </div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Lua/" rel="tag"># Lua</a>
+              <a href="/tags/Virtual-Machine/" rel="tag"># Virtual Machine</a>
+              <a href="/tags/Compiler/" rel="tag"># Compiler</a>
+              <a href="/tags/Paper-Reading/" rel="tag"># Paper Reading</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/install-TDengine/" rel="prev" title="安装 TDengine">
+      <i class="fa fa-chevron-left"></i> 安装 TDengine
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/fix-hexo-tag-escape/" rel="next" title="fix-hexo-tag-escape">
+      fix-hexo-tag-escape <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua"><span class="nav-number">1.</span> <span class="nav-text">Lua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">Lua 的数据表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-table"><span class="nav-number">3.</span> <span class="nav-text">Lua table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-%E7%9A%84%E5%87%BD%E6%95%B0%E5%92%8C%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">Lua 的函数和代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Coroutines"><span class="nav-number">5.</span> <span class="nav-text">Coroutines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-VM"><span class="nav-number">6.</span> <span class="nav-text">Lua VM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

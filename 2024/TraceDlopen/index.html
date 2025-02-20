@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="最近想要 Trace 一下TVM生成库的调用, 于是使用 ltrace, 但是发现 ltrace 不会去追踪 dlopen + dlsym 得到的函数地址.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-18T07:28:04.000Z">
-<meta property="article:modified_time" content="2024-11-18T11:08:23.780Z">
+<meta property="article:modified_time" content="2024-11-18T11:08:23.000Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Dynamic Linking">
 <meta property="article:tag" content="Hook">
@@ -285,7 +285,7 @@
 <p>之后再执行下面的操作, 使用 llvm 的 pass 去编译ir, 然后放到打包里面:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">clang -fexperimental-new-pass-manager -fpass-plugin=./FunctionEntryExitLogger.so ir.ll -shared -O3 -fPIC -o mod.so</span><br><span class="line"><span class="comment"># tar mod.so .json .params</span></span><br><span class="line">tar cvf ./deploy_lib.tar ./mod.*</span><br></pre></td></tr></table></figure>
 
-<p>好啦, 我们用之前的 <a href="/2024/TVM-0/" title="博客">博客</a> 产生输入, 运行</p>
+<p>好啦, 我们用之前的 <a href="/2024/TVM-0/" title="TVM 入门 -- 0 Hello World">博客</a> 产生输入, 运行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz \</span><br><span class="line">deploy_lib.tar</span><br></pre></td></tr></table></figure>
 
 <p>功能实现了, 但是有很多 lambda 函数都被记录在里面了, 如果真的要用可能还是需要去过滤输出或者在 pass 中直接过滤.</p>
@@ -503,12 +503,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -535,7 +535,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

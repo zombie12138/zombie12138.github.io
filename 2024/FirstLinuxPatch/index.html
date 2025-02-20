@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -28,10 +28,10 @@
 <meta property="og:description" content="之前某人送了一个 King3399, 但是音频的驱动什么的有点问题…于是 dmsg 看到一个奇怪的单词…">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-12T08:50:25.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:39:56.384Z">
+<meta property="article:modified_time" content="2024-10-05T17:39:56.000Z">
 <meta property="article:author" content="zombie12138">
-<meta property="article:tag" content="Git">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Git">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://zombie12138.github.io/2024/FirstLinuxPatch/">
@@ -212,7 +212,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch develop</span><br><span class="line">git checkout develop</span><br></pre></td></tr></table></figure>
 
 <p>之后修改代码, 在 Linux 目录下设置 email 和 username (不要 global)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git-email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 增加在 .gitconfig</span></span><br><span class="line">[sendemail]</span><br><span class="line">    smtpEncryption = ssl</span><br><span class="line">    smtpServer = smtp.exmail.qq.com</span><br><span class="line">    smtpUser = youremail@gmail.com(你要用的email)</span><br><span class="line">    smtpServerPort = 465</span><br><span class="line">    smtpPass = 客户端token</span><br><span class="line">    tocmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nol"</span></span><br><span class="line">    cccmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nom"</span></span><br><span class="line"></span><br><span class="line">git add sound/*</span><br><span class="line">git config --global core.editor <span class="string">"vim"</span></span><br><span class="line">git commit -s -v</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install git-email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 增加在 .gitconfig</span></span><br><span class="line">[sendemail]</span><br><span class="line">    smtpEncryption = ssl</span><br><span class="line">    smtpServer = smtp.exmail.qq.com</span><br><span class="line">    smtpUser = youremail@gmail.com(你要用的email)</span><br><span class="line">    smtpServerPort = 465</span><br><span class="line">    smtpPass = 客户端token</span><br><span class="line">    tocmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nol"</span></span><br><span class="line">    cccmd = <span class="string">"`pwd`/scripts/get_maintainer.pl --nogit --norolestats --nom"</span></span><br><span class="line"></span><br><span class="line">git add sound/*</span><br><span class="line">git config --global core.editor <span class="string">"vim"</span></span><br><span class="line">git commit -s -v</span><br></pre></td></tr></table></figure>
 
 <p>之后就是 commit 正文</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ASoC: codecs: fix typo 'reguest' to 'request' in error log</span><br><span class="line"></span><br><span class="line">This patch corrects a common misspelling of "request" as "reguest" found</span><br><span class="line">in error log across various files within sound/soc/codecs. </span><br><span class="line"></span><br><span class="line"># 下面就是自动生成的</span><br><span class="line">Signed-off-by: Name &lt;mail&gt;</span><br><span class="line">---</span><br><span class="line">Hi,</span><br><span class="line">   Optinal</span><br><span class="line">Thanks,</span><br><span class="line">Your Name</span><br></pre></td></tr></table></figure>
@@ -301,8 +301,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Git/" rel="tag"># Git</a>
               <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
           </div>
 
         
@@ -390,12 +390,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -422,7 +422,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

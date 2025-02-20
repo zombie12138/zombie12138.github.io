@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,12 +29,12 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2023/%E9%B2%B2%E9%B9%8F920%E8%B5%84%E6%96%99%E6%80%BB%E7%BB%93/Kungpeng-pipeline.jpg">
 <meta property="article:published_time" content="2023-10-20T07:43:53.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:39:56.384Z">
+<meta property="article:modified_time" content="2024-10-05T17:39:56.000Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="ARM">
 <meta property="article:tag" content="Kunpeng">
-<meta property="article:tag" content="CPU">
 <meta property="article:tag" content="HPC">
+<meta property="article:tag" content="CPU">
 <meta property="article:tag" content="Survey">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zombie12138.github.io/2023/%E9%B2%B2%E9%B9%8F920%E8%B5%84%E6%96%99%E6%80%BB%E7%BB%93/Kungpeng-pipeline.jpg">
@@ -209,11 +209,11 @@
         <p>最近一直在看鲲鹏的相关的论文之类的, 说实话资料少之又少而且又泥沙俱下. 现在就来盘点一下我收集到的鲲鹏的资料.</p>
 <span id="more"></span>
 
-<p>比如鲲鹏的浮点数 GFLOPS, 就得自己算, 有零零散散的少量的资料, 但是正确性也不知道… 比如 <a href="/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/" title="博客">博客</a> 中看到的4个 GFLOPS 结论, 正确率 50%.</p>
+<p>比如鲲鹏的浮点数 GFLOPS, 就得自己算, 有零零散散的少量的资料, 但是正确性也不知道… 比如 <a href="/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/" title="CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS">博客</a> 中看到的4个 GFLOPS 结论, 正确率 50%.</p>
 <h2 id="Papers"><a href="#Papers" class="headerlink" title="Papers"></a>Papers</h2><p>文<sup class="refplus-num"><a href="#ref-Kunpeng-soc">[1]</a></sup>是官方发的, 讲的鲲鹏 SoC 的设计, 还不错.</p>
 <p>另外有一篇测评文章<sup class="refplus-num"><a href="#ref-Evaluating_920">[2]</a></sup>, 比较一般, 而且有些数据都写错了.</p>
 <h2 id="官网文档和论坛"><a href="#官网文档和论坛" class="headerlink" title="官网文档和论坛"></a>官网文档和论坛</h2><p>个人感觉官网的文档也是比较乱乱的, 首先是目录结构比较怪, 要找半天, 其次就是很多资源需要登陆才能下载, 甚至没有权限或者直接已经下架.</p>
-<p>但是官网<sup class="refplus-num"><a href="#ref-Offical">[3]</a></sup>还是有一些不错的资料, 比如鲲鹏优化十板斧 (这个也有导出的 <a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf" title="" target="">PDF版本</a> ), 鲲鹏性能调优基础知识, 鲲鹏软件迁移基础知识; 也有一些debug的案例之类的.</p>
+<p>但是官网<sup class="refplus-num"><a href="#ref-Offical">[3]</a></sup>还是有一些不错的资料, 比如鲲鹏优化十板斧 (这个也有导出的 <a href="href=https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf%3Ehttps://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf%3C/a%3E" title="" target="">“PDF版本” &lt;a</a> ), 鲲鹏性能调优基础知识, 鲲鹏软件迁移基础知识; 也有一些debug的案例之类的.</p>
 <p>鲲鹏的 <a href="https://www.hikunpeng.com/forum/" title="" target="">论坛</a> 里面似乎也还好, 可以看一下, 这个我没怎么看过.</p>
 <h2 id="Slides"><a href="#Slides" class="headerlink" title="Slides"></a>Slides</h2><p>北交大的 PPT<sup class="refplus-num"><a href="#ref-slides-bjtu">[4]</a></sup> 似乎是 hw 内部放给高校做教学的, 里面有一些资料是其他地方没有的. 比如鲲鹏的 pipeline 就会比 <a href="https://www.hikunpeng.com/document/detail/zh/kunpenggrf/progtuneg/kunpengprogramming_05_0009.html" title="" target="">官网的</a> 详细好多, 这个我没有在官网找到对应的位置, 所以还是直接放这里了.</p>
 <img src="/2023/%E9%B2%B2%E9%B9%8F920%E8%B5%84%E6%96%99%E6%80%BB%E7%BB%93/Kungpeng-pipeline.jpg" title="Kungpeng-pipeline">
@@ -298,8 +298,8 @@
           <div class="post-tags">
               <a href="/tags/ARM/" rel="tag"># ARM</a>
               <a href="/tags/Kunpeng/" rel="tag"># Kunpeng</a>
-              <a href="/tags/CPU/" rel="tag"># CPU</a>
               <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/CPU/" rel="tag"># CPU</a>
               <a href="/tags/Survey/" rel="tag"># Survey</a>
           </div>
 
@@ -388,12 +388,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -420,7 +420,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

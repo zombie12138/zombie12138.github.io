@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/config.png">
 <meta property="og:image" content="https://zombie12138.github.io/2024/ESPAsyncWebSrv/image.png">
 <meta property="article:published_time" content="2024-05-20T11:04:21.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:57:39.876Z">
+<meta property="article:modified_time" content="2024-10-05T17:57:39.000Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Arduino">
 <meta property="article:tag" content="WebServer">
@@ -233,7 +233,7 @@
 
 <p>这次我们使用 <code>tcpdump</code> 来抓包, 由于远端也有 1314 端口的调用, 所以我们使用 host 名字来抓包.</p>
 <p>在 RK3399 上 (NGINX docker 所在的主机) 抓包手机和 ESP8266 的包.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机到 NGINX 的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.197 -w phone</span><br><span class="line"><span class="comment"># NGINX 到 ESP8266 的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.241 -w esp</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机到 NGINX 的包</span></span><br><span class="line"><span class="built_in">sudo</span> tcpdump host 10.0.0.197 -w phone</span><br><span class="line"><span class="comment"># NGINX 到 ESP8266 的包</span></span><br><span class="line"><span class="built_in">sudo</span> tcpdump host 10.0.0.241 -w esp</span><br></pre></td></tr></table></figure>
 
 <p>这次一看, 手机上发的都是正常的包; via 浏览器是电脑模式时候包也是正常并且完整的. 但是在 via 浏览器没有开启电脑模式时候, HTTP 的 tcp 是分两次发送出去的. 可能知道原因了…</p>
 <img src="/2024/ESPAsyncWebSrv/cap1.png" class="" title="NGINX到ESP8266的抓包">
@@ -425,12 +425,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -457,7 +457,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

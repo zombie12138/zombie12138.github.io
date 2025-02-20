@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2024/TVM-0/tvm.png">
 <meta property="article:published_time" content="2024-05-03T13:35:44.000Z">
-<meta property="article:modified_time" content="2024-10-05T07:05:04.104Z">
+<meta property="article:modified_time" content="2024-10-05T07:05:04.000Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Deep Learning">
 <meta property="article:tag" content="Inference">
@@ -258,7 +258,7 @@
 <h2 id="Inference-Using-Tuneing-Records"><a href="#Inference-Using-Tuneing-Records" class="headerlink" title="Inference Using Tuneing Records"></a>Inference Using Tuneing Records</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tvmc compile \</span><br><span class="line">--target <span class="string">&quot;llvm&quot;</span> \</span><br><span class="line">--tuning-records resnet50-v2-7-autotuner_records.json  \</span><br><span class="line">--output resnet50-v2-7-tvm_autotuned.tar \</span><br><span class="line">resnet50-v2-7.onnx</span><br></pre></td></tr></table></figure>
 
 <p>得到一个新的模型, 可以来推理一下:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm_autotuned.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 19:59:32.011 INFO load_module /tmp/tmpmy3voerq/mod.so</span><br><span class="line">Execution time summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.2880      36.8965      98.5295      35.6189       7.2424</span><br><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 20:02:27.667 INFO load_module /tmp/tmp1gsehsq_/mod.so</span><br><span class="line">Execution time summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.7429      38.2934      50.9800      34.8669       2.9679</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm_autotuned.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 19:59:32.011 INFO load_module /tmp/tmpmy3voerq/mod.so</span><br><span class="line">Execution <span class="keyword">time</span> summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.2880      36.8965      98.5295      35.6189       7.2424</span><br><span class="line">$ tvmc run \</span><br><span class="line">--inputs imagenet_cat.npz \</span><br><span class="line">--output predictions.npz  \</span><br><span class="line">--print-time \</span><br><span class="line">--repeat 100 \</span><br><span class="line">resnet50-v2-7-tvm.tar</span><br><span class="line"></span><br><span class="line">2024-03-06 20:02:27.667 INFO load_module /tmp/tmp1gsehsq_/mod.so</span><br><span class="line">Execution <span class="keyword">time</span> summary:</span><br><span class="line"> mean (ms)   median (ms)    max (ms)     min (ms)     std (ms)</span><br><span class="line">  38.7429      38.2934      50.9800      34.8669       2.9679</span><br></pre></td></tr></table></figure>
 
 <p>看到结果似乎没有什么提升, 甚至下降了, 但是他的标准差似乎是小了一点点.</p>
 <p>可以自己选择一下自己的使用的调优的策略等.</p>
@@ -403,12 +403,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -435,7 +435,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
