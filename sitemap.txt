@@ -1,14 +1,18 @@
+https://zombie12138.github.io/2025/proxy-in-docker/
+https://zombie12138.github.io/2025/classic-papers/
+https://zombie12138.github.io/2024/docker-file-size/
+https://zombie12138.github.io/2024/HEXO-beautify/
+https://zombie12138.github.io/2024/aphorisms/
+https://zombie12138.github.io/2024/interview-mistakes/
+https://zombie12138.github.io/2024/awesome-blogs/
+https://zombie12138.github.io/2025/awesome-books/
 https://zombie12138.github.io/2025/fix-hexo-tag-escape/
 https://zombie12138.github.io/2025/install-TDengine/
 https://zombie12138.github.io/2023/CPU%E6%B5%AE%E7%82%B9%E6%95%B0%E8%AE%A1%E7%AE%97%E7%90%86%E8%AE%BA%E4%B8%8A%E9%99%90-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97GFLOPS/
-https://zombie12138.github.io/2024/aphorisms/
-https://zombie12138.github.io/2024/awosome-blogs/
 https://zombie12138.github.io/2024/ddns/
-https://zombie12138.github.io/2024/docker-file-size/
 https://zombie12138.github.io/2021/hello-world/
 https://zombie12138.github.io/2025/implement-of-lua/
 https://zombie12138.github.io/2024/I-was-hacked/
-https://zombie12138.github.io/2024/HEXO-beautify/
 https://zombie12138.github.io/2024/TraceDlopen/
 https://zombie12138.github.io/2024/linkers/
 https://zombie12138.github.io/2024/ESPAsyncWebSrv/
@@ -20,7 +24,6 @@ https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/
 https://zombie12138.github.io/2024/TVM-LIBCXX/
 https://zombie12138.github.io/2024/disaster-reconstruction/
 https://zombie12138.github.io/2024/frpc-in-docker/
-https://zombie12138.github.io/2024/interview-mistakes/
 https://zombie12138.github.io/2024/udp2raw/
 https://zombie12138.github.io/2024/vsftpd/
 https://zombie12138.github.io/2023/%E4%B8%8D%E8%B0%83%E7%94%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84Vector-resize-%E5%8A%AB%E6%8C%81%E7%B1%BB%E7%A7%81%E6%9C%89%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0-Folly%E5%BA%93/
@@ -83,3 +86,6 @@ https://zombie12138.github.io/tags/Cpp-Magic/
 https://zombie12138.github.io/tags/Redis/
 https://zombie12138.github.io/tags/Performance/
 https://zombie12138.github.io/tags/Cloud-Computing/
+https://zombie12138.github.io/tags/Collections/
+https://zombie12138.github.io/tags/Books/
+https://zombie12138.github.io/tags/Paper/
