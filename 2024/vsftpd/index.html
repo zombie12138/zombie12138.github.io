@@ -31,8 +31,8 @@
 <meta property="article:modified_time" content="2025-08-04T17:49:59.916Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Water">
-<meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://zombie12138.github.io/2024/vsftpd/">
@@ -211,10 +211,10 @@
 <p>但是这个没法修改服务使用的 UID 和 GID, 干脆手动改一下 Dockerfile. 修改有三个原因, 首先就是这个 Docker 运行时候的 UID 和 GID 需要运行前设置; 其次就是不喜欢这个 Docker Centos; 最后就是发现 Dockerfile 最后是发现一些操作不符合我的使用习惯.</p>
 <h2 id="需要-Docker-吗"><a href="#需要-Docker-吗" class="headerlink" title="需要 Docker 吗"></a>需要 Docker 吗</h2><p>修改了半天, 发现很多配置都需要修改. 所以想要详细的配置, Docker 配置的环境变量需要很多, 其实并没有太方便.</p>
 <p>我的 qbittorrent 这些也是 docker 里面跑的, 可以多个版本并存, 还可以网络上隔离. 但是这个 vsftpd 似乎没什么用, 也没有有好用的. 如果直接映射过去配置文件和本机安装区别也不大. 想了一下还是算了, 直接本机安装吧.</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install vsftpd db-util</span><br></pre></td></tr></table></figure>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install vsftpd db-util</span><br></pre></td></tr></table></figure>
 
 <h3 id="虚拟用户的-pam"><a href="#虚拟用户的-pam" class="headerlink" title="虚拟用户的 pam"></a>虚拟用户的 pam</h3><p>先来配置一下密码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim user.txt</span><br><span class="line"><span class="comment"># user1</span></span><br><span class="line"><span class="comment"># pass1</span></span><br><span class="line"><span class="comment"># user2</span></span><br><span class="line"><span class="comment"># pass2</span></span><br><span class="line">sudo <span class="built_in">mkdir</span> /etc/vsftpd</span><br><span class="line">sudo db_load -T -t <span class="built_in">hash</span> -f ./user.txt /etc/vsftpd/user.db</span><br><span class="line"><span class="built_in">chmod</span> 400 /etc/vsftpd/user.db</span><br><span class="line"><span class="built_in">rm</span> user.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim user.txt</span><br><span class="line"><span class="comment"># user1</span></span><br><span class="line"><span class="comment"># pass1</span></span><br><span class="line"><span class="comment"># user2</span></span><br><span class="line"><span class="comment"># pass2</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> /etc/vsftpd</span><br><span class="line"><span class="built_in">sudo</span> db_load -T -t <span class="built_in">hash</span> -f ./user.txt /etc/vsftpd/user.db</span><br><span class="line"><span class="built_in">chmod</span> 400 /etc/vsftpd/user.db</span><br><span class="line"><span class="built_in">rm</span> user.txt</span><br></pre></td></tr></table></figure>
 
 <p>配置用户列表, 这里面也可以添加真实的系统中的用户</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/vsftpd.user_list</span><br><span class="line"><span class="comment"># user1</span></span><br><span class="line"><span class="comment"># user2</span></span><br><span class="line">vim /etc/vsftpd.chroot_list</span><br><span class="line"><span class="comment"># user1</span></span><br></pre></td></tr></table></figure>
@@ -225,13 +225,13 @@
 <h3 id="用户配置"><a href="#用户配置" class="headerlink" title="用户配置"></a>用户配置</h3><p>修改 <code>/etc/vsftpd.conf</code> 详细可见 <a href="/2024/vsftpd/vsftpd.conf" title="链接">链接</a>.</p>
 <p>修改用户配置, 可以看 <a href="/2024/vsftpd/user.conf" title="我的配置">我的配置</a>, 放到 <code>/etc/vsftpd/user_conf</code> (因为配置文件指定了这里)</p>
 <p>可以先 <code>ssl_enable</code> 关闭掉, 开启服务测试一下.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start vsftpd</span><br><span class="line"><span class="comment"># or</span></span><br><span class="line">sudo /usr/sbin/vsftpd /etc/vsftpd.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl start vsftpd</span><br><span class="line"><span class="comment"># or</span></span><br><span class="line"><span class="built_in">sudo</span> /usr/sbin/vsftpd /etc/vsftpd.conf</span><br></pre></td></tr></table></figure>
 
 <h3 id="ftps"><a href="#ftps" class="headerlink" title="ftps"></a>ftps</h3><p>生成一下证书, 虽然证书是没有签名的. 这意味着需要手动添加证书信任; 或者每次连接时候接受, 这样无脑接受存在中间人攻击的风险.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su root</span><br><span class="line">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.key -out /etc/ssl/certs/vsftpd.crt</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> su root</span><br><span class="line">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.key -out /etc/ssl/certs/vsftpd.crt</span><br></pre></td></tr></table></figure>
 
 <p>配置中重新 <code>ssl_enable</code> 开启就好了.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start vsftpd</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> vsftpd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl start vsftpd</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> vsftpd</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -276,8 +276,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Water/" rel="tag"># Water</a>
-              <a href="/tags/Docker/" rel="tag"># Docker</a>
               <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
           </div>
 
         
@@ -365,12 +365,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

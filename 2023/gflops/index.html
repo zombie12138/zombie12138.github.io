@@ -216,121 +216,64 @@
 
 <p>实验在 2Socket * 鲲鹏 920-Server (一共 128C 256G 4NUMA) 进行, 操作系统 <code>CentOS Linux release 7.9.2009 (AltArch)</code>, 内核版本 <code>4.14.0-115.el7a.0.1.aarch64</code>, GCC 7.5.0, 开启了透明大页 (65536, 64KB), (GNU libc) 2.17</p>
 <h2 id="1-问题的开始"><a href="#1-问题的开始" class="headerlink" title="1 问题的开始"></a><em>1</em> 问题的开始</h2><h3 id="1-1-665-Tflops-的鲲鹏"><a href="#1-1-665-Tflops-的鲲鹏" class="headerlink" title="1.1 665 Tflops 的鲲鹏"></a><em>1.1</em> 665 Tflops 的鲲鹏</h3><p>由于鲲鹏本身不是为了 HPC 设计的, NEON 矢量指令集又只有 128 bit, 浮点数比较孱弱, 但是其具备 多少 GFLOP, 不同论文有着完全不同的说法.</p>
-<p>首先是参考文献<sup class="refplus-num"><a href="#ref-Evaluating_920">[1]</a></sup>中提到, 如下图所示, 给出的结果是单精度的峰值是 `1.331 TFlop/s`, 双精度峰值是 `665 TFlop/s`, 标量的计算峰值是 `332 Gflops`.
-
+<p>首先是参考文献<sup class="refplus-num"><a href="#ref-Evaluating_920">[1]</a></sup>中提到, 如下图所示, 给出的结果是单精度的峰值是 <code>1.331 TFlop/s</code>, 双精度峰值是 <code>665 TFlop/s</code>, 标量的计算峰值是 <code>332 Gflops</code>.</p>
 <img src="/2023/gflops/Kunpeng920-Tflops.png" title="Kunpeng920-Tflops">
 
-这个结果显然是不正确的, 至少单位写错了. 我们先对这个 GFLOPS 有个简单的认识, G 和 T 都是国际单位制前缀, 分别是 `10^9` 和 `10^12`. 先来看看宇宙最强计算卡 H100 的 FP 算力<sup class="refplus-num"><a href="#ref-H100">[2]</a></sup>.
-
+<p>这个结果显然是不正确的, 至少单位写错了. 我们先对这个 GFLOPS 有个简单的认识, G 和 T 都是国际单位制前缀, 分别是 <code>10^9</code> 和 <code>10^12</code>. 先来看看宇宙最强计算卡 H100 的 FP 算力<sup class="refplus-num"><a href="#ref-H100">[2]</a></sup>.</p>
 <img src="/2023/gflops/H100-Tflops.png" title="H100-Tflops">
 
-鲲鹏 920 只是 64C64T 的 ARM-v8 的 处理器, 这里是有明显的 TYPO. 作者可能是少打一个小数点, 导致鲲鹏性能提升了 1000 倍. 但是这个数据 (665 Gflops 和 1.33 TFlops) 依然是不准确的, 我们先来看看其他出处是怎么说的.
-
-### *1.2* 1,33 TFlops
-
-另一篇来自俄国有机化学实验室的文章<sup class="refplus-num"><a href="#ref-zioc">[3]</a></sup>中提到 (听起来怪怪的), 鲲鹏 920 的 *Peak performance(DP),TFLOPS* 是 `1,33`, 我理解逗号是小数点, 即便如此, 依然还要比第一篇文章中想要表达的数据快了一倍
-
+<p>鲲鹏 920 只是 64C64T 的 ARM-v8 的 处理器, 这里是有明显的 TYPO. 作者可能是少打一个小数点, 导致鲲鹏性能提升了 1000 倍. 但是这个数据 (665 Gflops 和 1.33 TFlops) 依然是不准确的, 我们先来看看其他出处是怎么说的.</p>
+<h3 id="1-2-1-33-TFlops"><a href="#1-2-1-33-TFlops" class="headerlink" title="1.2 1,33 TFlops"></a><em>1.2</em> 1,33 TFlops</h3><p>另一篇来自俄国有机化学实验室的文章<sup class="refplus-num"><a href="#ref-zioc">[3]</a></sup>中提到 (听起来怪怪的), 鲲鹏 920 的 <em>Peak performance(DP),TFLOPS</em> 是 <code>1,33</code>, 我理解逗号是小数点, 即便如此, 依然还要比第一篇文章中想要表达的数据快了一倍</p>
 <img src="/2023/gflops/Kunpeng920-Tflops2.png" title="Kunpeng920-Tflops2">
 
-### *1.3* 最靠谱的数据
-
-上海交大在 ARM HPC Asia 2019 的一次演讲中提到<sup class="refplus-num"><a href="#ref-ARMv8Kunpeng">[4]</a></sup>, 鲲鹏 920 的浮点数计算能力如下:
-
+<h3 id="1-3-最靠谱的数据"><a href="#1-3-最靠谱的数据" class="headerlink" title="1.3 最靠谱的数据"></a><em>1.3</em> 最靠谱的数据</h3><p>上海交大在 ARM HPC Asia 2019 的一次演讲中提到<sup class="refplus-num"><a href="#ref-ARMv8Kunpeng">[4]</a></sup>, 鲲鹏 920 的浮点数计算能力如下:</p>
 <img src="/2023/gflops/KunpengGFlopsEva.png" title="KunpengGFlopsEva">
 
-SP 是单精度, DP 是双精度. 但是这个数据似乎是他们实际测量出来的, 而不是理论计算, 这个数据应该是相当真实准确的.
-
-### *1.4* 社区的答案
-
-在社区中, 也同样有一点讨论, 华为云社区有人给出了公式如下<sup class="refplus-num"><a href="#ref-HWC">[5]</a></sup>:
-
+<p>SP 是单精度, DP 是双精度. 但是这个数据似乎是他们实际测量出来的, 而不是理论计算, 这个数据应该是相当真实准确的.</p>
+<h3 id="1-4-社区的答案"><a href="#1-4-社区的答案" class="headerlink" title="1.4 社区的答案"></a><em>1.4</em> 社区的答案</h3><p>在社区中, 也同样有一点讨论, 华为云社区有人给出了公式如下<sup class="refplus-num"><a href="#ref-HWC">[5]</a></sup>:</p>
 <img src="/2023/gflops/huawei-cloud.png" title="huawei-cloud">
 
-## *2* 鲲鹏 920 的 GFLOPS 计算和测量
+<h2 id="2-鲲鹏-920-的-GFLOPS-计算和测量"><a href="#2-鲲鹏-920-的-GFLOPS-计算和测量" class="headerlink" title="2 鲲鹏 920 的 GFLOPS 计算和测量"></a><em>2</em> 鲲鹏 920 的 GFLOPS 计算和测量</h2><p>但是到底哪一个说法才是正确的呢?</p>
+<h3 id="2-1-Gflops-的计算"><a href="#2-1-Gflops-的计算" class="headerlink" title="2.1 Gflops 的计算"></a><em>2.1</em> Gflops 的计算</h3><p>首先是 GFLOPS 的理论计算, 其实华为云社区的回答是正确的.</p>
+<p>但是我们还需要拿到鲲鹏的 FMA (ASIMD FP multiply accumulate) 指令的吞吐量, 翻了一下手册, 其他的大部分都是每周期两个, 但是没有找到 Taishan V110 的确切的数字. 在 WikiChip<sup class="refplus-num"><a href="#ref-Wiki">[6]</a></sup> 上说每周期执行 <strong>单个双精度 FMA</strong> 或者 <strong>两个单精度 FMA</strong>, 但是之前的上交演讲中也支持了这个说法.</p>
+<p>其次就是 FMA, FMA 到底算一条还是两条呢? 我看了一些论坛上的讨论<sup class="refplus-num"><a href="#ref-Walking">[7]</a></sup><sup class="refplus-num"><a href="#ref-Stackoverflow">[8]</a></sup>都是给出来的按 2 来计算, NVIDIA H100<sup class="refplus-num"><a href="#ref-H100">[2]</a></sup>也是按 2 来计算的 (<code>1.980GHz*132SM*128FP32/SM*2(FMA)=66908Gflops</code>).</p>
+<p>所以理论上单精度是 <code>(128bit/32bit)*2.6GHz*2(FMA per clock)*(1+1)*64=2662.4 Gflops</code>, 双精度只有数据变成了 64bit, 每周期指令是 1, 是单精度浮点运算速度的 1/4, 是 <code>665.6 GFLOPS</code>.</p>
+<h3 id="2-2-实际测试验证"><a href="#2-2-实际测试验证" class="headerlink" title="2.2 实际测试验证"></a><em>2.2</em> 实际测试验证</h3><h4 id="2-2-1-单核"><a href="#2-2-1-单核" class="headerlink" title="2.2.1 单核"></a><em>2.2.1</em> 单核</h4><p>当然我们似乎得到了这个数值, 我们还需要手动验证一下, 可以手动写一些汇编, 来检验整个的吞吐.</p>
+<p>看到了有一些这样的工具存在<sup class="refplus-num"><a href="#ref-cpufp">[10]</a></sup>, 但是感觉比较复杂, 一个最最简单的就可以了, 最终参考了一个仓库来写<sup class="refplus-num"><a href="#ref-OptARM">[9]</a></sup>.</p>
+<p>首先是汇编部分, <code>fmla</code> 指令就是把后面两个向量相乘, 累加到第一个向量. 需要构造 16 条流水线, 指令之间没有数据依赖. double 的话每条指令处理两组浮点数的 fmla, 一条指令是 4 次浮点运算, 循环一次就是 4*16 就是 64 个浮点运算</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line"></span><br><span class="line">.globl FPCALC</span><br><span class="line"></span><br><span class="line">FPCALC:</span><br><span class="line"></span><br><span class="line">.loop2:</span><br><span class="line">    fmla v0.2d, v16.2d, v16.2d</span><br><span class="line">    fmla v1.2d, v16.2d, v17.2d</span><br><span class="line">    fmla v2.2d, v16.2d, v18.2d</span><br><span class="line">    fmla v3.2d, v16.2d, v19.2d</span><br><span class="line">    fmla v4.2d, v16.2d, v20.2d</span><br><span class="line">    fmla v5.2d, v16.2d, v21.2d</span><br><span class="line">    fmla v6.2d, v16.2d, v22.2d</span><br><span class="line">    fmla v7.2d, v16.2d, v23.2d</span><br><span class="line"></span><br><span class="line">    subs x0, x0, #1</span><br><span class="line"></span><br><span class="line">    fmla v8.2d, v16.2d, v24.2d</span><br><span class="line">    fmla v9.2d, v16.2d, v25.2d</span><br><span class="line">    fmla v10.2d, v16.2d, v26.2d</span><br><span class="line">    fmla v11.2d, v16.2d, v27.2d</span><br><span class="line">    fmla v12.2d, v16.2d, v28.2d</span><br><span class="line">    fmla v13.2d, v16.2d, v29.2d</span><br><span class="line">    fmla v14.2d, v16.2d, v30.2d</span><br><span class="line">    fmla v15.2d, v16.2d, v31.2d</span><br><span class="line">bne .loop2</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
 
-但是到底哪一个说法才是正确的呢?
-
-### *2.1* Gflops 的计算
-
-首先是 GFLOPS 的理论计算, 其实华为云社区的回答是正确的.
-
-但是我们还需要拿到鲲鹏的 FMA (ASIMD FP multiply accumulate) 指令的吞吐量, 翻了一下手册, 其他的大部分都是每周期两个, 但是没有找到 Taishan V110 的确切的数字. 在 WikiChip<sup class="refplus-num"><a href="#ref-Wiki">[6]</a></sup> 上说每周期执行 **单个双精度 FMA** 或者 **两个单精度 FMA**, 但是之前的上交演讲中也支持了这个说法.
-
-其次就是 FMA, FMA 到底算一条还是两条呢? 我看了一些论坛上的讨论<sup class="refplus-num"><a href="#ref-Walking">[7]</a></sup><sup class="refplus-num"><a href="#ref-Stackoverflow">[8]</a></sup>都是给出来的按 2 来计算, NVIDIA H100<sup class="refplus-num"><a href="#ref-H100">[2]</a></sup>也是按 2 来计算的 (`1.980GHz*132SM*128FP32/SM*2(FMA)=66908Gflops`).
-
-所以理论上单精度是 `(128bit/32bit)*2.6GHz*2(FMA per clock)*(1+1)*64=2662.4 Gflops`, 双精度只有数据变成了 64bit, 每周期指令是 1, 是单精度浮点运算速度的 1/4, 是 `665.6 GFLOPS`.
-
-### *2.2* 实际测试验证
-
-#### *2.2.1* 单核
-
-当然我们似乎得到了这个数值, 我们还需要手动验证一下, 可以手动写一些汇编, 来检验整个的吞吐.
-
-看到了有一些这样的工具存在<sup class="refplus-num"><a href="#ref-cpufp">[10]</a></sup>, 但是感觉比较复杂, 一个最最简单的就可以了, 最终参考了一个仓库来写<sup class="refplus-num"><a href="#ref-OptARM">[9]</a></sup>.
-
-首先是汇编部分, `fmla` 指令就是把后面两个向量相乘, 累加到第一个向量. 需要构造 16 条流水线, 指令之间没有数据依赖. double 的话每条指令处理两组浮点数的 fmla, 一条指令是 4 次浮点运算, 循环一次就是 4*16 就是 64 个浮点运算
-
-</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line"></span><br><span class="line">.globl FPCALC</span><br><span class="line"></span><br><span class="line">FPCALC:</span><br><span class="line"></span><br><span class="line">.loop2:</span><br><span class="line">    fmla v0.2d, v16.2d, v16.2d</span><br><span class="line">    fmla v1.2d, v16.2d, v17.2d</span><br><span class="line">    fmla v2.2d, v16.2d, v18.2d</span><br><span class="line">    fmla v3.2d, v16.2d, v19.2d</span><br><span class="line">    fmla v4.2d, v16.2d, v20.2d</span><br><span class="line">    fmla v5.2d, v16.2d, v21.2d</span><br><span class="line">    fmla v6.2d, v16.2d, v22.2d</span><br><span class="line">    fmla v7.2d, v16.2d, v23.2d</span><br><span class="line"></span><br><span class="line">    subs x0, x0, #1</span><br><span class="line"></span><br><span class="line">    fmla v8.2d, v16.2d, v24.2d</span><br><span class="line">    fmla v9.2d, v16.2d, v25.2d</span><br><span class="line">    fmla v10.2d, v16.2d, v26.2d</span><br><span class="line">    fmla v11.2d, v16.2d, v27.2d</span><br><span class="line">    fmla v12.2d, v16.2d, v28.2d</span><br><span class="line">    fmla v13.2d, v16.2d, v29.2d</span><br><span class="line">    fmla v14.2d, v16.2d, v30.2d</span><br><span class="line">    fmla v15.2d, v16.2d, v31.2d</span><br><span class="line">bne .loop2</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
-
-然后写一个 c 来调用这段汇编
-
+<p>然后写一个 c 来调用这段汇编</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOOP (1e9)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> OP_FLOATS (64)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">FPCALC</span><span class="params">(<span class="type">int</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">get_time</span><span class="params">(<span class="keyword">struct</span> timespec *start,</span></span><br><span class="line"><span class="params">                       <span class="keyword">struct</span> timespec *end)</span> {</span><br><span class="line">    <span class="keyword">return</span> end-&gt;tv_sec - start-&gt;tv_sec + (end-&gt;tv_nsec - start-&gt;tv_nsec) * <span class="number">1e-9</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> {</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">start</span>, <span class="title">end</span>;</span></span><br><span class="line">    <span class="type">double</span> time_used = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">    clock_gettime(CLOCK_MONOTONIC_RAW, &amp;start);</span><br><span class="line"></span><br><span class="line">    FPCALC(LOOP);</span><br><span class="line"></span><br><span class="line">    clock_gettime(CLOCK_MONOTONIC_RAW, &amp;end);</span><br><span class="line"></span><br><span class="line">    time_used = get_time(&amp;start, &amp;end);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"perf: %.6lf \r\n"</span>, LOOP * OP_FLOATS * <span class="number">1.0</span> * <span class="number">1e-9</span> / time_used);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-然后直接 gcc 编译, taskset 到 core 0 运行, 得到的结果为:
-
+<p>然后直接 gcc 编译, taskset 到 core 0 运行, 得到的结果为:</p>
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perf: 10.396307</span><br></pre></td></tr></table></figure>
 
-单核性能是 10.4 GFLOPS, 所以, 一个 Kunpeng 920-6426 的双精度浮点计算的性能是 665.6 GFLOPS, 就是我们的理论上限 `665.6 GFLOPS`.
-
-测一下单精度, 汇编寄存器改成 `4s` (即四位单精度浮点数), 计算的过程每一轮循环是 `128` 次单精度的计算.
-
-得到SP的单核性能是 `41.583994GFLOPS` 多核心就是 `2661.4GFLOPS` 非常接近 `2662.4GFLOPS`
-
-#### *2.2.2* 多核
-
-加上一层 OpenMP 的 `#pragma omp parallel`, 先预热, 再进行计时.
-
+<p>单核性能是 10.4 GFLOPS, 所以, 一个 Kunpeng 920-6426 的双精度浮点计算的性能是 665.6 GFLOPS, 就是我们的理论上限 <code>665.6 GFLOPS</code>.</p>
+<p>测一下单精度, 汇编寄存器改成 <code>4s</code> (即四位单精度浮点数), 计算的过程每一轮循环是 <code>128</code> 次单精度的计算.</p>
+<p>得到SP的单核性能是 <code>41.583994GFLOPS</code> 多核心就是 <code>2661.4GFLOPS</code> 非常接近 <code>2662.4GFLOPS</code></p>
+<h4 id="2-2-2-多核"><a href="#2-2-2-多核" class="headerlink" title="2.2.2 多核"></a><em>2.2.2</em> 多核</h4><p>加上一层 OpenMP 的 <code>#pragma omp parallel</code>, 先预热, 再进行计时.</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> OP_FLOATS (64.0*128)</span></span><br><span class="line"><span class="meta"># <span class="keyword">pragma</span> omp parallel</span></span><br><span class="line">{</span><br><span class="line">    FPCALC(LOOP);</span><br><span class="line">}</span><br><span class="line">clock_gettime(CLOCK_MONOTONIC_RAW, &amp;start);</span><br><span class="line"><span class="meta"># <span class="keyword">pragma</span> omp parallel</span></span><br><span class="line">{</span><br><span class="line">    FPCALC(LOOP);</span><br><span class="line">}</span><br><span class="line">clock_gettime(CLOCK_MONOTONIC_RAW, &amp;end);</span><br></pre></td></tr></table></figure>
 
-这里测试了搭载两片鲲鹏处理器的机器, 最终得到双精度计算为 `1271.590910 GFLOPS`, 就是说单个 SOC 达到了 `635.795455 GFLOPS` 以上 (包含一些等待和同步的时间), 非常接近上限 `665.6 GFLOPS`
-
-单精度是达到了 `5085.4412485 GFLOPS`, 单个 SOC 达到了 `2542.72062425GFLOPS`以上, 非常接近 `2662GFLOPS`
-
-对于 `fmul` 和 `fadd` 吞吐也是和 `fmla` 完全一样的, 单双精度吞吐分别 1331 GFLOPS 和 332.7 GFLOPS
-
-如果使用标量的话, 单双精度吞吐都是 2 IPC (Instruction Per Cycle), 也就是都是 332.7 附近.
-
-## *3* AMD EPYC 7302
-
-那么鲲鹏这款处理器浮点数运算到底有多弱呢? 我们对比下 AMD EPYC 7302, 两者发布时间比较接近.
-
-这个先测试单线程, 过程类似, 只是需要换成 avx256 指令集:
-
+<p>这里测试了搭载两片鲲鹏处理器的机器, 最终得到双精度计算为 <code>1271.590910 GFLOPS</code>, 就是说单个 SOC 达到了 <code>635.795455 GFLOPS</code> 以上 (包含一些等待和同步的时间), 非常接近上限 <code>665.6 GFLOPS</code></p>
+<p>单精度是达到了 <code>5085.4412485 GFLOPS</code>, 单个 SOC 达到了 <code>2542.72062425GFLOPS</code>以上, 非常接近 <code>2662GFLOPS</code></p>
+<p>对于 <code>fmul</code> 和 <code>fadd</code> 吞吐也是和 <code>fmla</code> 完全一样的, 单双精度吞吐分别 1331 GFLOPS 和 332.7 GFLOPS</p>
+<p>如果使用标量的话, 单双精度吞吐都是 2 IPC (Instruction Per Cycle), 也就是都是 332.7 附近.</p>
+<h2 id="3-AMD-EPYC-7302"><a href="#3-AMD-EPYC-7302" class="headerlink" title="3 AMD EPYC 7302"></a><em>3</em> AMD EPYC 7302</h2><p>那么鲲鹏这款处理器浮点数运算到底有多弱呢? 我们对比下 AMD EPYC 7302, 两者发布时间比较接近.</p>
+<p>这个先测试单线程, 过程类似, 只是需要换成 avx256 指令集:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.text</span><br><span class="line">.globl FPCALC</span><br><span class="line"></span><br><span class="line">FPCALC:</span><br><span class="line">.loop2:</span><br><span class="line">    vfmadd231pd %ymm0, %ymm0, %ymm0</span><br><span class="line">    ...</span><br><span class="line">    vfmadd231pd %ymm15, %ymm15, %ymm15</span><br><span class="line"></span><br><span class="line">    decq %rdi</span><br><span class="line"></span><br><span class="line">    vfmadd231pd %ymm0, %ymm0, %ymm0</span><br><span class="line">    ...</span><br><span class="line">    vfmadd231pd %ymm15, %ymm15, %ymm15</span><br><span class="line"></span><br><span class="line">    jnz .loop2</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
 
-每一次循环 `32 * 2 * 4` 的浮点计算, 修改一下 `.c`, 可以得到单核性能, `52.5 GFLOPS`.
-
-但是由于超线程两个线程共享FPU, 所以 ` NUM_THREADS=2 OMP_PROC_BIND=close ./fp` 两个线程执行还是共享的FPU, 所以其吞吐依然是 `24.73*2`, 甚至性能还下降了一点点
-
-所以 16 个核心就是 `840 GFLOPS`, 16c 的处理器双精度浮点数性能已经大于鲲鹏 920.
-
-对于 SP (Single Precision), 得到的结果是超线程是 `49.5`, 两个线程就是, 一个核心提供了接近` 100` 的单精度, 但是对于单线程 70 的结果还是明显提升了, 怀疑是有一些其他的资源限制, 使用两个线程缓解了这个限制, 然后瓶颈转移到了浮点处理单元上 (Intel 的结果类似)
-
-测了一下, 浮点数的乘法 (vmulpd) 也是类似的, 超线程就能到达 (2 IPC * 4 F/I * 3.3 GHz). 加法 (vaddpd) 的结果也是和加法完全一样
-
-## *4* 总结
-
-我们从两篇论文, 社区和一个演讲中得到了鲲鹏的不同的浮点数计算的 GFLOPS. 进行简单的计算之后得到了真实的理论上限, 双精度 DP 是 665.6 GFLOPS, 单精度 SP 是双精度的四倍, 是 2662.4 GFLOPS. 并且最终使用汇编来验证了这个结果.
-
-回头看, 一个简单的问题两个论文给出了错误的答案. 第一篇论文双精度写对了, 但是单精度结果小了一半, 并且存在明显的 TYPO. 第二篇论文双精度 GFLOPS 写成了理论的两倍, 可能没考虑到鲲鹏的 FMLA 单周期只能发射一条. 第三个上海交通大学的这个非常准确, 而本次的实测单核性能比其报告的值更高, 更接近理论上限; 最后社区的结果给的也很准确. 还有就是 Wiki 目前没看到任何错误, 比一般论文还要靠谱.
-
-顺便测了一下吞吐. 结果如下 (纯 MD 似乎不支持合并单元格, 但是写 htm 的表格太麻烦了)
-
+<p>每一次循环 <code>32 * 2 * 4</code> 的浮点计算, 修改一下 <code>.c</code>, 可以得到单核性能, <code>52.5 GFLOPS</code>.</p>
+<p>但是由于超线程两个线程共享FPU, 所以 <code> NUM_THREADS=2 OMP_PROC_BIND=close ./fp</code> 两个线程执行还是共享的FPU, 所以其吞吐依然是 <code>24.73*2</code>, 甚至性能还下降了一点点</p>
+<p>所以 16 个核心就是 <code>840 GFLOPS</code>, 16c 的处理器双精度浮点数性能已经大于鲲鹏 920.</p>
+<p>对于 SP (Single Precision), 得到的结果是超线程是 <code>49.5</code>, 两个线程就是, 一个核心提供了接近<code> 100</code> 的单精度, 但是对于单线程 70 的结果还是明显提升了, 怀疑是有一些其他的资源限制, 使用两个线程缓解了这个限制, 然后瓶颈转移到了浮点处理单元上 (Intel 的结果类似)</p>
+<p>测了一下, 浮点数的乘法 (vmulpd) 也是类似的, 超线程就能到达 (2 IPC * 4 F/I * 3.3 GHz). 加法 (vaddpd) 的结果也是和加法完全一样</p>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a><em>4</em> 总结</h2><p>我们从两篇论文, 社区和一个演讲中得到了鲲鹏的不同的浮点数计算的 GFLOPS. 进行简单的计算之后得到了真实的理论上限, 双精度 DP 是 665.6 GFLOPS, 单精度 SP 是双精度的四倍, 是 2662.4 GFLOPS. 并且最终使用汇编来验证了这个结果.</p>
+<p>回头看, 一个简单的问题两个论文给出了错误的答案. 第一篇论文双精度写对了, 但是单精度结果小了一半, 并且存在明显的 TYPO. 第二篇论文双精度 GFLOPS 写成了理论的两倍, 可能没考虑到鲲鹏的 FMLA 单周期只能发射一条. 第三个上海交通大学的这个非常准确, 而本次的实测单核性能比其报告的值更高, 更接近理论上限; 最后社区的结果给的也很准确. 还有就是 Wiki 目前没看到任何错误, 比一般论文还要靠谱.</p>
+<p>顺便测了一下吞吐. 结果如下 (纯 MD 似乎不支持合并单元格, 但是写 htm 的表格太麻烦了)</p>
 <img src="/2023/gflops/tp.png" title="tp">
 
-## 参考文献
-
-<ul id="refplus"><li id="ref-Evaluating_920" data-num="1">[1]  Afanasyev, Ilya, and Dmitry Lichmanov. "Evaluating the performance of Kunpeng 920 processors on modern HPC applications." International Conference on Parallel Computing Technologies. Cham: Springer International Publishing, 2021.</li><li id="ref-H100" data-num="2">[2]  <a href="https://resources.nvidia.com/en-us-tensor-core" title="" target="">NVIDIA H100 Tensor Core GPU Architecture - Nvidia</a></li><li id="ref-zioc" data-num="3">[3]  Kuzminsky, Mikhail Borisovich. "Modern server ARM processors for supercomputers: A64FX and others. Initial data of benchmarks." Program Systems: Theory and Applications 13.1 (2022): 63-129.</li><li id="ref-ARMv8Kunpeng" data-num="4">[4]  <a href="https://static.linaro.org/event-resources/arm-hpc-2019/slides/BenchmarkingHuaweiARMMulti-CoreProcessorsforHPCworkloads6.pdf" title="" target="">Benchmarking Huawei ARM Multi Core Processors for HPC workloads</a></li><li id="ref-HWC" data-num="5">[5]  <a href="https://bbs.huaweicloud.com/forum/thread-119820-1-1.html" title="" target="">请教在鲲鹏920上单核浮点计算性能的理论值怎么求？是多少？ - 华为云社区</a></li><li id="ref-Wiki" data-num="6">[6]  <a href="https://en.wikichip.org/wiki/hisilicon/microarchitectures/taishan_v110" title="" target="">TaiShan v110 - Microarchitectures - HiSilicon - WikiChip</a></li><li id="ref-Walking" data-num="7">[7]  <a href="https://bbs.huaweicloud.com/forum/thread-119820-1-1.html" title="" target="">Fused Multiply Add (FMA) – One flop or two? - Walking Randomly</a></li><li id="ref-Stackoverflow" data-num="8">[8]  <a href="https://stackoverflow.com/questions/52258370/what-is-the-definition-of-floating-point-operations-flops" title="" target="">What is the definition of Floating Point Operations ( FLOPs ) - Stackoverflow</a></li><li id="ref-OptARM" data-num="9">[9]  <a href="https://github.com/BBuf/how-to-optimize-gemm/tree/master/armv8a" title="" target="">BBuf/how-to-optimize-gemm - Github</a></li><li id="ref-cpufp" data-num="10">[10]  <a href="https://github.com/pigirons/cpufp" title="" target="">pigirons/cpufp - Github</a></li></ul><p></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul id="refplus"><li id="ref-Evaluating_920" data-num="1">[1]  Afanasyev, Ilya, and Dmitry Lichmanov. "Evaluating the performance of Kunpeng 920 processors on modern HPC applications." International Conference on Parallel Computing Technologies. Cham: Springer International Publishing, 2021.</li><li id="ref-H100" data-num="2">[2]  <a href="https://resources.nvidia.com/en-us-tensor-core" title="" target="">NVIDIA H100 Tensor Core GPU Architecture - Nvidia</a></li><li id="ref-zioc" data-num="3">[3]  Kuzminsky, Mikhail Borisovich. "Modern server ARM processors for supercomputers: A64FX and others. Initial data of benchmarks." Program Systems: Theory and Applications 13.1 (2022): 63-129.</li><li id="ref-ARMv8Kunpeng" data-num="4">[4]  <a href="https://static.linaro.org/event-resources/arm-hpc-2019/slides/BenchmarkingHuaweiARMMulti-CoreProcessorsforHPCworkloads6.pdf" title="" target="">Benchmarking Huawei ARM Multi Core Processors for HPC workloads</a></li><li id="ref-HWC" data-num="5">[5]  <a href="https://bbs.huaweicloud.com/forum/thread-119820-1-1.html" title="" target="">请教在鲲鹏920上单核浮点计算性能的理论值怎么求？是多少？ - 华为云社区</a></li><li id="ref-Wiki" data-num="6">[6]  <a href="https://en.wikichip.org/wiki/hisilicon/microarchitectures/taishan_v110" title="" target="">TaiShan v110 - Microarchitectures - HiSilicon - WikiChip</a></li><li id="ref-Walking" data-num="7">[7]  <a href="https://bbs.huaweicloud.com/forum/thread-119820-1-1.html" title="" target="">Fused Multiply Add (FMA) – One flop or two? - Walking Randomly</a></li><li id="ref-Stackoverflow" data-num="8">[8]  <a href="https://stackoverflow.com/questions/52258370/what-is-the-definition-of-floating-point-operations-flops" title="" target="">What is the definition of Floating Point Operations ( FLOPs ) - Stackoverflow</a></li><li id="ref-OptARM" data-num="9">[9]  <a href="https://github.com/BBuf/how-to-optimize-gemm/tree/master/armv8a" title="" target="">BBuf/how-to-optimize-gemm - Github</a></li><li id="ref-cpufp" data-num="10">[10]  <a href="https://github.com/pigirons/cpufp" title="" target="">pigirons/cpufp - Github</a></li></ul>
 
     <style>
     #refplus, #refplus li{ 
@@ -473,7 +416,7 @@ SP 是单精度, DP 是双精度. 但是这个数据似乎是他们实际测量�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E7%9A%84%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">1 问题的开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-665-Tflops-%E7%9A%84%E9%B2%B2%E9%B9%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 665 Tflops 的鲲鹏</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E7%9A%84%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">1 问题的开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-665-Tflops-%E7%9A%84%E9%B2%B2%E9%B9%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 665 Tflops 的鲲鹏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-33-TFlops"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 1,33 TFlops</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%9C%80%E9%9D%A0%E8%B0%B1%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 最靠谱的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E7%A4%BE%E5%8C%BA%E7%9A%84%E7%AD%94%E6%A1%88"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 社区的答案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%B2%B2%E9%B9%8F-920-%E7%9A%84-GFLOPS-%E8%AE%A1%E7%AE%97%E5%92%8C%E6%B5%8B%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">2 鲲鹏 920 的 GFLOPS 计算和测量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Gflops-%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Gflops 的计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 实际测试验证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-%E5%8D%95%E6%A0%B8"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 单核</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-%E5%A4%9A%E6%A0%B8"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 多核</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-AMD-EPYC-7302"><span class="nav-number">3.</span> <span class="nav-text">3 AMD EPYC 7302</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">4 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,12 +430,12 @@ SP 是单精度, DP 是双精度. 但是这个数据似乎是他们实际测量�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

@@ -207,113 +207,66 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0<sup class="refplus-num"><a href="#ref-lua">[1]</a></sup>.
-
+        <p>最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0<sup class="refplus-num"><a href="#ref-lua">[1]</a></sup>.</p>
 <span id="more"></span>
 
-## Lua
+<h2 id="Lua"><a href="#Lua" class="headerlink" title="Lua"></a>Lua</h2><ul>
+<li>Lua 的设计理念, 也是 Lua 能广泛应用的原因: simple, efficient, portable, and lightweight.</li>
+<li>Lua 的重大变更: 5.0 coroutines, 5.1 incremental garbage collection</li>
+</ul>
+<p>一些 Lua 5.0 相比于 Lua 4.0 新增的东西</p>
+<ul>
+<li>Register based virtual machine</li>
+<li>New algorithm for optimizing tables used as arrays</li>
+<li>The implementation of closures</li>
+<li>The addition of coroutines</li>
+</ul>
+<p>Lua 虚拟机最初是手写的 Scanner 和 Parser, 后来 3.0 换成了 yacc. 并且, Lua 没有独立的 IR, 是 parse 之后直接 emits instructions for the virtual machine on the fly</p>
+<p>此外 Lua 采用 while-switch dispatch loop, 而非 direct threaded code, 以保留更好的兼容性. 两者的示例大概如下, DTC 使用到了非标准的 C 拓展<sup class="refplus-num"><a href="#ref-wiki">[2]</a></sup><sup class="refplus-num"><a href="#ref-usenix">[3]</a></sup><sup class="refplus-num"><a href="#ref-Wien">[4]</a></sup>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// direct threaded code</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span>* dispatch_table[] = { &amp;&amp;ADD, &amp;&amp;SUB, &amp;&amp;MUL }; <span class="comment">// goto table</span></span><br><span class="line"><span class="keyword">goto</span> *dispatch_table[opcode];</span><br><span class="line">ADD:</span><br><span class="line">  <span class="comment">// do add here</span></span><br><span class="line">  <span class="keyword">goto</span> *dispatch_table[next_opcode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// -----------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// while-switch</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) {</span><br><span class="line">    <span class="keyword">switch</span> (opcode) {</span><br><span class="line">        <span class="keyword">case</span> ADD:</span><br><span class="line">            <span class="comment">// do add here</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> ...:</span><br><span class="line">            ...</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// next code</span></span><br><span class="line">    opcode = fetch_next_opcode();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-- Lua 的设计理念, 也是 Lua 能广泛应用的原因: simple, efficient, portable, and lightweight.
-- Lua 的重大变更: 5.0 coroutines, 5.1 incremental garbage collection
-
-一些 Lua 5.0 相比于 Lua 4.0 新增的东西
-
-- Register based virtual machine
-- New algorithm for optimizing tables used as arrays
-- The implementation of closures
-- The addition of coroutines
-
-Lua 虚拟机最初是手写的 Scanner 和 Parser, 后来 3.0 换成了 yacc. 并且, Lua 没有独立的 IR, 是 parse 之后直接 emits instructions for the virtual machine on the fly
-
-此外 Lua 采用 while-switch dispatch loop, 而非 direct threaded code, 以保留更好的兼容性. 两者的示例大概如下, DTC 使用到了非标准的 C 拓展<sup class="refplus-num"><a href="#ref-wiki">[2]</a></sup><sup class="refplus-num"><a href="#ref-usenix">[3]</a></sup><sup class="refplus-num"><a href="#ref-Wien">[4]</a></sup>:
-
-</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// direct threaded code</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span>* dispatch_table[] = { &amp;&amp;ADD, &amp;&amp;SUB, &amp;&amp;MUL }; <span class="comment">// goto table</span></span><br><span class="line"><span class="keyword">goto</span> *dispatch_table[opcode];</span><br><span class="line">ADD:</span><br><span class="line">  <span class="comment">// do add here</span></span><br><span class="line">  <span class="keyword">goto</span> *dispatch_table[next_opcode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// -----------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// while-switch</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) {</span><br><span class="line">    <span class="keyword">switch</span> (opcode) {</span><br><span class="line">        <span class="keyword">case</span> ADD:</span><br><span class="line">            <span class="comment">// do add here</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> ...:</span><br><span class="line">            ...</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// next code</span></span><br><span class="line">    opcode = fetch_next_opcode();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-## Lua 的数据表示
-
-Lua 包含几种基本类型: `nil`, `boolean`, `number`, `string`, `table`, `function`, `userdata` (include heavy and light), and `thread`
-
-Lua 的数据存储为 tagged unions, 这种设计兼顾可移植性, 空间和性能:
-
+<h2 id="Lua-的数据表示"><a href="#Lua-的数据表示" class="headerlink" title="Lua 的数据表示"></a>Lua 的数据表示</h2><p>Lua 包含几种基本类型: <code>nil</code>, <code>boolean</code>, <code>number</code>, <code>string</code>, <code>table</code>, <code>function</code>, <code>userdata</code> (include heavy and light), and <code>thread</code></p>
+<p>Lua 的数据存储为 tagged unions, 这种设计兼顾可移植性, 空间和性能:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span> </span><br><span class="line">    <span class="type">int</span> t;  <span class="comment">// tag, type of value V</span></span><br><span class="line">    Value v;    <span class="comment">// 除了 nil, 表示值</span></span><br><span class="line">} TObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">    GCObject *gc;   <span class="comment">// gc header</span></span><br><span class="line">    <span class="type">void</span> *p;        <span class="comment">// other</span></span><br><span class="line">    lua_Number n;   <span class="comment">// number (double)</span></span><br><span class="line">    <span class="type">int</span> b;      <span class="comment">// bool</span></span><br><span class="line">} Value;</span><br></pre></td></tr></table></figure>
 
-和很多语言的设计一样, lua 中的 `internalizes string` 是存在 `hash` 表中, 并且 `string` 都是 `immutable` 的.
-对于很长的 String, 为了节约性能, Lua Hash 不会去关注每一个 Byte.
-
-## Lua table
-
-`Table` 是 `Lua` 中的唯一的数据结构, 其性能对于 Lua 至关重要.
-
-Lua 中的 `Table` 是一个 `associative arrays`, 可以使用 `nil` 外任何数据来作为 key. 其实 Lua 中的 `table` 就是 array + hashmap, 实现也是.
-这种实现有以下好处:
-
-1. 是不需要维护两种数据结构, 保持了本身的紧凑;
-2. 用户不需要做选择;
-3. 对于稀疏的数组更加友好;
-4. 对于存在数组中的元素访问速度会很快
-
+<p>和很多语言的设计一样, lua 中的 <code>internalizes string</code> 是存在 <code>hash</code> 表中, 并且 <code>string</code> 都是 <code>immutable</code> 的.<br>对于很长的 String, 为了节约性能, Lua Hash 不会去关注每一个 Byte.</p>
+<h2 id="Lua-table"><a href="#Lua-table" class="headerlink" title="Lua table"></a>Lua table</h2><p><code>Table</code> 是 <code>Lua</code> 中的唯一的数据结构, 其性能对于 Lua 至关重要.</p>
+<p>Lua 中的 <code>Table</code> 是一个 <code>associative arrays</code>, 可以使用 <code>nil</code> 外任何数据来作为 key. 其实 Lua 中的 <code>table</code> 就是 array + hashmap, 实现也是.<br>这种实现有以下好处:</p>
+<ol>
+<li>是不需要维护两种数据结构, 保持了本身的紧凑;</li>
+<li>用户不需要做选择;</li>
+<li>对于稀疏的数组更加友好;</li>
+<li>对于存在数组中的元素访问速度会很快</li>
+</ol>
 <img src="/2025/implement-of-lua/lua_table.png" title="Lua table">
 
-4.0 之前, Lua 的 `Table` 全部都在哈希表中, 5.0 之后, lua 带来了一种上图中的混合的数据结构, 包含一个 Array 和一个 HashMap. Lua 会动态调整这两个部分, 两者可以同时存在.
-数组和哈希部分都可以扩展, 其中数组会保证新的大小 n 至少有一半 slot 在使用, 并且 `[n/2, n)` 存在元素.
-
-哈希部分则是使用的 Brent's Method 的变体, 具体可以参考这个论文<sup class="refplus-num"><a href="#ref-brent">[5]</a></sup>
-
-具体的实现可以看一下 Lua Table 分析的源代码.
-
-## Lua 的函数和代码
-
-Lua 在编译函数的时候, 都会创建一个包含机器指令, 变量和调试信息的 `prototype`.
-Lua 执行 `function...end` 语句的时候, 就会产生一个闭包 (`closure`), 包含 `prototype` 的引用, 一个用于查询全局变量的 `environment`, 以及一个 `upvalue` 的数组.
-
-除了 C 大部分语言都有闭包的概念, 解决的就是下面, 函数引用外层的局部变量的问题:
-
+<p>4.0 之前, Lua 的 <code>Table</code> 全部都在哈希表中, 5.0 之后, lua 带来了一种上图中的混合的数据结构, 包含一个 Array 和一个 HashMap. Lua 会动态调整这两个部分, 两者可以同时存在.<br>数组和哈希部分都可以扩展, 其中数组会保证新的大小 n 至少有一半 slot 在使用, 并且 <code>[n/2, n)</code> 存在元素.</p>
+<p>哈希部分则是使用的 Brent’s Method 的变体, 具体可以参考这个论文<sup class="refplus-num"><a href="#ref-brent">[5]</a></sup></p>
+<p>具体的实现可以看一下 Lua Table 分析的源代码.</p>
+<h2 id="Lua-的函数和代码"><a href="#Lua-的函数和代码" class="headerlink" title="Lua 的函数和代码"></a>Lua 的函数和代码</h2><p>Lua 在编译函数的时候, 都会创建一个包含机器指令, 变量和调试信息的 <code>prototype</code>.<br>Lua 执行 <code>function...end</code> 语句的时候, 就会产生一个闭包 (<code>closure</code>), 包含 <code>prototype</code> 的引用, 一个用于查询全局变量的 <code>environment</code>, 以及一个 <code>upvalue</code> 的数组.</p>
+<p>除了 C 大部分语言都有闭包的概念, 解决的就是下面, 函数引用外层的局部变量的问题:</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span> <span class="params">(x)</span></span> </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="params">(y)</span></span> </span><br><span class="line">        <span class="keyword">return</span> x+y</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- x is a local variable, and it has already gone out of scope</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">add2 = add(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(add2(<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
 
-大部分语言处理闭包都加了一些限制, 比如 python 无法引用一个可变的外层局部变量, 除非使用了 `nonlocal`; 而一些语言则采用了更复杂的机制, 但这与 Lua 追求简洁的设计理念相悖
-
+<p>大部分语言处理闭包都加了一些限制, 比如 python 无法引用一个可变的外层局部变量, 除非使用了 <code>nonlocal</code>; 而一些语言则采用了更复杂的机制, 但这与 Lua 追求简洁的设计理念相悖</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">outer_function</span>():</span><br><span class="line">    x = <span class="number">10</span>  <span class="comment"># 外部变量</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner_function</span>():</span><br><span class="line">        <span class="comment"># nonlocal x</span></span><br><span class="line">        x += <span class="number">1</span>  <span class="comment"># 修改外部变量会报错, 除非使用 nonlocal</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    <span class="keyword">return</span> inner_function</span><br><span class="line"></span><br><span class="line">add = outer_function()</span><br><span class="line"><span class="comment"># 报错：UnboundLocalError: local variable 'x'  cannot access local variable 'x' where it is not associated with a value</span></span><br><span class="line"><span class="built_in">print</span>(add())</span><br></pre></td></tr></table></figure>
 
-Lua 使用了一种 `upvalue` 的东西来实现的闭包.
-
+<p>Lua 使用了一种 <code>upvalue</code> 的东西来实现的闭包.</p>
 <img src="/2025/implement-of-lua/upvalue.png" title="Lua 的 upvalue">
 
-首先闭包的变量可能存活在一个栈上 (上图左边所示), 这个 `upvalue` 会引用到栈上的变量; 当栈上变量脱离作用域的时候, 则会拷贝到 `upvalue` 中.
-`Mutable` 的状态在闭包中仅仅创建一次, 所有的 `upvalue` 串成一个链表 (图上 pending vars 的部分), 插入新的 `upvalue` 之前, 先遍历链表查看是否存在可复用的 `upvalue`.
-
-如果引用外层的外层函数, Lua 使用 Flat Closure 来解决这个问题. 当一个函数引用了外层的外层的变量, 这个变量也会加入外层的闭包. 因此一个函数实例化的时候, 闭包中的变量要么来自于外层的 stack, 要么来自直接外层的函数的 closure.
-
-## Coroutines
-
-5.1 之后, Lua 实现了一个 asymmetric coroutines / semi-coroutine, 实现包含三个 coroutine 下的标准库函数: `create`, `resume`, and `yield`.
-`create` 创建返回一个 `thread`; `resume` 执行; `yield` 返还控制权.
-
-一个关键是不能使用 C 语言的 stack 来实现, 也叫 stackless interpreter. 这里有点没看懂, LLM 的解释是, Lua 使用 C 栈来保持调用关系, 但是 `yield` 返回的时候除了退出之外, 还保留了虚拟栈的上下文, 下次调用的时候直接恢复.
-
-## Lua VM
-
-Lua 会编译源码到 `opcodes`, 每个函数 Lua 会编译成成一个 prototype, 包含 Lua 的 `opcodes` 的数组和一个常量的数组 (Array of TObjects).
-
-5.0 之前 Lua 使用的是 stack based vm, 之后使用的是 register based vm. 但是 register based VM 也会使用 stack 来分配 activation records, 包含局部变量, 返回值等. 不同是避免了 push, pop 这些 Lua 中昂贵的操作.
-register based VM 对于内存访问效率更高, 对于 JIT 也更加友好; 但是带来的问题就是 指令操作数更大 (指令数也会少一些), 解码也更加费力 (但是无需计算隐式参数, 如栈顶; 同时也某种程度避免了内存对齐等问题的开销).
-
-Lua VM 共有 35 个指令. 一条指令 32 bit, 6b 来存放指令类型, 剩下 A, B, C 8+9+9 是操作数. A 一般为返回值结果的寄存器, B 和 C 为操作数 (register / constant), 这样的设计可以使用更少的指令.
-
-一条跳转指令需要容纳两个操作数和一个跳转偏移量, 如果将这些都放在单条指令中, 空间会不足, 只能 9 bit 的跳转长度. 因此 Lua 的跳转也是一个 test 跟着一个跳转指令.
-
-下面可以看到 Lua 4.0 和 Lua 5.0 实现相同功能, 指令的差距:
-
+<p>首先闭包的变量可能存活在一个栈上 (上图左边所示), 这个 <code>upvalue</code> 会引用到栈上的变量; 当栈上变量脱离作用域的时候, 则会拷贝到 <code>upvalue</code> 中.<br><code>Mutable</code> 的状态在闭包中仅仅创建一次, 所有的 <code>upvalue</code> 串成一个链表 (图上 pending vars 的部分), 插入新的 <code>upvalue</code> 之前, 先遍历链表查看是否存在可复用的 <code>upvalue</code>.</p>
+<p>如果引用外层的外层函数, Lua 使用 Flat Closure 来解决这个问题. 当一个函数引用了外层的外层的变量, 这个变量也会加入外层的闭包. 因此一个函数实例化的时候, 闭包中的变量要么来自于外层的 stack, 要么来自直接外层的函数的 closure.</p>
+<h2 id="Coroutines"><a href="#Coroutines" class="headerlink" title="Coroutines"></a>Coroutines</h2><p>5.1 之后, Lua 实现了一个 asymmetric coroutines / semi-coroutine, 实现包含三个 coroutine 下的标准库函数: <code>create</code>, <code>resume</code>, and <code>yield</code>.<br><code>create</code> 创建返回一个 <code>thread</code>; <code>resume</code> 执行; <code>yield</code> 返还控制权.</p>
+<p>一个关键是不能使用 C 语言的 stack 来实现, 也叫 stackless interpreter. 这里有点没看懂, LLM 的解释是, Lua 使用 C 栈来保持调用关系, 但是 <code>yield</code> 返回的时候除了退出之外, 还保留了虚拟栈的上下文, 下次调用的时候直接恢复.</p>
+<h2 id="Lua-VM"><a href="#Lua-VM" class="headerlink" title="Lua VM"></a>Lua VM</h2><p>Lua 会编译源码到 <code>opcodes</code>, 每个函数 Lua 会编译成成一个 prototype, 包含 Lua 的 <code>opcodes</code> 的数组和一个常量的数组 (Array of TObjects).</p>
+<p>5.0 之前 Lua 使用的是 stack based vm, 之后使用的是 register based vm. 但是 register based VM 也会使用 stack 来分配 activation records, 包含局部变量, 返回值等. 不同是避免了 push, pop 这些 Lua 中昂贵的操作.<br>register based VM 对于内存访问效率更高, 对于 JIT 也更加友好; 但是带来的问题就是 指令操作数更大 (指令数也会少一些), 解码也更加费力 (但是无需计算隐式参数, 如栈顶; 同时也某种程度避免了内存对齐等问题的开销).</p>
+<p>Lua VM 共有 35 个指令. 一条指令 32 bit, 6b 来存放指令类型, 剩下 A, B, C 8+9+9 是操作数. A 一般为返回值结果的寄存器, B 和 C 为操作数 (register / constant), 这样的设计可以使用更少的指令.</p>
+<p>一条跳转指令需要容纳两个操作数和一个跳转偏移量, 如果将这些都放在单条指令中, 空间会不足, 只能 9 bit 的跳转长度. 因此 Lua 的跳转也是一个 test 跟着一个跳转指令.</p>
+<p>下面可以看到 Lua 4.0 和 Lua 5.0 实现相同功能, 指令的差距:</p>
 <img src="/2025/implement-of-lua/instructions.png" title="Lua 指令数对比">
 
-## 总结
-
-Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 的 `table` 也确实非常 unique.
-
-作者用 [The Great Computer Language Shootout](https://en.wikipedia.org/wiki/The_Computer_Language_Benchmarks_Game) 做了一个性能比较, 得益于新的 VM, Lua 的运行时间最多减少了 56%.
-
-## 参考文献
-
-<ul id="refplus"><li id="ref-lua" data-num="1">[1]  Ierusalimschy, Roberto, Luiz Henrique De Figueiredo, and Waldemar Celes Filho. "The Implementation of Lua 5.0." J. Univers. Comput. Sci. 11.7 (2005): 1159-1176.</li><li id="ref-wiki" data-num="2">[2]  <a href="https://en.wikipedia.org/wiki/Threaded_code" title="" target="">Wikipedia - Threaded code</a></li><li id="ref-usenix" data-num="3">[3]  <a href="https://www.usenix.org/legacy/publications/library/proceedings/jvm01/gagnon/gagnon_html/node4.html" title="" target="">usenix - Threaded Interpreter</a></li><li id="ref-Wien" data-num="4">[4]  <a href="https://www.complang.tuwien.ac.at/forth/threaded-code.html" title="" target="">Technische Universität Wien - Threaded Code</a></li><li id="ref-brent" data-num="5">[5]  <a href="" title="" target="">Zombie's - Brent's Method (TODO) #more</a></li></ul><p></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 的 <code>table</code> 也确实非常 unique.</p>
+<p>作者用 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/The_Computer_Language_Benchmarks_Game">The Great Computer Language Shootout</a> 做了一个性能比较, 得益于新的 VM, Lua 的运行时间最多减少了 56%.</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul id="refplus"><li id="ref-lua" data-num="1">[1]  Ierusalimschy, Roberto, Luiz Henrique De Figueiredo, and Waldemar Celes Filho. "The Implementation of Lua 5.0." J. Univers. Comput. Sci. 11.7 (2005): 1159-1176.</li><li id="ref-wiki" data-num="2">[2]  <a href="https://en.wikipedia.org/wiki/Threaded_code" title="" target="">Wikipedia - Threaded code</a></li><li id="ref-usenix" data-num="3">[3]  <a href="https://www.usenix.org/legacy/publications/library/proceedings/jvm01/gagnon/gagnon_html/node4.html" title="" target="">usenix - Threaded Interpreter</a></li><li id="ref-Wien" data-num="4">[4]  <a href="https://www.complang.tuwien.ac.at/forth/threaded-code.html" title="" target="">Technische Universität Wien - Threaded Code</a></li><li id="ref-brent" data-num="5">[5]  <a href="" title="" target="">Zombie's - Brent's Method (TODO) #more</a></li></ul>
 
     <style>
     #refplus, #refplus li{ 
@@ -455,6 +408,7 @@ Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua"><span class="nav-number">1.</span> <span class="nav-text">Lua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">Lua 的数据表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-table"><span class="nav-number">3.</span> <span class="nav-text">Lua table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-%E7%9A%84%E5%87%BD%E6%95%B0%E5%92%8C%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">Lua 的函数和代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Coroutines"><span class="nav-number">5.</span> <span class="nav-text">Coroutines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua-VM"><span class="nav-number">6.</span> <span class="nav-text">Lua VM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -468,12 +422,12 @@ Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

@@ -233,7 +233,7 @@
 
 <p>这次我们使用 <code>tcpdump</code> 来抓包, 由于远端也有 1314 端口的调用, 所以我们使用 <code>host</code> 名字来抓包.</p>
 <p>在 <code>RK3399</code> 上 (<code>NGINX</code> 所在的主机) 抓包手机和 <code>ESP8266</code> 的包.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机到 NGINX 的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.197 -w phone</span><br><span class="line"><span class="comment"># NGINX 到 ESP8266 的包</span></span><br><span class="line">sudo tcpdump host 10.0.0.241 -w esp</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机到 NGINX 的包</span></span><br><span class="line"><span class="built_in">sudo</span> tcpdump host 10.0.0.197 -w phone</span><br><span class="line"><span class="comment"># NGINX 到 ESP8266 的包</span></span><br><span class="line"><span class="built_in">sudo</span> tcpdump host 10.0.0.241 -w esp</span><br></pre></td></tr></table></figure>
 
 <p>这次一看, 手机上发的都是正常的包; via 浏览器是电脑模式时候包也是正常并且完整的. 但是在 via 浏览器没有开启电脑模式时候, 承载 <code>HTTP</code> 请求的 <code>TCP</code> 数据流被分割成了两个独立的报文段进行发送.</p>
 <img src="/2024/ESPAsyncWebSrv/cap1.png" class="" title="NGINX到ESP8266的抓包">
@@ -421,12 +421,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

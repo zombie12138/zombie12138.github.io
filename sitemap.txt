@@ -1,6 +1,6 @@
+https://zombie12138.github.io/2025/fix-hexo-tag-escape/
 https://zombie12138.github.io/2023/kunpeng920/
 https://zombie12138.github.io/2023/first-touch-on-numa/
-https://zombie12138.github.io/2025/fix-hexo-tag-escape/
 https://zombie12138.github.io/2024/frpc-in-docker/
 https://zombie12138.github.io/2023/gflops/
 https://zombie12138.github.io/2025/implement-of-lua/
@@ -32,7 +32,6 @@ https://zombie12138.github.io/2024/disaster-reconstruction/
 https://zombie12138.github.io/2024/docker-file-size/
 https://zombie12138.github.io/2024/first-linux-patch/
 https://zombie12138.github.io/2021/hello-world/
-https://zombie12138.github.io/2025/build-batch-platform/
 https://zombie12138.github.io/
 https://zombie12138.github.io/tags/AMD/
 https://zombie12138.github.io/tags/Deep-Learning/
@@ -57,12 +56,9 @@ https://zombie12138.github.io/tags/Blog/
 https://zombie12138.github.io/tags/Books/
 https://zombie12138.github.io/tags/OS/
 https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/
-https://zombie12138.github.io/tags/Quantitative-Trading/
-https://zombie12138.github.io/tags/Java/
-https://zombie12138.github.io/tags/Docker/
-https://zombie12138.github.io/tags/DevOps/
 https://zombie12138.github.io/tags/Paper/
 https://zombie12138.github.io/tags/Linux/
+https://zombie12138.github.io/tags/Docker/
 https://zombie12138.github.io/tags/Git/
 https://zombie12138.github.io/tags/C/
 https://zombie12138.github.io/tags/HPC/
@@ -80,6 +76,7 @@ https://zombie12138.github.io/tags/Virtual-Machine/
 https://zombie12138.github.io/tags/Compiler/
 https://zombie12138.github.io/tags/Paper-Reading/
 https://zombie12138.github.io/tags/Database/
+https://zombie12138.github.io/tags/Quantitative-Trading/
 https://zombie12138.github.io/tags/Operating-System/
 https://zombie12138.github.io/tags/Survey/
 https://zombie12138.github.io/tags/Linker/
