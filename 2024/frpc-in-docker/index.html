@@ -28,12 +28,12 @@
 <meta property="og:description" content="docker 里面跑下 frpc. 现在越来越水了, 之前这些东西也会自己记录, 但是没有这样搞到博客里面, 现在把 blog 当成记事本了. 后面把这些 tag 设置一个标签, 设置 blog 显示这些时候要更小一点, 或者藏到某些地方…">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-04-24T08:26:33.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:39:56.000Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.916Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Network">
-<meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Water">
 <meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://zombie12138.github.io/2024/frpc-in-docker/">
@@ -189,7 +189,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-10-06 01:39:56" itemprop="dateModified" datetime="2024-10-06T01:39:56+08:00">2024-10-06</time>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
               </span>
 
           
@@ -209,9 +209,11 @@
 
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">user</span> = <span class="string">&quot;3399&quot;</span></span><br><span class="line"><span class="attr">serverAddr</span> = <span class="string">&quot;xxx.dns.army&quot;</span></span><br><span class="line"><span class="attr">serverPort</span> = <span class="number">7000</span></span><br><span class="line"></span><br><span class="line"><span class="attr">log.to</span> = <span class="string">&quot;/var/log/frp/frpc.log&quot;</span></span><br><span class="line"><span class="attr">log.level</span> = <span class="string">&quot;info&quot;</span></span><br><span class="line"><span class="attr">log.maxDays</span> = <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="attr">auth.method</span> = <span class="string">&quot;token&quot;</span></span><br><span class="line"><span class="attr">auth.token</span> = <span class="string">&quot;xxxxx&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">webServer.addr</span> = <span class="string">&quot;0.0.0.0&quot;</span></span><br><span class="line"><span class="attr">webServer.port</span> = <span class="number">3392</span></span><br><span class="line"><span class="attr">webServer.user</span> = <span class="string">&quot;zombie&quot;</span></span><br><span class="line"><span class="attr">webServer.password</span> = <span class="string">&quot;xxxx&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;ssh&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;tcp&quot;</span></span><br><span class="line"><span class="attr">localIP</span> = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line"><span class="attr">localPort</span> = <span class="number">22</span></span><br><span class="line"><span class="attr">remotePort</span> = <span class="number">521</span></span><br><span class="line"><span class="attr">healthCheck.type</span> = <span class="string">&quot;tcp&quot;</span></span><br><span class="line"><span class="attr">healthCheck.timeoutSeconds</span> = <span class="number">3</span></span><br><span class="line"><span class="attr">healthCheck.maxFailed</span> = <span class="number">5</span></span><br><span class="line"><span class="attr">healthCheck.intervalSeconds</span> = <span class="number">10</span></span><br><span class="line"><span class="attr">transport.bandwidthLimit</span> = <span class="string">&quot;100MB&quot;</span></span><br><span class="line"><span class="attr">transport.bandwidthLimitMode</span> = <span class="string">&quot;client&quot;</span></span><br><span class="line"><span class="attr">transport.useEncryption</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">transport.useCompression</span> = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">&#123;&#123;- range $_, $v := parseNumberRangePair &quot;20000-20011,21&quot; &quot;20000-20011,2112&quot; &#125;&#125;</span><br><span class="line"><span class="section">[[proxies]]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;frp-&#123;&#123; $v.First &#125;&#125;&quot;</span></span><br><span class="line"><span class="attr">type</span> = <span class="string">&quot;tcp&quot;</span></span><br><span class="line"><span class="attr">localIP</span> = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line"><span class="attr">localPort</span> = &#123;&#123; <span class="variable">$v</span>.First &#125;&#125;</span><br><span class="line"><span class="attr">remotePort</span> = &#123;&#123; <span class="variable">$v</span>.Second &#125;&#125;</span><br><span class="line"><span class="comment"># healthCheck.type = &quot;tcp&quot;</span></span><br><span class="line"><span class="comment"># healthCheck.timeoutSeconds = 3</span></span><br><span class="line"><span class="comment"># healthCheck.maxFailed = 5</span></span><br><span class="line"><span class="comment"># healthCheck.intervalSeconds = 10</span></span><br><span class="line"><span class="attr">transport.bandwidthLimit</span> = <span class="string">&quot;100MB&quot;</span></span><br><span class="line"><span class="attr">transport.bandwidthLimitMode</span> = <span class="string">&quot;client&quot;</span></span><br><span class="line"><span class="attr">transport.useEncryption</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">transport.useCompression</span> = <span class="literal">true</span></span><br><span class="line">&#123;&#123;- end &#125;&#125;</span><br></pre></td></tr></table></figure>
 
-<p>比较搞的是这个 Health Cheak 不要这样用</p>
-<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>就是启动啦</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always --network host -d -v /etc/frp/frpc_home.toml:/etc/frp/frpc.toml -v /var/log/frp/:/var/log/frp/ --name frpchome snowdreamtech/frpc</span><br></pre></td></tr></table></figure>
+<p>比较搞的是这个 Health Check 不要这样用</p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always --network host -d -v /etc/frp/frpc_home.toml:/etc/frp/frpc.toml -v /var/log/frp/:/var/log/frp/ --name frpchome snowdreamtech/frpc</span><br></pre></td></tr></table></figure>
+
+<p>更好的是放在 <code>docker-compose.yml</code>, 然后 <code>sudo docker-compose up -d</code>:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">frpc:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">snowdreamtech/frpc</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">frpc</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">host</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./frpc.toml:/etc/frp/frpc.toml</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/log/frpc:/var/log/frpc</span></span><br><span class="line">    <span class="attr">logging:</span></span><br><span class="line">          <span class="attr">driver:</span> <span class="string">json-file</span></span><br><span class="line">          <span class="attr">options:</span></span><br><span class="line">            <span class="attr">max-size:</span> <span class="string">1m</span></span><br><span class="line">            <span class="attr">max-file:</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -230,7 +232,7 @@
   <p><span>本文标题:</span>docker 中跑 frpc</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2024年04月24日 - 16:26:33</p>
-  <p><span>最后更新:</span>2024年10月06日 - 01:39:56</p>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
   <p><span>原始链接:</span><a href="/2024/frpc-in-docker/" title="docker 中跑 frpc">https://zombie12138.github.io/2024/frpc-in-docker/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/frpc-in-docker/"  aria-label="复制成功！"></i></span>
   </p>
@@ -256,9 +258,9 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Network/" rel="tag"># Network</a>
-              <a href="/tags/Linux/" rel="tag"># Linux</a>
               <a href="/tags/Water/" rel="tag"># Water</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
           </div>
 
         
@@ -271,8 +273,8 @@
       <i class="fa fa-chevron-left"></i> 在 Wireguard 里面跑 Qbittorrent
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/interview-mistakes/" rel="next" title="面试中的错误">
-      面试中的错误 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/interview-mistakes/" rel="next" title="面试中的误解">
+      面试中的误解 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -346,12 +348,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

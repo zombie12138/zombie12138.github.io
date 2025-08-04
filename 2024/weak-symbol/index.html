@@ -20,24 +20,24 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="最近用 GCC@13.2.0 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了…">
+  <meta name="description" content="最近用 GCC@13.2.0 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="强符号, 弱符号 -- 语言中的各种强和弱">
-<meta property="og:url" content="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/index.html">
+<meta property="og:url" content="https://zombie12138.github.io/2024/weak-symbol/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="最近用 GCC@13.2.0 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了…">
+<meta property="og:description" content="最近用 GCC@13.2.0 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了.">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/type.png">
+<meta property="og:image" content="https://zombie12138.github.io/2024/weak-symbol/type.png">
 <meta property="article:published_time" content="2024-02-17T10:11:46.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:39:56.000Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.916Z">
 <meta property="article:author" content="zombie12138">
-<meta property="article:tag" content="Linux Programming">
 <meta property="article:tag" content="Link">
 <meta property="article:tag" content="Load">
+<meta property="article:tag" content="Linux Programming">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/type.png">
+<meta name="twitter:image" content="https://zombie12138.github.io/2024/weak-symbol/type.png">
 
-<link rel="canonical" href="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/">
+<link rel="canonical" href="https://zombie12138.github.io/2024/weak-symbol/">
 
 
 <script id="page-configurations">
@@ -160,7 +160,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/weak-symbol/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -190,7 +190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-10-06 01:39:56" itemprop="dateModified" datetime="2024-10-06T01:39:56+08:00">2024-10-06</time>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
               </span>
 
           
@@ -204,17 +204,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近用 <a href="mailto:&#x47;&#x43;&#x43;&#64;&#49;&#x33;&#46;&#x32;&#x2e;&#48;">GCC@13.2.0</a> 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了…</p>
+        <p>最近用 <a href="mailto:&#x47;&#67;&#x43;&#x40;&#49;&#x33;&#46;&#50;&#46;&#x30;">GCC@13.2.0</a> 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了.</p>
 <span id="more"></span>
 
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>执行命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">mpicc -Drestrict=__restrict__ -O3 -DGRAPH_GENERATOR_MPI -DREUSE_CSR_FOR_VALIDATION -I../aml -DSSSP -pthread -o graph500_reference_bfs_sssp bfs_reference.c sssp_reference.c csr_reference.c main.c utils.c validate.c ../aml/aml.c ../generator/graph_generator.c ../generator/make_graph.c ../generator/splittable_mrg.c ../generator/utils.c -lm </span><br><span class="line">/tmp/ccfToPfi.o:(.bss+0x10): multiple definition of `weights<span class="string">&#x27;</span></span><br><span class="line"><span class="string">/tmp/cc4uSqIL.o:(.bss+0x18): first defined here</span></span><br><span class="line"><span class="string">/tmp/ccfToPfi.o:(.bss+0x8): multiple definition of `column&#x27;</span></span><br><span class="line">/tmp/ccF31unt.o:(.bss+0x70): first defined here</span><br><span class="line">collect2: error: ld returned 1 <span class="built_in">exit</span> status</span><br><span class="line">make: *** [graph500_reference_bfs_sssp] Error 1</span><br></pre></td></tr></table></figure>
 
 <p>这个就是符号重定义, 打开 vscode, 搜索 <code>.h</code> 或者 <code>.c</code> 中这个符号 (<code>weights</code>) 的定义, 发现其定义 <code>float *weights;</code> 同时存在与 <code>csr_reference.c</code> 和 <code>sssp_reference.c</code>; <code>column</code> 也同时出现在三个地方.</p>
-<p>一开始就大概就猜到是什么原因了, 有两种解决办法, 最简单的就是 <code>extern</code> 把除了一个之外的其他所有的定义改成声明, 顺利编译通过. 这个用法的弊端是, 如果这个仅仅声明的文件被单独使用, 会找不到这个符号.<br>还有一种办法就是在除了一个之外的其他所有的定义或者全部定义同时使用 <code>__attribute((weak))</code>, 这样就能顺利编译通过 (可能会产生 Warning)</p>
-<h2 id="Strong-Symbol-Week-Symbol"><a href="#Strong-Symbol-Week-Symbol" class="headerlink" title="Strong Symbol, Week Symbol"></a>Strong Symbol, Week Symbol</h2><p>但是一个符号, 在多个文件中定义为全局变量, 这个怎么会可以在之前的版本通过编译的. 这个就是未初始化的全局变量本身是弱符号. </p>
-<p>这个概念是在 &lt;程序员的自我修养&gt; 这一本书, P92 中看到的, 对于一段 C&#x2F;C++, 未初始化的全局符号就是弱符号 (书中这样说, 但是似乎只有手动指定才可以)</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> ext; <span class="comment">// 只是声明, 对于外部符号的引用</span></span><br><span class="line"><span class="type">int</span> a;  <span class="comment">// strong, 书里面说这个是Weak, 但是其实也是强符号</span></span><br><span class="line"><span class="type">int</span> b = <span class="number">0</span>; <span class="comment">// strong</span></span><br><span class="line">__attribute__((weak)) <span class="type">int</span> gcc_weak = <span class="number">1</span>; <span class="comment">// weak, 书里面没写int, 我个人认为是写错了...</span></span><br></pre></td></tr></table></figure>
+<p>一开始就大概就猜到是什么原因了, 有两种解决办法, 最简单的就是 <code>extern</code> 把除了一个之外的其他所有的定义改成声明, 顺利编译通过. 这个用法的弊端是, 如果这个仅仅声明的文件被单独使用, 会找不到这个符号. 还有一种办法就是在除了一个之外的其他所有的定义或者全部定义同时使用 <code>__attribute((weak))</code>, 这样就能顺利编译通过 (可能会产生 Warning)</p>
+<h2 id="Strong-Symbol-Weak-Symbol"><a href="#Strong-Symbol-Weak-Symbol" class="headerlink" title="Strong Symbol, Weak Symbol"></a>Strong Symbol, Weak Symbol</h2><p>但是一个符号, 在多个文件中定义为全局变量, 这个怎么会可以在之前的版本通过编译的? 原因是之前版本, 未初始化的全局变量本身是弱符号.<br>这个概念是在 &lt;程序员的自我修养&gt; 这一本书, P92 中看到的, 对于一段 C&#x2F;C++, 未初始化的全局符号就是弱符号 (书中这样说, 但是高版本只有手动指定才可以)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> ext; <span class="comment">// 只是声明, 对于外部符号的引用</span></span><br><span class="line"><span class="type">int</span> a;  <span class="comment">// strong, 书里面说这个是Weak, 但是高版本也是强符号</span></span><br><span class="line"><span class="type">int</span> b = <span class="number">0</span>; <span class="comment">// strong</span></span><br><span class="line">__attribute__((weak)) <span class="type">int</span> gcc_weak = <span class="number">1</span>; <span class="comment">// weak, 书里面没写int, 我个人认为是写错了...</span></span><br></pre></td></tr></table></figure>
 
 <ol>
 <li>多个强符号会报错</li>
@@ -224,35 +223,32 @@
 <p>但是测试的时候发现, 除了 <code>attribute</code> 手动指定, 似乎都是强符号.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ nm a.o</span><br><span class="line">0000000000000000 T main</span><br><span class="line">0000000000000000 D strong</span><br><span class="line">0000000000000008 B strong2</span><br><span class="line">0000000000000000 B weak</span><br><span class="line">0000000000000004 V weak2</span><br></pre></td></tr></table></figure>
 
-<p><code>man nm</code> 可以看到, <code>T</code> 是text代码段, D 是 initialized data section, <code>B</code> 是 BSS data section, <code>V</code> 是 The symbol is a weak object.</p>
-<p>这个还会在模板中广泛使用, 配合 COMDAT 段来避免模板多个实例化的定义错误. 可以参见 <a href="/2024/linkers/" title="并行 &#x2F; 增量链接 -- ld.bfd, ld.gold, lld, mold 的设计">链接器器这篇文章</a>, 里面 MOLD 链接器的部分提到了模板和弱符号是如何实现的.</p>
-<h2 id="Strong-Reference-Weak-Reference"><a href="#Strong-Reference-Weak-Reference" class="headerlink" title="Strong Reference, Weak Reference"></a>Strong Reference, Weak Reference</h2><p>除此之外, 还提到了一个概念是强引用, 弱引用.</p>
-<p>这个就是解决循环引用, <strong>不参与引用计数的引用</strong>, 这个在各个语言中都有体现, Python, Java, Cpp 也有 Weakptr 也类似</p>
-<p>还有就是这里要讲的, 也是自我修养这本书讲到的.</p>
+<p><code>man nm</code> 可以看到, <code>T</code> 是text代码段, <code>D</code> 是 initialized data section, <code>B</code> 是 BSS data section, <code>V</code> 是 The symbol is a weak object.</p>
+<p>这个还会在模板中广泛使用, 配合 COMDAT 段来避免模板多个实例化的定义错误. 可以参见 <a href="/2024/linkers/" title="并行 &#x2F; 增量链接 -- ld.bfd, ld.gold, lld, mold 的设计">链接器这篇文章</a>, 里面 MOLD 链接器的部分提到了模板和弱符号是如何实现的.</p>
+<h3 id="2025-7-26-勘误"><a href="#2025-7-26-勘误" class="headerlink" title="2025&#x2F;7&#x2F;26 勘误"></a>2025&#x2F;7&#x2F;26 勘误</h3><p>Gemini 2.5P 说这个 无初始化的全局变量 是 公共符号 (common symbol), 但是表现和弱符号几乎相同. 早期 C 对齐 FORFORTRAN, 但是现代的 C compiler 其实是 <code>-fno-common</code>, 关闭这个特性, 如果开启 <code>-fcommon</code>, 也可以解决这个问题.</p>
+<p>也就是说, &lt;程序员的自我修养&gt; 这本书真正的错误是混淆了 公共符号 和 弱符号 的区别, 并且没有说明版本限制.</p>
+<h2 id="Strong-Reference-Weak-Reference"><a href="#Strong-Reference-Weak-Reference" class="headerlink" title="Strong Reference, Weak Reference"></a>Strong Reference, Weak Reference</h2><p>除此之外, 还提到了一个概念是强引用, 弱引用.<br>这个则是为了实现程序中的可选功能 或者 库中可覆盖的默认实现.</p>
 <p>对于一般的函数声明, 函数定义不在链接中出现, 会报错的</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>只有链接了 add 函数定义才可以.</p>
-<p>但是如果使用 <code>weakref</code>, 就可以在没有定义的时候让函数指针为 <code>NULL</code>.</p>
-<p>但是测试出问题了… 即使 <code>__attribute__((weakref)) int add(int a, int b);</code> 也不可以.</p>
-<p>查了手册, 想用弱引用就要 (必须 static), 同时指出引用的函数</p>
+<p>只有链接了 add 函数定义才可以. 但是如果使用 <code>weakref</code>, 就可以在没有定义的时候让函数指针为 <code>NULL</code>.</p>
+<p>但是测试出问题了… 即使 <code>__attribute__((weakref)) int add(int a, int b);</code> 也不可以.<br>查了 gcc 手册, 想用弱引用就要 (必须 static), 同时 <code>alias</code> 指出引用的函数</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">add_impl</span> <span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>&#123; <span class="keyword">return</span> a+b; &#125;</span><br><span class="line">__attribute__ ((weakref, alias (<span class="string">&quot;add_impl&quot;</span>))) <span class="type">static</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果引用 (<code>add_impl</code>) 不存在函数入口 (<code>add</code>) 就是 0, 也就是注释掉 <code>add_impl</code> 就不会执行加法, 这就是如何实现自动适配多线程版本, 如果没有链接多线程的库, 自动不使用</p>
-<p>链接之后这个符号就不见了. 但是如果生成 obj 文件, 可以看到</p>
+<p>如果引用 (<code>add_impl</code>) 不存在函数入口 (<code>add</code>) 就是 0, 也就是注释掉 <code>add_impl</code> 就不会执行加法, 这就是如何实现自动适配多线程版本, 如果没有链接多线程的库, 自动不使用.<br>链接之后这个符号就不见了. 但是如果生成 obj 文件, 可以看到</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ nm ref.o</span><br><span class="line">                 w func</span><br><span class="line">0000000000000000 T main</span><br><span class="line">                 U <span class="built_in">printf</span></span><br></pre></td></tr></table></figure>
 
-<p>w表示<code> The symbol is a weak symbol that has not been specifically tagged as a weak object symbol.</code> 所以, 也是弱符号. 只是链接的过程中, 删除了这个没有找到定义的符号.</p>
+<p><code>man</code> 查看了下, <code>w</code> 表示<code> The symbol is a weak symbol that has not been specifically tagged as a weak object symbol.</code> 所以, 也是弱符号. 只是链接的过程中, 删除了这个没有找到定义的符号.</p>
 <hr>
-<p>此外 <a target="_blank" rel="noopener" href="https://blog.csdn.net/wang1902568721/article/details/71159699">有人</a> 讲到可以用弱符号解决这个问题(函数声明必须public, 即non static)</p>
+<p>此外 <a target="_blank" rel="noopener" href="https://blog.csdn.net/wang1902568721/article/details/71159699">有人</a> 讲到可以用弱符号解决这个问题(函数声明必须 public, 即 non static)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> ref.c</span><br><span class="line">__attribute__ ((weak)) int add(int a, int b);</span><br><span class="line">int <span class="function"><span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%x\n&quot;</span>, add);</span><br><span class="line">    <span class="keyword">if</span> (add) <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, add(1, 2));</span><br><span class="line">&#125;</span><br><span class="line">$ gcc ref.c</span><br><span class="line"><span class="comment"># some warning</span></span><br><span class="line">$ ./a.out</span><br><span class="line">0</span><br><span class="line">$ nm a.out | grep add</span><br><span class="line">                 w add</span><br></pre></td></tr></table></figure>
 
-<p>编译链接出来也是弱符号, 所以上面的 <code>weakref</code> 的方法应该是链接时候单独优化掉了?</p>
+<p>编译链接出来也是弱符号</p>
 <h2 id="Strong-Weak-Type-Static-Dynamic-Type"><a href="#Strong-Weak-Type-Static-Dynamic-Type" class="headerlink" title="Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type"></a>Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</h2><p>这两个主要是容易混淆, strong, weak 指的是类型转换. 而我们容易误以为是动态, 静态类型</p>
 <p>这是一个经典的图:</p>
-<img src="/2024/StrongSymbol-WeakSymbol/type.png" class="" title="type">
+<img src="/2024/weak-symbol/type.png" class="" title="type">
 
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>此外还有动态, 静态 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%8D%E5%AD%97%E7%BB%91%E5%AE%9A">绑定</a>, 这种乱七八糟的概念好多, 而且发现自我修养这本书里错误挺多的…</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>此外还有动态, 静态 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%8D%E5%AD%97%E7%BB%91%E5%AE%9A">绑定</a>, 这种容易混淆的概念好多. 也发现 自我修养 这本书里错误挺多的.</p>
 
     </div>
 
@@ -271,9 +267,9 @@
   <p><span>本文标题:</span>强符号, 弱符号 -- 语言中的各种强和弱</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2024年02月17日 - 18:11:46</p>
-  <p><span>最后更新:</span>2024年10月06日 - 01:39:56</p>
-  <p><span>原始链接:</span><a href="/2024/StrongSymbol-WeakSymbol/" title="强符号, 弱符号 -- 语言中的各种强和弱">https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/</a>
-    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/StrongSymbol-WeakSymbol/"  aria-label="复制成功！"></i></span>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
+  <p><span>原始链接:</span><a href="/2024/weak-symbol/" title="强符号, 弱符号 -- 语言中的各种强和弱">https://zombie12138.github.io/2024/weak-symbol/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/weak-symbol/"  aria-label="复制成功！"></i></span>
   </p>
   <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
   <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
@@ -296,9 +292,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Linux-Programming/" rel="tag"># Linux Programming</a>
               <a href="/tags/Link/" rel="tag"># Link</a>
               <a href="/tags/Load/" rel="tag"># Load</a>
+              <a href="/tags/Linux-Programming/" rel="tag"># Linux Programming</a>
           </div>
 
         
@@ -307,7 +303,7 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/RemoteCommand/" rel="prev" title="RemoteCommand -- 在多人账户下保持优雅">
+    <a href="/2024/ssh-remote-command/" rel="prev" title="RemoteCommand -- 在多人账户下保持优雅">
       <i class="fa fa-chevron-left"></i> RemoteCommand -- 在多人账户下保持优雅
     </a></div>
       <div class="post-nav-item">
@@ -372,7 +368,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Symbol-Week-Symbol"><span class="nav-number">2.</span> <span class="nav-text">Strong Symbol, Week Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Reference-Weak-Reference"><span class="nav-number">3.</span> <span class="nav-text">Strong Reference, Weak Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Weak-Type-Static-Dynamic-Type"><span class="nav-number">4.</span> <span class="nav-text">Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Symbol-Weak-Symbol"><span class="nav-number">2.</span> <span class="nav-text">Strong Symbol, Weak Symbol</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2025-7-26-%E5%8B%98%E8%AF%AF"><span class="nav-number">2.1.</span> <span class="nav-text">2025&#x2F;7&#x2F;26 勘误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Reference-Weak-Reference"><span class="nav-number">3.</span> <span class="nav-text">Strong Reference, Weak Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Strong-Weak-Type-Static-Dynamic-Type"><span class="nav-number">4.</span> <span class="nav-text">Strong&#x2F;Weak Type, Static&#x2F;Dynamic Type</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -386,12 +382,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

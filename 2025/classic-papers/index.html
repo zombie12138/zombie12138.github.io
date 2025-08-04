@@ -28,7 +28,7 @@
 <meta property="og:description" content="记录 2012 年之前的又老又经典论文阅读.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-03-08T12:07:42.000Z">
-<meta property="article:modified_time" content="2025-03-29T11:21:36.178Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.906Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Paper">
 <meta name="twitter:card" content="summary">
@@ -186,7 +186,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-29 19:21:36" itemprop="dateModified" datetime="2025-03-29T19:21:36+08:00">2025-03-29</time>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
               </span>
 
           
@@ -221,18 +221,18 @@
 
 一些调度细节:
 
-- Worker 失效: Master 周期性 Ping Worker, 如果没有收集到某个 worker 的消息标记为失效. 任何失效机器上的任务都会标记为 idle 重新调度. 已经完成的 Map 也需要重新执行 (因为存储在本地), 下游没有读取的 Reduce 也会被通知从新的输出读取数据, 而 Reduce 不需要, 因为其输出到 global 的存储.
+- Worker 失效: Master 周期性 Ping Worker, 如果没有收集到某个 worker 的消息标记为失效. 任何失效机器上的任务都会标记为 idle 重新调度. 已经完成的 Map 也需要重新执行 (因为存储在本地), 下游没有读取的 Reduce 也会被通知从新的输出读取数据, 而 Reduce 不需要, 因为其输出到全局文件系统 (GFS).
 - Master 失效: 可以 Master 定期 checkpoints, 但是由于情况较少, 设计较复杂, 因此直接失败.
 - 存储: 采用 GFS 存储, 每个分块 64 MB, 存放 3 拷贝, 尽量将 Map 调度到输入更近的机器上执行.
-- 任务粒度: 正常情况下 M &amp; R 会比集群中 Workder 机器多的多. 这样能更好的进行负载均衡, 失效时候也可以更快恢复. 但是 Master 决定了不能太多, master 执行 `O(M+R)` 次调度, 保存 `O(M*N)` 个状态. 比如使用: 2000 workers, M=200000 R=5000
-- 长尾: 使用 Backup Tasks, 当 MR 接近完成, master 启用 Backup Tasks 来执行 in-progress tasks. 任何一个完成都可以宣告任务成功.
+- 任务粒度: 正常情况下 M &amp; R 会比集群中 Worker 机器多的多. 这样能更好的进行负载均衡, 失效时候也可以更快恢复. 但是 Master 决定了不能太多, master 执行 `O(M+R)` 次调度, 保存 `O(M*R)` 个状态. 比如使用: 2000 workers, M=200000 R=5000
+- 长尾: 使用 Backup Tasks, 当 MR 接近完成, master 启用 Backup Tasks 来执行 in-progress tasks. 任何一个完成, 该任务即被标记为完成.
 
 一些实现细节:
 
 - Partitioning Function: 用户可以自定义 Partitioning Function, 否则使用 Hash + MOD 来进行分区.
 - Combiner Function: Map 可能存在大量的重复的记录, 比如之前的词频统计会产生大量 `<word, 1="">` 的记录, 在 Reduce 拉取 Map 结果之前先执行自定义 Combiner Function, 可以有效节约网络开销.
-- Ordering Guarantees: 给定分区, 中间的 kv pair 是有序的. 这对于随机存储很有用.
-- Skipping Bad Records: 有些记录本身可能就损坏, 在一种模式下可以跳过这种记录. 每个 Worker process 配置一个 signal handler 捕捉 segmentation violations 和 bus errors, 如果遇到错误, 处理函数会 UDP 发送给 Master, 当下次收到同一个位置的损坏记录, 就会下次执行跳过.
+- Ordering Guarantees: 给定分区, 中间的 kv pair 是有序的. 这对于需要按键进行高效随机查找的场景很有用.
+- Skipping Bad Records: 有些记录本身可能就损坏, 在一种模式下可以跳过这种记录. 每个 Worker process 配置一个 signal handler 捕捉 segmentation violations 和 bus errors, 如果遇到错误, 处理函数会 UDP 发送给 Master, 当多次在同一个位置的损坏记录失败, 就会下次执行跳过.
 - Local Execution: 由于分布式执行, 因此 Debug 变得困难, MR 提供了一种本地执行的方式, 在本地串行执行 MR, 也可以指定执行某个 Map.
 
 一个 Sort 工作, 可以看到, backup tasks 可以有效减少尾延迟; 同时细粒度的调度和重试机制可以有效应对大量任务的失败:
@@ -241,7 +241,7 @@
 
 相关工作包括 GFS, River 也是经常听到, 可以后续看下.
 
-可能是因为看过类似的介绍, 看完的感受是, 收获并没有想象中大, 原因吗大概就是这种 MapReduce 的思想和技术实现已经大量被后续的系统所借鉴, 并且在一些其他地方也会多少学习到 MapReduce. 这个论文的的地位和含金量毋庸置疑, 而且最后引用也只有 20 个, 不知道是那时候论文的风格还是这个论文太弔了.
+可能是因为看过类似的介绍, 看完的感受是, 收获并没有想象中大, 原因大概是这种 MapReduce 的思想和技术实现已经大量被后续的系统所借鉴, 并且在一些其他地方也会多少学习到 MapReduce. 这个论文的的地位和含金量毋庸置疑, 而且最后引用也只有 20 个, 不知道是那时候论文的风格还是这个论文太弔了.
 
 <ul id="refplus"><li id="ref-mr" data-num="1">[1] <a href="https://research.google.com/archive/mapreduce-osdi04.pdf" title="" target="">Dean, Jeffrey, and Sanjay Ghemawat. Mapreduce: simplified data processing on large clusters. osdi. Vol. 4. No. 1. 2004.</a></li></ul><p></p>
 </word,>
@@ -283,7 +283,7 @@
   <p><span>本文标题:</span>那些经典论文</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2025年03月08日 - 20:07:42</p>
-  <p><span>最后更新:</span>2025年03月29日 - 19:21:36</p>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
   <p><span>原始链接:</span><a href="/2025/classic-papers/" title="那些经典论文">https://zombie12138.github.io/2025/classic-papers/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2025/classic-papers/"  aria-label="复制成功！"></i></span>
   </p>
@@ -317,8 +317,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/awesome-books/" rel="prev" title="AWSOME BOOKS">
-      <i class="fa fa-chevron-left"></i> AWSOME BOOKS
+    <a href="/2025/awesome-books/" rel="prev" title="AWESOME BOOKS">
+      <i class="fa fa-chevron-left"></i> AWESOME BOOKS
     </a></div>
       <div class="post-nav-item">
     <a href="/2025/proxy-in-docker/" rel="next" title="Docker 中的 Proxy">
@@ -396,12 +396,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

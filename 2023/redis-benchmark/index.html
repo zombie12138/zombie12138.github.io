@@ -20,24 +20,24 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.">
+  <meta name="description" content="最近连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后面试官问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="实测 Redis 吞吐量 | redis-benchmark 源码">
-<meta property="og:url" content="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/index.html">
+<meta property="og:url" content="https://zombie12138.github.io/2023/redis-benchmark/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.">
+<meta property="og:description" content="最近连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后面试官问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/top.png">
+<meta property="og:image" content="https://zombie12138.github.io/2023/redis-benchmark/top.png">
 <meta property="article:published_time" content="2023-10-27T09:27:08.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:39:56.000Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.916Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="Redis">
 <meta property="article:tag" content="Performance">
 <meta property="article:tag" content="Cloud Computing">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/top.png">
+<meta name="twitter:image" content="https://zombie12138.github.io/2023/redis-benchmark/top.png">
 
-<link rel="canonical" href="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/">
+<link rel="canonical" href="https://zombie12138.github.io/2023/redis-benchmark/">
 
 
 <script id="page-configurations">
@@ -160,7 +160,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2023/redis-benchmark/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -190,7 +190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-10-06 01:39:56" itemprop="dateModified" datetime="2024-10-06T01:39:56+08:00">2024-10-06</time>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
               </span>
 
           
@@ -204,35 +204,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.</p>
+        <p>最近连续面试了两个小时, 面的一塌糊涂, 中间甚至想逃跑, 最后面试官问了一个问题, Redis 的吞吐可以是多少, 来实际测一下.</p>
 <span id="more"></span>
 
-<h2 id="有哪些-Benchmark"><a href="#有哪些-Benchmark" class="headerlink" title="有哪些 Benchmark"></a>有哪些 Benchmark</h2><p>首先来看一下 redis 有哪些 Benchmark, 比如之前的 gRPC, 记得官方就会给不同语言接口的性能基准测试; Ray 本身也有, 不过好久没有看过了, 记得跑过两次都把 Ray 跑崩了… Redis 应该也有. 简单搜索了一下.</p>
-<p>首先就是 <a target="_blank" rel="noopener" href="https://github.com/redis/redis/blob/unstable/src/redis-benchmark.c">官方的测试</a>, 如果没有什么需求就用官方的这个啦, 官方用 C 写的应该是性能最高的了吧, 看了一下大概 2k LoC, 这个安装 Redis 的时候应该会自带.</p>
+<h2 id="有哪些-Benchmark"><a href="#有哪些-Benchmark" class="headerlink" title="有哪些 Benchmark"></a>有哪些 Benchmark</h2><p>首先来看一下 redis 有哪些 Benchmark, 比如之前的 gRPC, 记得官方就会给不同语言接口的性能基准测试. 这种组件大部分官方都会自带一份 Benchmark, Redis 应该也有. 简单搜索了一下:</p>
+<p>首先就是 <a target="_blank" rel="noopener" href="https://github.com/redis/redis/blob/unstable/src/redis-benchmark.c">官方的测试</a>, 如果没有什么额外需求就用官方的这个就够了, 官方用 C 写的, 看了一下大概 2k LoC, 这个安装 Redis 的时候应该会自带.</p>
 <p>此外官方还提供了一个更专业的 <a target="_blank" rel="noopener" href="https://github.com/redis/redis-benchmarks-specification">redis-benchmarks-specification</a>, 这个包含不同语言的.</p>
 <p>此外还有一些其他人写的, 比如用 <a target="_blank" rel="noopener" href="https://github.com/popravich/python-redis-benchmark">Python写的</a>, 用 <a target="_blank" rel="noopener" href="https://github.com/smallnest/redis-bench">Go写的</a> 等.</p>
-<p>我们一个一个来看&amp;测试. </p>
-<h2 id="redis-benchmark"><a href="#redis-benchmark" class="headerlink" title="redis-benchmark"></a>redis-benchmark</h2><h3 id="轻量应用服务器上的测试"><a href="#轻量应用服务器上的测试" class="headerlink" title="轻量应用服务器上的测试"></a>轻量应用服务器上的测试</h3><p>实验是在腾讯云4C4G的轻量应用服务器 (KVM over Intel Xeon Gold 6133 CPU @ 2.50GHz), 搭载了 Redis server v=6.0.16.</p>
+<p>我们一个一个来看 &amp; 测试. </p>
+<h2 id="redis-benchmark"><a href="#redis-benchmark" class="headerlink" title="redis-benchmark"></a>redis-benchmark</h2><h3 id="轻量应用服务器上的测试"><a href="#轻量应用服务器上的测试" class="headerlink" title="轻量应用服务器上的测试"></a>轻量应用服务器上的测试</h3><p>实验是在腾讯云 4C4G 的轻量应用服务器 (KVM over Intel Xeon Gold 6133 CPU @ 2.50GHz), 搭载了 Redis server v=6.0.16.</p>
 <p>首先使用自带的, 使用也很简单, 直接就可以用, 会执行一系列的操作, 记录 throughput 和 latency. 我们先清空 redis, 之后测试, 同时打开一个 HTOP 来进行观察.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis-cli flushdb</span><br><span class="line">redis-cli KEYS <span class="string">"*"</span></span><br><span class="line">redis-benchmark</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># clear all keys</span></span><br><span class="line">redis-cli flushdb</span><br><span class="line">redis-cli KEYS <span class="string">"*"</span></span><br><span class="line">redis-benchmark</span><br></pre></td></tr></table></figure>
 
-<p>htop 的画风大概是只有两个Core 3% 以上, Client 占用 97, redis 占用 83</p>
-<img src="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/top.png" title="htop">
+<p>htop 显示 Client 占用 97, redis 占用 83</p>
+<img src="/2023/redis-benchmark/top.png" title="htop">
 
-<p>得到一大串结果 <a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/single_core_bench.txt" title="[点击下载]">[点击下载]</a>. 大概有下面的这些 (GPT讲的)</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">PING_INLINE: 使用内联协议测量PING命令的延迟。这是查看服务器响应速度的基本方式。</span><br><span class="line">PING_BULK: 带有批量负载的PING命令的延迟。</span><br><span class="line">SET: 测量设置键值对的延迟。</span><br><span class="line">GET: 测量检索键的值的延迟。</span><br><span class="line">INCR: 测量增加键值的延迟（用于计数器）。</span><br><span class="line">LPUSH: 测量将值推到列表的左侧的延迟。</span><br><span class="line">RPUSH: 测量将值推到列表的右侧的延迟。</span><br><span class="line">LPOP: 测量从列表的左侧弹出值的延迟。</span><br><span class="line">RPOP: 测量从列表的右侧弹出值的延迟。</span><br><span class="line">SADD: 测量将成员添加到集合的延迟。</span><br><span class="line">HSET: 测量在哈希中设置键值对的延迟。</span><br><span class="line">SPOP: 测量从集合中随机弹出成员的延迟。</span><br><span class="line">ZADD: 测量使用给定分数将成员添加到排序集合的延迟。</span><br><span class="line">ZPOPMIN: 测量从排序集合中弹出得分最低的成员的延迟。</span><br><span class="line">LPUSH (为了对LRANGE进行基准测试): 这是一个准备步骤。将值推入列表，以便可以执行LRANGE基准测试。</span><br><span class="line">LRANGE_100 (前100个元素): 测量检索列表的前100个元素的延迟。</span><br><span class="line">LRANGE_300 (前300个元素): 测量检索列表的前300个元素的延迟。</span><br><span class="line">LRANGE_500 (前450个元素): 这似乎是一个笔误，它应该是前500个元素。它测量检索列表的前450或500个元素的延迟。</span><br><span class="line">LRANGE_600 (前600个元素): 测量检索列表的前600个元素的延迟。</span><br><span class="line">MSET (10个键): 测量在单个命令中设置多个键值对的延迟。</span><br></pre></td></tr></table></figure>
+<p>得到一大串结果 <a href="/2023/redis-benchmark/single_core_bench.txt" title="[点击下载]">[点击下载]</a>. 大概有下面的这些 (GPT讲的)</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">PING_INLINE: 使用内联协议测量PING命令的延迟。这是查看服务器响应速度的基本方式。</span><br><span class="line">PING_BULK: 带有批量负载的PING命令的延迟。</span><br><span class="line">SET: 测量设置键值对的延迟。</span><br><span class="line">GET: 测量检索键的值的延迟。</span><br><span class="line">INCR: 测量增加键值的延迟（用于计数器）。</span><br><span class="line">LPUSH: 测量将值推到列表的左侧的延迟。</span><br><span class="line">RPUSH: 测量将值推到列表的右侧的延迟。</span><br><span class="line">LPOP: 测量从列表的左侧弹出值的延迟。</span><br><span class="line">RPOP: 测量从列表的右侧弹出值的延迟。</span><br><span class="line">SADD: 测量将成员添加到集合的延迟。</span><br><span class="line">HSET: 测量在哈希中设置键值对的延迟。</span><br><span class="line">SPOP: 测量从集合中随机弹出成员的延迟。</span><br><span class="line">ZADD: 测量使用给定分数将成员添加到排序集合的延迟。</span><br><span class="line">ZPOPMIN: 测量从排序集合中弹出得分最低的成员的延迟。</span><br><span class="line">LPUSH (为了对LRANGE进行基准测试): 这是一个准备步骤。将值推入列表，以便可以执行LRANGE基准测试。</span><br><span class="line">LRANGE_100 (前100个元素): 测量检索列表的前100个元素的延迟。</span><br><span class="line">LRANGE_300 (前300个元素): 测量检索列表的前300个元素的延迟。</span><br><span class="line">LRANGE_500 (前500个元素): 这似乎是一个笔误，它应该是前500个元素。它测量检索列表的前450或500个元素的延迟。</span><br><span class="line">LRANGE_600 (前600个元素): 测量检索列表的前600个元素的延迟。</span><br><span class="line">MSET (10个键): 测量在单个命令中设置多个键值对的延迟。</span><br></pre></td></tr></table></figure>
 
 <p>其中除了 RANGE 的操作, 其他的都是 7~8w, 除了 Range 可能高一些 (500 元素的 99% 以上在 3ms 内), 其他的延迟 99% 以上都在 1ms 以内.</p>
-<p>这个还可以多线程, 只要 <code>redis-benchmark --threads 3</code>, 先清空, 再执行, 这时候 Redis-server 的 cpu 可以到达 95 以上, benchmark 的三个 cpu 都在 60 以下. 最终的到的结果 <a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/3_cores_bench.txt" title="[点击下载]">[点击下载]</a>. 大部分都在 8W 附近. </p>
-<p>几乎所有的性能都有一定提升, 除了最后的 <code>MSET(10keys)</code>从<code>78616.35 requests per second</code> 下降到了 <code>66622.25 requests per second</code>, 猜测因为客户端争抢一些其他的资源什么的, 就是图一乐.</p>
-<p>使用两个线程得到的结果就好的多 <a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/2_cores_bench.txt" title="[点击下载]">[点击下载]</a>, 并且所有的都有提升, 一些甚至达到了十万的 qps.</p>
-<p>其实使用10个的pipeline就是会更多 <a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/2_cores_bench.txt" title="[点击下载]">[点击下载]</a>, 达到 70w 附近</p>
-<h3 id="benchmakr源码"><a href="#benchmakr源码" class="headerlink" title="benchmakr源码"></a>benchmakr源码</h3><p>官方的源码应该是 <a target="_blank" rel="noopener" href="https://github.com/redis/redis/blob/unstable/src/redis-benchmark.c">这个文件中</a>.</p>
+<p>这个还可以多线程, 只要 <code>redis-benchmark --threads 3</code>, 先清空, 再执行, 这时候 Redis-server 的 cpu 可以到达 95 以上, benchmark 的三个 cpu 都在 60 以下. 最终的到的结果 <a href="/2023/redis-benchmark/3_cores_bench.txt" title="[点击下载]">[点击下载]</a>. 大部分都在 8W 附近. </p>
+<p>几乎所有的性能都有一定提升, 除了最后的 <code>MSET(10keys)</code>从<code>78616.35 requests per second</code> 下降到了 <code>66622.25 requests per second</code>, 猜测因为客户端争抢一些其他的资源什么的, 本次测试环境受限, 非常不严谨.</p>
+<p>使用两个线程得到的结果就好的多 <a href="/2023/redis-benchmark/2_cores_bench.txt" title="[点击下载]">[点击下载]</a>, 并且所有的都有提升, 一些甚至达到了十万的 qps.</p>
+<p>其实使用 10 个的 pipeline 就是会更多 <a href="/2023/redis-benchmark/2_cores_bench.txt" title="[点击下载]">[点击下载]</a>, 达到 70w 附近</p>
+<h3 id="benchmark-源码"><a href="#benchmark-源码" class="headerlink" title="benchmark 源码"></a>benchmark 源码</h3><p>官方的源码应该是 <a target="_blank" rel="noopener" href="https://github.com/redis/redis/blob/unstable/src/redis-benchmark.c">这个文件中</a>.</p>
 <h4 id="main"><a href="#main" class="headerlink" title="main"></a>main</h4><p>我看的是 6.0.16 的代码</p>
 <p>从 main 自顶向下地看, 首先是设置默认值还有 parse 一些选项. 然后从选项中获取客户端的配置, 设置 pthread 锁等等. 之后是在这里</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (argc) {</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-<p>这个 argc 坑死, 找了半天,  gdb了一下发现就是0… 然后其实是剩余未解析的命令数量 (没想到他会改 argc, 多声明一个变量不好吗)</p>
+<p>这个 argc 递减的处理方式非常隐晦, 看了半天,  gdb了一下发现就是0, 其实是剩余未解析的命令数量 (没想到他会改 argc)</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i = parseOptions(argc,argv);</span><br><span class="line">argc -= i;</span><br><span class="line">argv += i;</span><br></pre></td></tr></table></figure>
 
 <p>下面就是每一个指令的测试啦, 我们就看一个就好啦, 就看 <code>set</code> 吧</p>
@@ -246,31 +246,31 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">benchmark</span><span class="params">(<span class="type">char</span> *title, <span class="type">char</span> *cmd, <span class="type">int</span> len)</span> {</span><br><span class="line">    client c;</span><br><span class="line"></span><br><span class="line">    config.title = title;</span><br><span class="line">    config.requests_issued = <span class="number">0</span>;</span><br><span class="line">    config.requests_finished = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config.num_threads) initBenchmarkThreads();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> thread_id = config.num_threads &gt; <span class="number">0</span> ? <span class="number">0</span> : <span class="number">-1</span>;</span><br><span class="line">    c = createClient(cmd,len,<span class="literal">NULL</span>,thread_id);</span><br><span class="line">    createMissingClients(c);</span><br><span class="line"></span><br><span class="line">    config.start = mstime();</span><br><span class="line">    <span class="keyword">if</span> (!config.num_threads) aeMain(config.el);</span><br><span class="line">    <span class="keyword">else</span> startBenchmarkThreads();</span><br><span class="line">    config.totlatency = mstime()-config.start;</span><br><span class="line"></span><br><span class="line">    showLatencyReport();</span><br><span class="line">    freeAllClients();</span><br><span class="line">    <span class="keyword">if</span> (config.threads) freeBenchmarkThreads();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
 <p>首先如果多线程会初始化 <code>initBenchmarkThreads</code>, 其实是分配结构体空间和初始化 Eventloop, 包含 <code>aeEventLoop</code>, <code>pthread_t</code> 和 <code>index</code></p>
-<p>包含单线程模式, 线程都会执行下面的, 注册定时执行检查 &amp; 更新进度的事件</p>
+<p>线程都会执行下面的, 注册定时执行检查 &amp; 更新进度的事件</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">thread-&gt;el = aeCreateEventLoop(<span class="number">1024</span>*<span class="number">10</span>);</span><br><span class="line">aeCreateTimeEvent(thread-&gt;el,<span class="number">1</span>,showThroughput,<span class="literal">NULL</span>,<span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
 
 <p>之后是创建第一个客户端, 然后创建剩下的 49 个客户端 (默认 50 个客户端), 放到链表里面</p>
 <p>后面就开始执行 <code>aeMain</code> 的事件循环了, 或者让多个子线程去执行这些, 并且 Join, startBenchmarkThreads 就是创建并且 Join 子线程</p>
-<h4 id="create-clint"><a href="#create-clint" class="headerlink" title="create clint"></a>create clint</h4><p>看来问题就是出现在创建客户端, 应该是在这里面完成的事件的注册这些的.</p>
+<h4 id="create-clint"><a href="#create-clint" class="headerlink" title="create clint"></a>create clint</h4><p>看来问题就是出现在创建客户端, 应该是在这里面完成的事件的注册这些的. </p>
 <p>首先就是和服务器建立链接</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-&gt;context = redisConnectUnixNonBlock(config.hostsocket);</span><br></pre></td></tr></table></figure>
 
-<p>如果登录的话就<code>c-&gt;obuf</code>中塞一条登录的命令</p>
+<p>之后是登录, 如果需要登录, 则 <code>c-&gt;obuf</code> 中塞一条登录的命令</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (config.auth) {</span><br><span class="line">    <span class="type">char</span> *buf = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> len;</span><br><span class="line">    <span class="keyword">if</span> (config.user == <span class="literal">NULL</span>)</span><br><span class="line">        len = redisFormatCommand(&amp;buf, <span class="string">"AUTH %s"</span>, config.auth);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        len = redisFormatCommand(&amp;buf, <span class="string">"AUTH %s %s"</span>,</span><br><span class="line">                                    config.user, config.auth);</span><br><span class="line">    c-&gt;obuf = sdscatlen(c-&gt;obuf, buf, len);</span><br><span class="line">    <span class="built_in">free</span>(buf);</span><br><span class="line">    c-&gt;prefix_pending++;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-<p>第一次执行的时候 <code>from</code> 是 <code>nullptr</code>, 之后是上一次的 client 的地址.</p>
+<p>之后是准备测试命令:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (from) {</span><br><span class="line">    c-&gt;obuf = sdscatlen(c-&gt;obuf,</span><br><span class="line">        from-&gt;obuf+from-&gt;prefixlen,</span><br><span class="line">        sdslen(from-&gt;obuf)-from-&gt;prefixlen);</span><br><span class="line">} <span class="keyword">else</span> {</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; config.pipeline; j++)</span><br><span class="line">        c-&gt;obuf = sdscatlen(c-&gt;obuf,cmd,len);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-<p>如果是第一个客户端就塞 <code>pipeline</code> 个命令, 否则就复制第一个客户端的命令. pipeline 默认是 1.</p>
-<p>后面还有一些参数随机数的过程.</p>
-<p>后面就是记录线程 (多线程) 或者是 config (单线程) 的 Eventloop</p>
+<p>如果是第一个客户端就塞 <code>pipeline</code> 个命令, 否则就复制第一个命令. pipeline 默认是 1.</p>
+<p>准备命令之后, 就是记录线程 (多线程) 或者是 config (单线程) 的 <code>Eventloop</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">aeEventLoop *el = <span class="literal">NULL</span>;</span><br><span class="line"><span class="keyword">if</span> (thread_id &lt; <span class="number">0</span>) el = config.el;</span><br><span class="line"><span class="keyword">else</span> {</span><br><span class="line">    benchmarkThread *thread = config.threads[thread_id];</span><br><span class="line">    el = thread-&gt;el;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
-<p>关键就是注册这个, ideal mode 用来耗费服务器的链接的, 所以我们正常测试都是进入 if</p>
+<p>关键就是注册这个, ideal mode 用来测试耗费服务器的链接的, 所以我们正常测试都是进入 true 路径</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (config.idlemode == <span class="number">0</span>)</span><br><span class="line">    aeCreateFileEvent(el,c-&gt;context-&gt;fd,AE_WRITABLE,writeHandler,c);</span><br></pre></td></tr></table></figure>
 
-<p><code>c-&gt;context-&gt;fd</code> 是通过 <code>ctx = redisConnectUnix(hostsocket);</code> 得到的域套接字, 这个就是 redis 为什么快的原因 (也是 redis benchmark 快的原因), epoll, 会在 fd 可写的时候触发 <code>writehandler</code>, 就是不停地写数据发指令啦. 当然这个是在后面的 <code>aeMain</code> 的循环中执行的</p>
-<p>稍微看一眼 <code>aeMain</code>, 里面就是一直调用 <code>aeProcessEvents</code>, 里面会 <code>numevents = aeApiPoll(eventLoop, tvp);</code>, 里面就是 epoll</p>
+<p><code>c-&gt;context-&gt;fd</code> 是之前获得的域套接字. 这里会在 <code>fd</code> 可写的时候触发 <code>writehandler</code>, 就是不停地写数据发指令. 当然这个是在后面的 <code>aeMain</code> 的循环中执行的.</p>
+<p>通过 Unix 域套接字进行通信, 并借助 <code>epoll</code> 实现高效的 I/O 多路复用, 这是其实现高吞吐量的重要原因之一. <code>epoll</code> 它允许单个线程监视和处理成千上万个网络连接, 极大地提升了并发处理能力.</p>
+<p>看 <code>aeMain</code>, 里面一个死循环, 持续调用 <code>aeProcessEvents</code>, 里面会 <code>numevents = aeApiPoll(eventLoop, tvp);</code>, 最终使用的是 <code>epoll</code> 系统调用:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">retval = epoll_wait(state-&gt;epfd,state-&gt;events,eventLoop-&gt;setsize,</span><br><span class="line">    tvp ? (tvp-&gt;tv_sec*<span class="number">1000</span> + tvp-&gt;tv_usec/<span class="number">1000</span>) : <span class="number">-1</span>);</span><br></pre></td></tr></table></figure>
 
 <p>之后处理这些事件, 一共 50 个客户端的 50 个事件, 分别调用下面</p>
@@ -278,16 +278,26 @@
 
 <p>对于时间事件是后面单独处理的</p>
 <p>关键就是我们的 <code>writeHandler</code>, 对于read也是类似的</p>
-<h4 id="writeHandler"><a href="#writeHandler" class="headerlink" title="writeHandler"></a>writeHandler</h4><p>之前注册的就是这个 writeHandler. 就是一开始的初始化操作以及后面的 <code>write</code>, 并且设置读取事件的处理.</p>
+<h4 id="writeHandler"><a href="#writeHandler" class="headerlink" title="writeHandler"></a>writeHandler</h4><p>之前注册的就是这个 <code>writeHandler</code>. 做了以下几件事情:</p>
+<ol>
+<li>发送数据: 调用 <code>write</code> 系统调用，将客户端输出缓冲区 <code>c-&gt;obuf</code> 里的命令数据通过 <code>fd</code> 发送给 Redis 服务器.</li>
+<li><strong>状态翻转</strong>: 当所有数据都成功写入 (<code>sdslen(c-&gt;obuf) == c-&gt;written</code>)，<code>writeHandler</code>会做两件事：删除写事件监听和注册读事件监听.</li>
+</ol>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">writeHandler</span><span class="params">(aeEventLoop *el, <span class="type">int</span> fd, <span class="type">void</span> *privdata, <span class="type">int</span> mask)</span> {</span><br><span class="line">    client c = privdata;</span><br><span class="line">    UNUSED(el);</span><br><span class="line">    UNUSED(fd);</span><br><span class="line">    UNUSED(mask);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Initialize request when nothing was written. */</span></span><br><span class="line">    <span class="keyword">if</span> (c-&gt;written == <span class="number">0</span>) {</span><br><span class="line">        <span class="comment">/* Enforce upper bound to number of requests. */</span></span><br><span class="line">        <span class="type">int</span> requests_issued = <span class="number">0</span>;</span><br><span class="line">        atomicGetIncr(config.requests_issued, requests_issued, <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (requests_issued &gt;= config.requests) {</span><br><span class="line">            freeClient(c);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Really initialize: randomize keys and set start time. */</span></span><br><span class="line">        <span class="keyword">if</span> (config.randomkeys) randomizeClientKey(c);</span><br><span class="line">        <span class="keyword">if</span> (config.cluster_mode &amp;&amp; c-&gt;staglen &gt; <span class="number">0</span>) setClusterKeyHashTag(c);</span><br><span class="line">        atomicGet(config.slots_last_update, c-&gt;slots_last_update);</span><br><span class="line">        c-&gt;start = ustime();</span><br><span class="line">        c-&gt;latency = <span class="number">-1</span>;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">if</span> (sdslen(c-&gt;obuf) &gt; c-&gt;written) {</span><br><span class="line">        <span class="type">void</span> *ptr = c-&gt;obuf+c-&gt;written;</span><br><span class="line">        <span class="type">ssize_t</span> nwritten = write(c-&gt;context-&gt;fd,ptr,sdslen(c-&gt;obuf)-c-&gt;written);</span><br><span class="line">        <span class="keyword">if</span> (nwritten == <span class="number">-1</span>) {</span><br><span class="line">            <span class="keyword">if</span> (errno != EPIPE)</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Writing to socket: %s\n"</span>, strerror(errno));</span><br><span class="line">            freeClient(c);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        c-&gt;written += nwritten;</span><br><span class="line">        <span class="keyword">if</span> (sdslen(c-&gt;obuf) == c-&gt;written) {</span><br><span class="line">            aeDeleteFileEvent(el,c-&gt;context-&gt;fd,AE_WRITABLE);</span><br><span class="line">            aeCreateFileEvent(el,c-&gt;context-&gt;fd,AE_READABLE,readHandler,c);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
 <h4 id="readHandler"><a href="#readHandler" class="headerlink" title="readHandler"></a>readHandler</h4><p>上面把 <code>writeHandler</code> 取消了, 那下次写入是什么时候呢? 来先看读取的处理.</p>
-<p>也是类似的, 处理所有的 <code>pending</code>, 读取回复, 到最后会调用 <code>clientDone</code>, 默认是keepalive, 所以会执行 <code>resetClint</code>, 重新监听写入事件</p>
-<h4 id="freeClinet"><a href="#freeClinet" class="headerlink" title="freeClinet"></a>freeClinet</h4><p>每次benchmark执行完毕最后都要 <code>freeClinet</code>, 这个一般是 <code>readHandler</code> 调用 <code>clientDone</code> 调用的… <code>writeHandler</code> 也有检查, 但是我认为正常是 unreachable 的</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>他这个测试其实一般般, 我只测试了本身的吞吐, 没有测加上持久化的, 可以想象, 持久化他是专门的线程进行写入的, 应该不会影响太多, 但是在我的 4c 上的这个测试可能会争抢资源, 性能下降一点点.</p>
-<p>感觉还是图一乐, 比如很多指令是同一个位置的写入, 一直在cache里面, 无法给内存压力…<br>但是大多数似乎都是这样测的, 毕竟测试是框架性能不是计算机的性能.</p>
-<p>看了一眼 GO 和 Python 的, 其实也差不多, 但是感觉测出来会低一些, 毕竟是 python, 一个循环都得算半天.</p>
-<p>此外也第一次算是看了 redis 源码, 比起其他的比如 gRPC, 源码还是很紧凑易读的… 也领略了以下 epoll 的 io 复用.</p>
+<p>也是类似的, 处理所有的 <code>pending</code>, 读取回复, 到最后会调用 <code>clientDone</code>, 默认是keepalive, 所以会执行 <code>resetClint</code>, 重新监听写入事件, 实现状态翻转.</p>
+<h4 id="freeClinet"><a href="#freeClinet" class="headerlink" title="freeClinet"></a>freeClinet</h4><p>每次benchmark执行完毕最后都要 <code>freeClinet</code>, 这个一般是 <code>readHandler</code> 调用 <code>clientDone</code> 调用的. <code>writeHandler</code> 也有检查, 但是我认为正常是 unreachable 的</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我只测试了本身的吞吐, 没有测加上持久化的, 可以想象, 持久化他是专门的线程进行写入的, 应该不会影响太多, 但是在我的 4c 上的这个测试可能会争抢资源, 性能下降一点点.</p>
+<p>本文中测试非常不严谨, 比如很多指令是同一个位置的写入, 可能一直在cache里面, 无法给内存压力. 如果想要更好的进行测试, 可以 (最好还是有真实的线上负载, 以及超时等):</p>
+<ol>
+<li>分离客户端与服务端;</li>
+<li>使用随机键 (<code>-r</code> 参数) 模拟真实负载;</li>
+<li>开启持久化来评估其性能开销.</li>
+<li>一些其他的参数设置, 比如 client 数, pipeline 数.</li>
+</ol>
+<p>看了一眼 GO 和 Python 的, 其实也差不多, 但是感觉测出来会低一些, 毕竟是 python, 循环的性能开销就会高很多.</p>
+<p>此外也第一次算是看了 redis 源码, 比起其他的比如 gRPC, 源码还是很紧凑易读的. 也领略了以下 epoll 的 I/O 复用.</p>
 
     <style>
     #refplus, #refplus li{ 
@@ -327,9 +337,9 @@
   <p><span>本文标题:</span>实测 Redis 吞吐量 | redis-benchmark 源码</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2023年10月27日 - 17:27:08</p>
-  <p><span>最后更新:</span>2024年10月06日 - 01:39:56</p>
-  <p><span>原始链接:</span><a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/" title="实测 Redis 吞吐量 | redis-benchmark 源码">https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/</a>
-    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/"  aria-label="复制成功！"></i></span>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
+  <p><span>原始链接:</span><a href="/2023/redis-benchmark/" title="实测 Redis 吞吐量 | redis-benchmark 源码">https://zombie12138.github.io/2023/redis-benchmark/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2023/redis-benchmark/"  aria-label="复制成功！"></i></span>
   </p>
   <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
   <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
@@ -363,11 +373,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/%E9%B2%B2%E9%B9%8F920%E8%B5%84%E6%96%99%E6%80%BB%E7%BB%93/" rel="prev" title="鲲鹏 920 资料总结">
+    <a href="/2023/kunpeng920/" rel="prev" title="鲲鹏 920 资料总结">
       <i class="fa fa-chevron-left"></i> 鲲鹏 920 资料总结
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/" rel="next" title="AMD IPU 初体验">
+    <a href="/2024/AMD-IPU/" rel="next" title="AMD IPU 初体验">
       AMD IPU 初体验 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -428,7 +438,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B-Benchmark"><span class="nav-number">1.</span> <span class="nav-text">有哪些 Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-benchmark"><span class="nav-number">2.</span> <span class="nav-text">redis-benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.</span> <span class="nav-text">轻量应用服务器上的测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#benchmakr%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">benchmakr源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#main"><span class="nav-number">2.2.1.</span> <span class="nav-text">main</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#benchmark"><span class="nav-number">2.2.2.</span> <span class="nav-text">benchmark</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#create-clint"><span class="nav-number">2.2.3.</span> <span class="nav-text">create clint</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#writeHandler"><span class="nav-number">2.2.4.</span> <span class="nav-text">writeHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#readHandler"><span class="nav-number">2.2.5.</span> <span class="nav-text">readHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#freeClinet"><span class="nav-number">2.2.6.</span> <span class="nav-text">freeClinet</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B-Benchmark"><span class="nav-number">1.</span> <span class="nav-text">有哪些 Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-benchmark"><span class="nav-number">2.</span> <span class="nav-text">redis-benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.</span> <span class="nav-text">轻量应用服务器上的测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#benchmark-%E6%BA%90%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">benchmark 源码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#main"><span class="nav-number">2.2.1.</span> <span class="nav-text">main</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#benchmark"><span class="nav-number">2.2.2.</span> <span class="nav-text">benchmark</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#create-clint"><span class="nav-number">2.2.3.</span> <span class="nav-text">create clint</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#writeHandler"><span class="nav-number">2.2.4.</span> <span class="nav-text">writeHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#readHandler"><span class="nav-number">2.2.5.</span> <span class="nav-text">readHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#freeClinet"><span class="nav-number">2.2.6.</span> <span class="nav-text">freeClinet</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -442,12 +452,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

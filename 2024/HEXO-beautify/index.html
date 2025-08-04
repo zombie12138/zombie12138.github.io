@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zombie12138.github.io/2024/HEXO-beautify/little-tail.png">
 <meta property="article:published_time" content="2024-08-10T11:34:52.000Z">
-<meta property="article:modified_time" content="2025-03-29T11:19:05.058Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.906Z">
 <meta property="article:author" content="zombie12138">
 <meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary">
@@ -188,7 +188,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-29 19:19:05" itemprop="dateModified" datetime="2025-03-29T19:19:05+08:00">2025-03-29</time>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
               </span>
 
           
@@ -202,7 +202,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这个 Blog 只安装了一个 next 主题, 就再也没有管过, 来浅浅的折腾一下. 持续更新~</p>
+        <p>这个 Blog 只安装了一个 <code>next</code> 主题, 就再也没有管过, 来浅浅的折腾一下. 持续更新~</p>
 <span id="more"></span>
 
 <h2 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h2><p>首先就是 Google Search Console 里面配置一下站点, 因为这个 <code>zombie12138.github.io</code> 的这个 domain 不是我们的, 我们选择网址前缀, 输入之后只要把 google 的这个文件验证放到仓库的根目录, 然后点击验证就可以啦.</p>
@@ -211,28 +211,27 @@
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">sitemap:</span> <span class="string">/sitemap.xml</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-sitemap</span></span><br></pre></td></tr></table></figure>
 
 <p>安装插件</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先不管 baidu 了</span></span><br><span class="line"><span class="comment"># npm install hexo-generator-baidu-sitemap --save</span></span><br><span class="line">npm install hexo-generator-sitemap --save</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先不管 baidu 了</span></span><br><span class="line"><span class="comment"># npm install hexo-generator-baidu-sitemap</span></span><br><span class="line">npm install hexo-generator-sitemap </span><br></pre></td></tr></table></figure>
 
-<p>直接 <code>hexo g</code>, 这时候 <code>public</code> 文件夹多了 <code>sitemap.xml</code> 和 <code>sitemap.txt</code>, <code>hexo d</code>, 在 Google Search Console 里面提交这个 xml 的 sitemap 就可以了</p>
-<h2 id="参考文献脚注"><a href="#参考文献脚注" class="headerlink" title="参考文献脚注"></a>参考文献脚注</h2><p>一直都是直接来很本片文章一样写到一起, 不写脚注, 但是这样也太麻烦了, 尤其是需要标注引用的时候, 这个时候可能需要标号, 这就太麻烦了.</p>
+<p>直接 <code>hexo g</code>, 这时候 <code>public</code> 文件夹多了 <code>sitemap.xml</code>, <code>hexo d</code>, 在 Google Search Console 里面提交 <code>sitemap.xml</code> 就可以了</p>
+<h2 id="参考文献脚注"><a href="#参考文献脚注" class="headerlink" title="参考文献脚注"></a>参考文献脚注</h2><p>在写这篇文章之前, 我的习惯是像本文一样, 将参考文献直接罗列在文末, 而不是使用脚注功能, 但当引用较多时, 手动管理编号会很麻烦</p>
 <p>所以网上找了一下, 首先看到的是 <a target="_blank" rel="noopener" href="https://github.com/kchen0x/hexo-reference">hexo-reference</a>, 但是看了一个 <a target="_blank" rel="noopener" href="https://blog.zhaitianye.com/2019/11/hexo%E5%A2%9E%E5%8A%A0%E8%84%9A%E6%B3%A8%E5%8A%9F%E8%83%BD/">例子</a>, 感觉没有悬浮效果不太方便, 又看了一篇 <a target="_blank" rel="noopener" href="https://kchen.cc/2016/11/10/footnotes-in-hexo/">博客</a>, 他是自己配置的 <code>Hint.css</code>.</p>
-<p>最终hexo官方网站发现了这个 <a target="_blank" rel="noopener" href="https://github.com/MaxChang3/hexo-reference-plus/blob/main/README_CN.md">hexo-reference-plus</a>, 自带脚注预览, 直接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install hexo-reference-plus</span><br></pre></td></tr></table></figure>
+<p>最终 hexo 官方网站发现了 <a target="_blank" rel="noopener" href="https://github.com/MaxChang3/hexo-reference-plus/blob/main/README_CN.md">hexo-reference-plus</a> 这个插件, 自带脚注预览. 安装:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-reference-plus</span><br></pre></td></tr></table></figure>
 
 <p>开启 <code>tippy.js</code> 的预览效果, 在 <code>_config.yml</code> 中修改</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hexo-reference-plus</span></span><br><span class="line"><span class="attr">refplus:</span></span><br><span class="line">  <span class="attr">tippy:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 
-<p>使用时候需要在开头添加 <code>refplus: true</code>, 在末尾</p>
+<p>使用时候需要在开头添加 <code>refplus: true</code>, 在末尾添加</p>
 <figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% references %&#125;</span><br><span class="line">[mcf-2021]  Max C. Foo.  A way to write an article.[J] Journal of Kelaideng University Samwin School. 2021.3 300-321.</span><br><span class="line">&#123;% endreferences %&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在文章中可以使用 <code>So here is the way what Max C. Foo(2021)&#123;% ref mcf-2021 %&#125; do.</code>.</p>
-<p>如果不想都要 <code>refplus</code> 的效果可以在末尾的 <code>references</code> 后面加一个 <code>hide</code></p>
-<p>效果参见 <a href="/2021/hello-world/" title="Hello World">hello-world</a></p>
-<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>hexo 只会同步生成的 public 的静态页面, 但是对于源码, 我们想要同步的话可以手动操作.</p>
-<p>已经自带了 <code>.gitignore</code>, 可以直接按照普通的项目在根目录进行 git 操作就可以了</p>
+<p>在文章中可以使用 <code>So here is the way what Max C. Foo(2021)&#123;% ref mcf-2021 %&#125; do.</code>. 最终效果: <a href="/2021/hello-world/" title="Hello World">hello-world</a></p>
+<p>如果在文章中使用了引用，但又不想在文末显示完整的参考文献列表，可以在 <code>references</code> 标签中加入 <code>hide</code> 参数</p>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p><code>Hexo</code> 的 <code>deploy</code> 命令（如 <code>hexo d</code>）默认只负责部署 <code>public</code> 目录中生成的静态网站文件. 对于博客的 Markdown 源文件, 主题配置等, 如果需要同步, 则需要我们手动通过 <code>Git</code> 等工具进行版本控制.</p>
+<p>已经自带了 <code>.gitignore</code>, 可以直接按照普通的项目在根目录进行 <code>git</code> 操作就可以了</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.DS_Store</span><br><span class="line">Thumbs.db</span><br><span class="line">db.json</span><br><span class="line">*.log</span><br><span class="line">node_modules/</span><br><span class="line">public/</span><br><span class="line">.deploy*/</span><br></pre></td></tr></table></figure>
 
-<h2 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h2><p>每一个Hexo的文章后面加一个小尾巴, 主要参考了 <a target="_blank" rel="noopener" href="https://blog.pangao.vip/Hexo%E5%8D%9A%E5%AE%A2NexT%E4%B8%BB%E9%A2%98%E7%BE%8E%E5%8C%96%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%87%E7%AB%A0%E5%BA%95%E9%83%A8%E7%89%88%E6%9D%83%E5%A3%B0%E6%98%8E/">Blog</a>.<br>在目录<code>themes/next/layout/_macro/</code>下添加<code>copyright.swig</code>:</p>
+<h2 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h2><p>每一个 <code>Hexo</code> 的文章后面加一个小尾巴, 主要参考了 <a target="_blank" rel="noopener" href="https://blog.pangao.vip/Hexo%E5%8D%9A%E5%AE%A2NexT%E4%B8%BB%E9%A2%98%E7%BE%8E%E5%8C%96%E4%B9%8B%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%87%E7%AB%A0%E5%BA%95%E9%83%A8%E7%89%88%E6%9D%83%E5%A3%B0%E6%98%8E/">Blog</a>.<br>在目录 <code>themes/next/layout/_macro/</code> 下添加 <code>copyright.swig</code>:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if page.copyright %&#125;</span><br><span class="line">&lt;div class=&quot;my-post-copyright&quot;&gt;</span><br><span class="line">  &lt;script src=&quot;//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!-- JS库 sweetalert 可修改路径 --&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script src=&quot;http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;p&gt;&lt;span&gt;本文标题:&lt;/span&gt;&#123;&#123; page.title &#125;&#125;&lt;/a&gt;&lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;文章作者:&lt;/span&gt;&#123;&#123; theme.author &#125;&#125;&lt;/a&gt;&lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;发布时间:&lt;/span&gt;&#123;&#123; page.date.format(&quot;YYYY年MM月DD日 - HH:mm:ss&quot;) &#125;&#125;&lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;最后更新:&lt;/span&gt;&#123;&#123; page.updated.format(&quot;YYYY年MM月DD日 - HH:mm:ss&quot;) &#125;&#125;&lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;原始链接:&lt;/span&gt;&lt;a href=&quot;&#123;&#123; url_for(page.path) &#125;&#125;&quot; title=&quot;&#123;&#123; page.title &#125;&#125;&quot;&gt;&#123;&#123; page.permalink &#125;&#125;&lt;/a&gt;</span><br><span class="line">    &lt;span class=&quot;copy-path&quot;  title=&quot;点击复制文章链接&quot;&gt;&lt;i class=&quot;fa fa-clipboard&quot; data-clipboard-text=&quot;&#123;&#123; page.permalink &#125;&#125;&quot;  aria-label=&quot;复制成功！&quot;&gt;&lt;/i&gt;&lt;/span&gt;</span><br><span class="line">  &lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;特殊声明:&lt;/span&gt;本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。&lt;/p&gt;</span><br><span class="line">  &lt;p&gt;&lt;span&gt;许可协议:&lt;/span&gt;&lt;i class=&quot;fa fa-creative-commons&quot;&gt;&lt;/i&gt; &lt;a rel=&quot;license&quot; href=&quot;https://creativecommons.org/licenses/by-nc-nd/4.0/&quot; target=&quot;_blank&quot; title=&quot;Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)&quot;&gt;署名-非商业性使用-禁止演绎 4.0 国际&lt;/a&gt; 转载请保留原文链接及作者。&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var clipboard = new Clipboard(&#x27;.fa-clipboard&#x27;);</span><br><span class="line">    clipboard.on(&#x27;success&#x27;, $(function()&#123;</span><br><span class="line">      $(&quot;.fa-clipboard&quot;).click(function()&#123;</span><br><span class="line">        swal(&#123;</span><br><span class="line">          title: &quot;&quot;,</span><br><span class="line">          text: &#x27;复制成功&#x27;,</span><br><span class="line">          html: false,</span><br><span class="line">          timer: 500,</span><br><span class="line">          showConfirmButton: false</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;));</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在目录 <code>themes/next/source/css/_common/components/post/</code> 下添加 <code>my-post-copyright.styl</code>, 内容如下</p>
@@ -251,7 +250,7 @@
 <img src="/2024/HEXO-beautify/little-tail.png" class="" title="小尾巴~">
 
 <h2 id="数学公式"><a href="#数学公式" class="headerlink" title="数学公式"></a>数学公式</h2><h2 id="链接自动解析"><a href="#链接自动解析" class="headerlink" title="链接自动解析"></a>链接自动解析</h2><h2 id="图片标号"><a href="#图片标号" class="headerlink" title="图片标号"></a>图片标号</h2><h2 id="代码美化"><a href="#代码美化" class="headerlink" title="代码美化"></a>代码美化</h2><h2 id="PV"><a href="#PV" class="headerlink" title="PV"></a>PV</h2><h2 id="评论区"><a href="#评论区" class="headerlink" title="评论区"></a>评论区</h2><h2 id="加密博客"><a href="#加密博客" class="headerlink" title="加密博客"></a>加密博客</h2><p>本来以为需要自己写, 但是发现已经存在 <a target="_blank" rel="noopener" href="https://github.com/D0n9X1n/hexo-blog-encrypt">加密博客</a> 了.</p>
-<p>直接 <code>npm install --save hexo-blog-encrypt</code> 然后文章设置 <code>password: xxx</code> 就可以了</p>
+<p>直接 <code>npm install hexo-blog-encrypt</code> 然后文章设置 <code>password: xxx</code> 就可以了</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><p><a target="_blank" rel="noopener" href="https://mizeri.github.io/2021/04/18/hexo-sitemap-google/">Hexo博客站点地图配置（Google） - Mizeri’s github page</a></p>
 </li>
@@ -288,7 +287,7 @@
   <p><span>本文标题:</span>HEXO 美化</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2024年08月10日 - 19:34:52</p>
-  <p><span>最后更新:</span>2025年03月29日 - 19:19:05</p>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
   <p><span>原始链接:</span><a href="/2024/HEXO-beautify/" title="HEXO 美化">https://zombie12138.github.io/2024/HEXO-beautify/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/HEXO-beautify/"  aria-label="复制成功！"></i></span>
   </p>
@@ -401,12 +400,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

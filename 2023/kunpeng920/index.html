@@ -20,22 +20,26 @@
     var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="买了个火影众颜 众颜U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种噱头, 但是还是不错的. 但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 issue 最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 He">
+  <meta name="description" content="最近一直在看鲲鹏的相关的论文之类的, 资料较少而且又泥沙俱下. 现在就来盘点一下我收集到的鲲鹏的资料.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AMD IPU 初体验">
-<meta property="og:url" content="https://zombie12138.github.io/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/index.html">
+<meta property="og:title" content="鲲鹏 920 资料总结">
+<meta property="og:url" content="https://zombie12138.github.io/2023/kunpeng920/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
-<meta property="og:description" content="买了个火影众颜 众颜U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种噱头, 但是还是不错的. 但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 issue 最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 He">
+<meta property="og:description" content="最近一直在看鲲鹏的相关的论文之类的, 资料较少而且又泥沙俱下. 现在就来盘点一下我收集到的鲲鹏的资料.">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-02-10T08:10:49.000Z">
-<meta property="article:modified_time" content="2024-10-05T17:32:14.000Z">
+<meta property="og:image" content="https://zombie12138.github.io/2023/kunpeng920/Kungpeng-pipeline.jpg">
+<meta property="article:published_time" content="2023-10-20T07:43:53.000Z">
+<meta property="article:modified_time" content="2025-08-04T17:52:46.146Z">
 <meta property="article:author" content="zombie12138">
-<meta property="article:tag" content="AMD">
-<meta property="article:tag" content="Deep Learning">
-<meta property="article:tag" content="Inference">
+<meta property="article:tag" content="HPC">
+<meta property="article:tag" content="Kunpeng">
+<meta property="article:tag" content="ARM">
+<meta property="article:tag" content="CPU">
+<meta property="article:tag" content="Survey">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2023/kunpeng920/Kungpeng-pipeline.jpg">
 
-<link rel="canonical" href="https://zombie12138.github.io/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/">
+<link rel="canonical" href="https://zombie12138.github.io/2023/kunpeng920/">
 
 
 <script id="page-configurations">
@@ -48,7 +52,7 @@
   };
 </script>
 
-  <title>AMD IPU 初体验 | zombie's</title>
+  <title>鲲鹏 920 资料总结 | zombie's</title>
   
 
 
@@ -158,7 +162,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2023/kunpeng920/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -171,7 +175,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          AMD IPU 初体验
+          鲲鹏 920 资料总结
         </h1>
 
         <div class="post-meta">
@@ -181,14 +185,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-02-10 16:10:49" itemprop="dateCreated datePublished" datetime="2024-02-10T16:10:49+08:00">2024-02-10</time>
+              <time title="创建时间：2023-10-20 15:43:53" itemprop="dateCreated datePublished" datetime="2023-10-20T15:43:53+08:00">2023-10-20</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-10-06 01:32:14" itemprop="dateModified" datetime="2024-10-06T01:32:14+08:00">2024-10-06</time>
+                <time title="修改时间：2025-08-05 01:52:46" itemprop="dateModified" datetime="2025-08-05T01:52:46+08:00">2025-08-05</time>
               </span>
 
           
@@ -202,33 +206,71 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>买了个火影众颜 众颜U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种噱头, 但是还是不错的.</p>
-<p>但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 <a target="_blank" rel="noopener" href="https://github.com/amd/RyzenAI-SW/issues/5">issue</a></p>
-<p>最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 Hello world 了</p>
+        <p>最近一直在看鲲鹏的相关的论文之类的, 资料较少而且又泥沙俱下. 现在就来盘点一下我收集到的鲲鹏的资料.</p>
 <span id="more"></span>
 
-<h2 id="安装-Driver-和-Ryzen-AI-Software"><a href="#安装-Driver-和-Ryzen-AI-Software" class="headerlink" title="安装 Driver 和 Ryzen AI Software"></a>安装 Driver 和 Ryzen AI Software</h2><p>除了 BIOS, 需要的就是驱动啦, 只要看官方的 <a target="_blank" rel="noopener" href="https://ryzenai.docs.amd.com/en/latest/inst.html">指南</a> 下载安装就可以了</p>
-<p>但是这个什么 software 还需要 CMake, 需要 vs, 还需要 Conda</p>
-<p>我真的很不喜欢这个东西, 开始看这个 <code>install.bat</code> 到底在做什么, 比Sh还反人类, 手动安装一下, 除了环境检查, 输出提示和错误处理, 就是这几个</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CALL</span> conda env create --name <span class="variable">%CONDAENVNAME%</span> --file=env.yaml</span><br><span class="line"><span class="keyword">CALL</span> conda run -n <span class="variable">%CONDAENVNAME%</span> pip install -r requirements_ryzenai_voe.txt</span><br><span class="line"><span class="built_in">pushd</span> voe-<span class="number">4</span>.<span class="number">0</span>-win_amd64</span><br><span class="line"><span class="keyword">CALL</span> conda run -n <span class="variable">%CONDAENVNAME%</span> python installer.py</span><br><span class="line"><span class="built_in">popd</span></span><br><span class="line"><span class="keyword">CALL</span> conda env config vars <span class="built_in">set</span>  XLNX_VART_FIRMWARE=<span class="variable">%ORIGDIR%</span>\voe-<span class="number">4</span>.<span class="number">0</span>-win_amd64\<span class="number">1</span>x4.xclbin -n <span class="variable">%CONDAENVNAME%</span></span><br></pre></td></tr></table></figure>
+<p>比如鲲鹏的浮点数 GFLOPS, 比如 <a href="/2023/gflops/" title="CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS">博客</a> 中看到的4个 GFLOPS 结论, 只有两个正确的, 正确率 50%.</p>
+<h2 id="Papers"><a href="#Papers" class="headerlink" title="Papers"></a>Papers</h2><p>文<sup class="refplus-num"><a href="#ref-Kunpeng-soc">[1]</a></sup>是官方发的, 讲的鲲鹏 SoC 的设计, 非常值得一看.
 
-<p>看了一下要装的包都是 3.9 的, 但是… 我是 Python3.12, 它只有 3.9 的包… 研究了一下这个 voe 主要是 <a target="_blank" rel="noopener" href="https://docs.xilinx.com/r/zh-CN/ug1414-vitis-ai/Vitis-AI-%E6%A6%82%E8%BF%B0">Vitis</a> 里面的一个东西, 这个 vitis 似乎是类似类似 tensorrt 的一个东西. </p>
-<blockquote>
-<p>Vitis AI Execution Provider (Vitis AI EP) 提供了含 AMD DPU 的硬件加速 AI 推断<br>Vitis AI ONNXRuntime Engine (VOE) 充当的是 Vitis AI EP 的实现库。</p>
-</blockquote>
-<p>找不到任何相关的版本, 只能灰溜溜安装 Conda, 然后发现这玩意只能 vs2019, 检查的注册表, 按说差不多, 把这部分注释掉就好啦</p>
-<p>最后提示环境创建成功就可以了</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda env list</span><br><span class="line">activate ryzenai-<span class="number">1</span>.<span class="number">0</span>-<span class="number">20240209</span>-<span class="number">232737</span></span><br></pre></td></tr></table></figure>
+另外有一篇测评文章<sup class="refplus-num"><a href="#ref-Evaluating_920">[2]</a></sup>, 比较一般, 而且有些数据存在事实错误.
 
-<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ryzen-ai-sw-<span class="number">1</span>.<span class="number">0</span>.<span class="number">1</span>\ryzen-ai-sw-<span class="number">1</span>.<span class="number">0</span>.<span class="number">1</span>\quicktest</span><br><span class="line">curl https://www.cs.toronto.edu/~kriz/cifar-<span class="number">10</span>-sample/bird6.png --output image_0.png</span><br><span class="line">python -m pip install -r requirements.txt</span><br><span class="line">python quicktest.py --ep ipu</span><br></pre></td></tr></table></figure>
+## 官网文档和论坛
 
-<p>下载下来是一个非常小非常小的鸟图.</p>
-<h2 id="环境克隆"><a href="#环境克隆" class="headerlink" title="环境克隆"></a>环境克隆</h2><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create --name amdai_backup --clone amdai</span><br></pre></td></tr></table></figure>
+个人感觉官网的文档比较混乱. 目录结构比较怪, 要找半天, 其次就是很多资源需要登陆才能下载, 甚至没有权限或者直接已经下架.
 
-<p>为什么要复制一个环境呢… 这是因为… AMD 之后的环境坏掉了…</p>
-<p>我只装了一些常见的库就不行了 (torch 套件, jupyter 这些), 提示是 <code>custom_op.cpp:259: Error: Failed to create GE handle: Error: No compatible xclbin file found.</code>. 懒得弄, 看起来像是 VOE 的锅.</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>AM D真的… 开源就生态不行, 文档都找不到, 要么直接不学好不开源. 这个 VOE 我都不知道在哪找 (虽然也没怎么找). IPU 更是很多机器没有 BIOS 开启. 包括文档里面, 一会儿叫 IPU 一会儿叫 NPU, 而且很多都是只给 Bin, 教程只有 hello world 还结构清晰了, 其他都是乱起八糟的…</p>
-<p>模型是量化过的, log 显示 99.5% 以上的负载在IPU, 这个模型实测速度和 CPU 差不多, 看了一下 onnx 的自带的 profile 结果, 总感觉哪里怪怪的… 唯一好处好处不太占用 CPU 资源</p>
+但是官网<sup class="refplus-num"><a href="#ref-Offical">[3]</a></sup>还是有一些不错的资料, 比如 \&lt;鲲鹏优化十板斧\&gt; (这个也有导出的 <a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf" title="" target="">PDF版本</a> ), 里面只是讲了一些鲲鹏性能调优基础知识, 鲲鹏软件迁移基础知识; 也有一些 debug 案例之类的.
+
+鲲鹏的 <a href="https://www.hikunpeng.com/forum/" title="" target="">论坛</a> 里面似乎也还好, 可以看一下, 这个我没怎么看过.
+
+## Slides
+
+北交大的 PPT<sup class="refplus-num"><a href="#ref-slides-bjtu">[4]</a></sup> 似乎是华为内部放给高校做教学的, 里面有一些资料是其他地方没有的. 比如鲲鹏的 pipeline 就会比 <a href="https://www.hikunpeng.com/document/detail/zh/kunpenggrf/progtuneg/kunpengprogramming_05_0009.html" title="" target="">官网的</a> 详细好多, 这个我没有在官网找到对应的位置, 所以还是直接放这里了.
+
+<img src="/2023/kunpeng920/Kungpeng-pipeline.jpg" title="Kungpeng-pipeline">
+
+另一个就是上海交通大学在 ARM HPC Asia 2019 的一次演讲中的 PPT<sup class="refplus-num"><a href="#ref-ARMv8Kunpeng">[5]</a></sup>, 这个有一些评测数据.
+
+其他的就是官网中提到的了.
+
+## Books
+
+首先是戴志涛和刘健培的 \&lt;鲲鹏处理器 - 架构与编程\&gt;, ISBN 978-7-302-56268-9. 个人感觉比较枯燥, 就是介绍 ARMv8 和鲲鹏的参数和特性, 外加一些官网的资料, 比如生态啊什么的.
+
+另一个就是 \&lt;鲲鹏架构入门与实战\&gt;／张磊编, ISBN 978-7-302-57687-7. 感觉也差不多.
+
+## Blogs
+
+有一些测评的<sup class="refplus-num"><a href="#ref-polardb">[6]</a></sup><sup class="refplus-num"><a href="#ref-plantegg">[7]</a></sup>.
+
+值得一提的是知乎大神JamesAslan的测评<sup class="refplus-num"><a href="#ref-JamesAslan0">[8]</a></sup><sup class="refplus-num"><a href="#ref-JamesAslan1">[9]</a></sup>, 里面详细介绍了 CPU 前后端的各种测试和数据, 他说有些数据是逆向出来的, 但是一些数据感觉难度还蛮大的, 感觉还蛮有意思, 后续也可以尝试测试下.
+
+## 仓库
+
+这个直接看Github的官方的仓库<sup class="refplus-num"><a href="#ref-kunpengcompute">[10]</a></sup>就好了, 感觉其中特别有用的资源不多.
+
+里面有一个博客<sup class="refplus-num"><a href="#ref-kunpengcomputeio">[11]</a></sup>, 是其他人投稿的, 感觉有些还可以, 没有仔细看.
+
+## 数据
+
+### PMU
+
+PMU 就是 Performance Monitoring Unit.
+
+可以直接去看 ARMv8<sup class="refplus-num"><a href="#ref-linux-arm-pmu">[13]</a></sup> 的一些计数器, 鲲鹏处理器似乎没有实现 ARMv8 规范中的一部分性能计数器.
+
+还有一些鲲鹏的 PMU<sup class="refplus-num"><a href="#ref-linux-kunpeng-pmu">[12]</a></sup>, 我这里由于kernel版本太低全都没法用... 但是这里也有一些鲲鹏的 [TMA](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/pmu-events/arch/arm64/hisilicon/hip08/metrics.json) (Top-down Micro-architecture Analysis) 模型的计算, 但是不太好用, 其定义其实是有问题的.
+
+### 指令延迟
+
+这些指令的延迟和吞吐可以看 LLVM 代码里面的信息<sup class="refplus-num"><a href="#ref-llvm">[14]</a></sup>.
+
+## 总结
+
+东一块西一块, 资料其实还是挺多的, 但是找起来还蛮麻烦, 本文简单汇总.
+
+## 参考文献
+
+</p><ul id="refplus"><li id="ref-Kunpeng-soc" data-num="1">[1]  Xia, Jing, et al. "Kunpeng 920: The first 7-nm chiplet-based 64-core arm soc for cloud services." IEEE Micro 41.5 (2021): 67-75.</li><li id="ref-Evaluating_920" data-num="2">[2]  Afanasyev, Ilya, and Dmitry Lichmanov. "Evaluating the performance of Kunpeng 920 processors on modern HPC applications." International Conference on Parallel Computing Technologies. Cham: Springer International Publishing, 2021.</li><li id="ref-Offical" data-num="3">[3]  <a href="https://www.hikunpeng.com/zh/document" title="" target="">鲲鹏文档</a></li><li id="ref-slides-bjtu" data-num="4">[4]  <a href="http://cc.bjtu.edu.cn:81/meol/analytics/resPdfShow.do;jsessionid=0BC326B1C3C982D72FA190F9AD694646?resId=335832&lid=12291" title="" target="">《计算机组成与结构》鲲鹏处理器</a></li><li id="ref-ARMv8Kunpeng" data-num="5">[5]  <a href="https://static.linaro.org/event-resources/arm-hpc-2019/slides/BenchmarkingHuaweiARMMulti-CoreProcessorsforHPCworkloads6.pdf" title="" target="">Benchmarking Huawei ARM Multi Core Processors for HPC workloads</a></li><li id="ref-polardb" data-num="6">[6]  <a href="https://zhuanlan.zhihu.com/p/540655373" title="" target="">主流CPU性能摸底(Intel/AMD/鲲鹏/海光/飞腾)</a></li><li id="ref-plantegg" data-num="7">[7]  <a href="https://plantegg.github.io/2021/06/18/%E5%87%A0%E6%AC%BECPU%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" title="" target="">Intel、海光、鲲鹏920、飞腾2500 CPU性能对比</a></li><li id="ref-JamesAslan0" data-num="8">[8]  <a href="https://zhuanlan.zhihu.com/p/614965112" title="" target="">华为鲲鹏920 TSV110微架构评测（上）:初露锋芒，砥砺前行</a></li><li id="ref-JamesAslan1" data-num="9">[9]  <a href="https://zhuanlan.zhihu.com/p/616648182" title="" target="">华为鲲鹏920 TSV110微架构评测（下）:初露锋芒，砥砺前行</a></li><li id="ref-kunpengcompute" data-num="10">[10]  <a href="https://github.com/kunpengcompute" title="" target="">Kunpengcompute - github</a></li><li id="ref-kunpengcomputeio" data-num="11">[11]  <a href="https://kunpengcompute.github.io/" title="" target="">Kunpeng Compute Team Blog</a></li><li id="ref-linux-kunpeng-pmu" data-num="12">[12]  <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/pmu-events/arch/arm64/hisilicon" title="" target="">hisilicon pmu</a></li><li id="ref-linux-arm-pmu" data-num="13">[13]  <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/pmu-events/arch/arm64" title="" target="">arm64 pmu</a></li><li id="ref-llvm" data-num="14">[14]  <a href="https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/AArch64/AArch64SchedTSV110.td" title="" target="">llvm - AArch64SchedTSV110.td</a></li></ul><p></p>
 
     <style>
     #refplus, #refplus li{ 
@@ -265,12 +307,12 @@
   <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
 
-  <p><span>本文标题:</span>AMD IPU 初体验</a></p>
+  <p><span>本文标题:</span>鲲鹏 920 资料总结</a></p>
   <p><span>文章作者:</span></a></p>
-  <p><span>发布时间:</span>2024年02月10日 - 16:10:49</p>
-  <p><span>最后更新:</span>2024年10月06日 - 01:32:14</p>
-  <p><span>原始链接:</span><a href="/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/" title="AMD IPU 初体验">https://zombie12138.github.io/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/</a>
-    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/AMD-IPU%E5%88%9D%E4%BD%93%E9%AA%8C/"  aria-label="复制成功！"></i></span>
+  <p><span>发布时间:</span>2023年10月20日 - 15:43:53</p>
+  <p><span>最后更新:</span>2025年08月05日 - 01:52:46</p>
+  <p><span>原始链接:</span><a href="/2023/kunpeng920/" title="鲲鹏 920 资料总结">https://zombie12138.github.io/2023/kunpeng920/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2023/kunpeng920/"  aria-label="复制成功！"></i></span>
   </p>
   <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
   <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
@@ -293,9 +335,11 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/AMD/" rel="tag"># AMD</a>
-              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
-              <a href="/tags/Inference/" rel="tag"># Inference</a>
+              <a href="/tags/HPC/" rel="tag"># HPC</a>
+              <a href="/tags/Kunpeng/" rel="tag"># Kunpeng</a>
+              <a href="/tags/ARM/" rel="tag"># ARM</a>
+              <a href="/tags/CPU/" rel="tag"># CPU</a>
+              <a href="/tags/Survey/" rel="tag"># Survey</a>
           </div>
 
         
@@ -304,12 +348,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/%E5%AE%9E%E6%B5%8BRedis%E5%90%9E%E5%90%90%E9%87%8F/" rel="prev" title="实测 Redis 吞吐量 | redis-benchmark 源码">
-      <i class="fa fa-chevron-left"></i> 实测 Redis 吞吐量 | redis-benchmark 源码
+    <a href="/2023/gflops/" rel="prev" title="CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS">
+      <i class="fa fa-chevron-left"></i> CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/FirstLinuxPatch/" rel="next" title="年轻人的第一个 Linux Patch -- Typo">
-      年轻人的第一个 Linux Patch -- Typo <i class="fa fa-chevron-right"></i>
+    <a href="/2023/redis-benchmark/" rel="next" title="实测 Redis 吞吐量 | redis-benchmark 源码">
+      实测 Redis 吞吐量 | redis-benchmark 源码 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -369,7 +413,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Driver-%E5%92%8C-Ryzen-AI-Software"><span class="nav-number">1.</span> <span class="nav-text">安装 Driver 和 Ryzen AI Software</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">2.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%85%8B%E9%9A%86"><span class="nav-number">3.</span> <span class="nav-text">环境克隆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Papers"><span class="nav-number">1.</span> <span class="nav-text">Papers</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -383,12 +427,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

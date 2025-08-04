@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="买了个火影众颜 U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种. 但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 issue 最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 Hello world 了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AMD IPU 初体验">
+<meta property="og:url" content="https://zombie12138.github.io/2024/AMD-IPU/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="买了个火影众颜 U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种. 但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 issue 最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 Hello world 了">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-02-10T08:10:49.000Z">
+<meta property="article:modified_time" content="2025-08-04T17:49:59.906Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="AMD">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Inference">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zombie12138.github.io/2024/AMD-IPU/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AMD IPU 初体验 | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2024/AMD-IPU/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AMD IPU 初体验
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-02-10 16:10:49" itemprop="dateCreated datePublished" datetime="2024-02-10T16:10:49+08:00">2024-02-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>买了个火影众颜 U6, 里面自带的 IPU (Intelligent Process Unit) 据说有 5 TFLOPS 的算力, 但是应该是 INT8 这种. 但是苦于 AMD 的 IPU 除了驱动的支持, 也需要 BIOS 中启用, 很多的机器都没有启用, 还专门开了一个 <a target="_blank" rel="noopener" href="https://github.com/amd/RyzenAI-SW/issues/5">issue</a></p>
+<p>最近终于更新 BIOS, 设备管理器见到了心心念念的 IPU, 可以拿来跑个 Hello world 了</p>
+<span id="more"></span>
+
+<h2 id="安装-Driver-和-Ryzen-AI-Software"><a href="#安装-Driver-和-Ryzen-AI-Software" class="headerlink" title="安装 Driver 和 Ryzen AI Software"></a>安装 Driver 和 Ryzen AI Software</h2><p>除了 BIOS, 需要的就是驱动, 只要看官方的 <a target="_blank" rel="noopener" href="https://ryzenai.docs.amd.com/en/latest/inst.html">指南</a> 下载安装就可以了</p>
+<p>但是这个什么 software 还需要 CMake, 需要 vs, 还需要 conda</p>
+<p>我真的很不喜欢 conda, 开始看这个 <code>install.bat</code> 到底在做什么, 准备尝试手动安装一下, 除了环境检查, 输出提示和错误处理, 就是这几个</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CALL</span> conda env create --name <span class="variable">%CONDAENVNAME%</span> --file=env.yaml</span><br><span class="line"><span class="keyword">CALL</span> conda run -n <span class="variable">%CONDAENVNAME%</span> pip install -r requirements_ryzenai_voe.txt</span><br><span class="line"><span class="built_in">pushd</span> voe-<span class="number">4</span>.<span class="number">0</span>-win_amd64</span><br><span class="line"><span class="keyword">CALL</span> conda run -n <span class="variable">%CONDAENVNAME%</span> python installer.py</span><br><span class="line"><span class="built_in">popd</span></span><br><span class="line"><span class="keyword">CALL</span> conda env config vars <span class="built_in">set</span>  XLNX_VART_FIRMWARE=<span class="variable">%ORIGDIR%</span>\voe-<span class="number">4</span>.<span class="number">0</span>-win_amd64\<span class="number">1</span>x4.xclbin -n <span class="variable">%CONDAENVNAME%</span></span><br></pre></td></tr></table></figure>
+
+<p>看了一下要装的包都是 3.9 的, 但是… 我是 Python3.12, 它只有 3.9 的包… 研究了一下这个 voe 主要是 AMD 的 <a target="_blank" rel="noopener" href="https://docs.xilinx.com/r/zh-CN/ug1414-vitis-ai/Vitis-AI-%E6%A6%82%E8%BF%B0">Vitis</a> 里面的一个东西, 这个 vitis 似乎是类似类似 NV 的 TensorRT 的一个东西. </p>
+<blockquote>
+<p>Vitis AI Execution Provider (Vitis AI EP) 提供了含 AMD DPU 的硬件加速 AI 推断<br>Vitis AI ONNXRuntime Engine (VOE) 充当的是 Vitis AI EP 的实现库。</p>
+</blockquote>
+<p>找不到任何相关的版本, 只能灰溜溜安装 conda, 然后发现这玩意安装时候会通过注册表检查是否安装 vs2019, 但是我安装的 vs 是更高的版本, 只能手动注释这部分检查.</p>
+<p>最后提示环境创建成功就可以了</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda env list</span><br><span class="line">activate ryzenai-<span class="number">1</span>.<span class="number">0</span>-<span class="number">20240209</span>-<span class="number">232737</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ryzen-ai-sw-<span class="number">1</span>.<span class="number">0</span>.<span class="number">1</span>\ryzen-ai-sw-<span class="number">1</span>.<span class="number">0</span>.<span class="number">1</span>\quicktest</span><br><span class="line">curl https://www.cs.toronto.edu/~kriz/cifar-<span class="number">10</span>-sample/bird6.png --output image_0.png</span><br><span class="line">python -m pip install -r requirements.txt</span><br><span class="line">python quicktest.py --ep ipu</span><br></pre></td></tr></table></figure>
+
+<p>下载下来是一个非常小非常小的鸟图.</p>
+<h2 id="环境克隆"><a href="#环境克隆" class="headerlink" title="环境克隆"></a>环境克隆</h2><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create --name amdai_backup --clone amdai</span><br></pre></td></tr></table></figure>
+
+<p>为什么要复制一个环境呢? 这是因为这个环境莫名其妙会坏掉. 我只装了一些常见的库就不行了 (torch 套件, jupyter 这些), 提示是 <code>custom_op.cpp:259: Error: Failed to create GE handle: Error: No compatible xclbin file found.</code>. 懒得弄, 看起来像是 VOE 的锅.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>AMD 虽然开源, 但是生态依然很差. 文档都找不到, 甚至有些组件直接不开源, 只给 Bin. 这个 VOE 我都不知道在哪找 (虽然也没怎么找). IPU 更是很多机器没有 BIOS 开启. 甚至官方介绍的文档里面, 一会儿叫 IPU 一会儿叫 NPU, 教程只有 hello world 结构清晰, 其他都是乱七八糟的.</p>
+<p>模型是量化过的, log 显示 99.5% 以上的负载在 IPU, 这个模型实测速度和 CPU 差不多, 可能和模型太小有关. 看了一下 onnx 的自带的 profile 结果, 总感觉哪里怪怪的, 准备后面再仔细折腾.</p>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    
+    </div>
+
+    
+    
+    
+
+      <div> <div class="my-post-copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>AMD IPU 初体验</a></p>
+  <p><span>文章作者:</span></a></p>
+  <p><span>发布时间:</span>2024年02月10日 - 16:10:49</p>
+  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
+  <p><span>原始链接:</span><a href="/2024/AMD-IPU/" title="AMD IPU 初体验">https://zombie12138.github.io/2024/AMD-IPU/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2024/AMD-IPU/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          html: false,
+          timer: 500,
+          showConfirmButton: false
+        });
+      });
+    }));
+</script>
+ </div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AMD/" rel="tag"># AMD</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/Inference/" rel="tag"># Inference</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/redis-benchmark/" rel="prev" title="实测 Redis 吞吐量 | redis-benchmark 源码">
+      <i class="fa fa-chevron-left"></i> 实测 Redis 吞吐量 | redis-benchmark 源码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/first-linux-patch/" rel="next" title="年轻人的第一个 Linux Patch -- Typo">
+      年轻人的第一个 Linux Patch -- Typo <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Driver-%E5%92%8C-Ryzen-AI-Software"><span class="nav-number">1.</span> <span class="nav-text">安装 Driver 和 Ryzen AI Software</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">2.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%85%8B%E9%9A%86"><span class="nav-number">3.</span> <span class="nav-text">环境克隆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
