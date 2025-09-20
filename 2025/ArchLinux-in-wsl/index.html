@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="记录一下从零开始, 在 Windows &amp; WSL 中, 搭建开发环境 (JB &amp; Vscode &amp; Vim &amp; Zsh). 是一篇非常杂的环境美化大杂烩.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArchLinux &amp; Windows 开发环境配置">
+<meta property="og:url" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="记录一下从零开始, 在 Windows &amp; WSL 中, 搭建开发环境 (JB &amp; Vscode &amp; Vim &amp; Zsh). 是一篇非常杂的环境美化大杂烩.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/xeyes.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/zsh.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/vim.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/tmux.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/fastfetch.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/figlet_zombie.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/theme.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/icon.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/java_pack.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/springboot_extension_pack.png">
+<meta property="article:published_time" content="2025-08-30T16:26:44.000Z">
+<meta property="article:modified_time" content="2025-09-20T10:20:59.370Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2025/ArchLinux-in-wsl/xeyes.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2025/ArchLinux-in-wsl/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ArchLinux & Windows 开发环境配置 | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2025/ArchLinux-in-wsl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ArchLinux & Windows 开发环境配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-08-31 00:26:44" itemprop="dateCreated datePublished" datetime="2025-08-31T00:26:44+08:00">2025-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-09-20 18:20:59" itemprop="dateModified" datetime="2025-09-20T18:20:59+08:00">2025-09-20</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>记录一下从零开始, 在 Windows &amp; WSL 中, 搭建开发环境 (JB &amp; Vscode &amp; Vim &amp; Zsh). 是一篇非常杂的环境美化大杂烩.</p>
+<span id="more"></span>
+
+<p>一直以来都是用的 Debian 系的, 也用过 Redhat 和 CentOS, 很少用过一些其他的发行版, 比如Gentoo, ArchLinux, openSUSE. 虽然这些虽然是外面配了一些不同的软件, 但是还是感觉非常神秘. 最近重装系统了, 顺便在 wsl 中安装 ArchLinux 体验一下. 之前也从来没有做过什么终端美化, 这次简单尝试下.</p>
+<p>首先是安装 WSL2, 直接 follow 微软的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/install-manual">官方教程</a> 就可以了, 重启后在 Store 中找到 ArchLinux, 点击安装, 打开, 配置用户名和密码就好啦.</p>
+<h2 id="系统环境配置"><a href="#系统环境配置" class="headerlink" title="系统环境配置"></a>系统环境配置</h2><h3 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h3><p>首先就是环境变量, 这是很早之前 GPT 3 写的很好用的一个代理命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># $(ip route list default | awk &#x27;&#123;print $3&#125;&#x27;) to get windows host ip</span></span><br><span class="line"><span class="comment"># 如果和 host 公用 ip 则直接 localhost</span></span><br><span class="line">DEFAULT_PROXY=http://$(ip route list default | awk <span class="string">&#x27;&#123;print $3&#125;&#x27;</span>):7890</span><br><span class="line"></span><br><span class="line"><span class="comment"># Usage: setproxy [prot or http://ip:port]</span></span><br><span class="line"><span class="comment">#    setproxy: set default proxy</span></span><br><span class="line"><span class="comment">#    setproxy port: set proxy http:localhost:port</span></span><br><span class="line"><span class="comment">#    setproxy http://ip:port: set proxy http://ip:port</span></span><br><span class="line"><span class="function"><span class="title">setproxy</span></span>() &#123;</span><br><span class="line">    _PROXY=<span class="variable">$&#123;1:-<span class="variable">$&#123;DEFAULT_PROXY&#125;</span>&#125;</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$&#123;_PROXY&#125;</span>&quot;</span> -gt 0 ] 2&gt;/dev/null &amp;&amp; [ <span class="string">&quot;<span class="variable">$&#123;_PROXY&#125;</span>&quot;</span> -lt 65535 ] 2&gt;/dev/null; <span class="keyword">then</span></span><br><span class="line">        _PROXY=<span class="string">&quot;http://localhost:&quot;</span><span class="variable">$&#123;_PROXY&#125;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="built_in">export</span> http_proxy=<span class="variable">$_PROXY</span></span><br><span class="line">    <span class="built_in">export</span> HTTP_PROXY=<span class="variable">$_PROXY</span></span><br><span class="line">    <span class="built_in">export</span> https_proxy=<span class="variable">$_PROXY</span></span><br><span class="line">    <span class="built_in">export</span> HTTPS_PROXY=<span class="variable">$_PROXY</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Usage: ckproxy [site]</span></span><br><span class="line"><span class="function"><span class="title">ckproxy</span></span>() &#123;</span><br><span class="line">    _SITE=<span class="variable">$&#123;1:-&quot;qq.com&quot;&#125;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Current proxy is <span class="variable">$&#123;http_proxy&#125;</span>.&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Connect to <span class="variable">$&#123;_SITE&#125;</span>...&quot;</span></span><br><span class="line">    curl -X GET -i <span class="variable">$&#123;_SITE&#125;</span> -m 1 &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">    <span class="keyword">if</span> [ $? -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;OK&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;FAILED&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">unproxy</span></span>() &#123;</span><br><span class="line">    <span class="built_in">unset</span> http_proxy</span><br><span class="line">    <span class="built_in">unset</span> HTTP_PROXY</span><br><span class="line">    <span class="built_in">unset</span> https_proxy</span><br><span class="line">    <span class="built_in">unset</span> HTTPS_PROXY</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认开启代理</span></span><br><span class="line">setproxy</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LESSCHARSET=utf-8</span><br></pre></td></tr></table></figure>
+
+<h3 id="locales-配置"><a href="#locales-配置" class="headerlink" title="locales 配置"></a>locales 配置</h3><p>locales 配置, 参考 <a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/Locale">arch wiki</a>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">locale -a</span><br><span class="line"><span class="comment"># locale: Cannot set LC_CTYPE to default locale: No such file or directory</span></span><br><span class="line"><span class="comment"># locale: Cannot set LC_MESSAGES to default locale: No such file or directory</span></span><br><span class="line"><span class="comment"># locale: Cannot set LC_COLLATE to default locale: No such file or directory</span></span><br><span class="line"><span class="comment"># C</span></span><br><span class="line"><span class="comment"># C.utf8</span></span><br><span class="line"><span class="comment"># POSIX</span></span><br><span class="line"><span class="built_in">sudo</span> vim /etc/locale.gen</span><br><span class="line"><span class="comment"># 开启被注释的: zh_CN.UTF-8 UTF-8 和 en_US.UTF-8 UTF-8  </span></span><br><span class="line"><span class="built_in">sudo</span> locale-gen</span><br><span class="line">locale -a</span><br><span class="line"><span class="comment"># C</span></span><br><span class="line"><span class="comment"># C.utf8</span></span><br><span class="line"><span class="comment"># en_US.utf8</span></span><br><span class="line"><span class="comment"># POSIX</span></span><br><span class="line"><span class="comment"># zh_CN.utf8</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="其他-build-工具"><a href="#其他-build-工具" class="headerlink" title="其他 build 工具"></a>其他 build 工具</h3><p>其他常用 build 工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo -E pacman -S go zip unzip python python-pip strace cmake ninja htop typescript g++ clang nmap</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">install aur helper: yay</span></span><br><span class="line">sudo -E pacman -S --needed base-devel git</span><br><span class="line">git clone https://aur.archlinux.org/yay.git</span><br><span class="line">cd yay &amp;&amp; makepkg -si</span><br><span class="line">sudo -E yay -Syy</span><br></pre></td></tr></table></figure>
+
+<p>其他的 build essentials 之类的需要再安装.</p>
+<p>下面是我遇到一个问题强制更新命令, 一般不需要</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># overwrite 是因为之前依赖问题, 我手动安装了 libicu</span></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -Syyu --overwrite <span class="string">&#x27;/usr/lib/libicu*,/usr/share/icu/*&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="X11-Forward"><a href="#X11-Forward" class="headerlink" title="X11-Forward"></a>X11-Forward</h3><p>如果需要运行图形界面程序, 则要开启 x11 forward. 主要参考 <a target="_blank" rel="noopener" href="https://steinslab.io/archives/2082">博客</a> 和 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2">stackoverflow</a>. 如果你用的是一些集成的 terminal 工具可能无需配置</p>
+<p>首先是终端中需要开启:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export DISPLAY=$(awk &#x27;/nameserver / &#123;print $2; exit&#125;&#x27; /etc/resolv.conf 2&gt;/dev/null):0</span></span><br><span class="line"><span class="comment"># 最后的 .0 指定屏幕号</span></span><br><span class="line"><span class="built_in">export</span> DISPLAY=$(ip route list default | awk <span class="string">&#x27;&#123;print $3&#125;&#x27;</span>):0.0</span><br><span class="line"><span class="built_in">export</span> LIBGL_ALWAYS_INDIRECT=1</span><br><span class="line"><span class="comment"># 4k 则开启.</span></span><br><span class="line"><span class="comment"># export GDK_SCALE=2</span></span><br><span class="line"><span class="comment"># export GDK_DPI_SCALE=1</span></span><br></pre></td></tr></table></figure>
+
+<p>安装 <a target="_blank" rel="noopener" href="https://sourceforge.net/projects/xming/">Xming X Server for Windows</a>. 安装时候不安装 ssh client, 运行时候勾选 no access control (本地测试)</p>
+<p>有时候 <code>nmap</code> 或者 <code>ncat -v -z $(echo $DISPLAY | cut -d: -f1) 6000</code> 可能端口已经 6000 开启, 但是依然无法使用. 可以 XLaunch 重新配置下.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> pacman -S  xorg-xeyes</span><br><span class="line">xeyes</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/ArchLinux-in-wsl/xeyes.png" class="" title="xeyes">
+
+<h2 id="开发工具链"><a href="#开发工具链" class="headerlink" title="开发工具链"></a>开发工具链</h2><h3 id="Hexo-环境"><a href="#Hexo-环境" class="headerlink" title="Hexo 环境"></a>Hexo 环境</h3><p>首先就是 HEXO 的环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># update PGP</span></span><br><span class="line"><span class="built_in">sudo</span> pacman-key --init</span><br><span class="line"><span class="built_in">sudo</span> pacman-key --populate archlinux</span><br><span class="line"><span class="comment"># clear cache</span></span><br><span class="line"><span class="built_in">sudo</span> pacman -Scc</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -Sy</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -Sy archlinux-keyring</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S nodejs npm</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -Syy</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -Syu --noconfirm --no-verify-downloads</span><br><span class="line"><span class="built_in">sudo</span> -E npm install -g hexo</span><br><span class="line">faillock --reset <span class="comment"># 当密码无法使用时重置</span></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S openssh vi less</span><br><span class="line"><span class="built_in">sudo</span> npm install hexo-generator-sitemap --save</span><br><span class="line"><span class="built_in">sudo</span> npm install hexo-reference-plus</span><br><span class="line"></span><br><span class="line">git config --global core.editor <span class="string">&quot;vim&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;zombie12138@163.com&quot;</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zombie12138&quot;</span></span><br><span class="line">git config --global core.autocrlf <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-Docker-docker-compose"><a href="#安装-Docker-docker-compose" class="headerlink" title="安装 Docker &amp; docker-compose"></a>安装 Docker &amp; docker-compose</h3><p>安装 Docker</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sudo -E pacman -S docker docker-compose --noconfirm</span><br><span class="line">sudo systemctl enable docker.service</span><br><span class="line">sudo systemctl start docker.service</span><br><span class="line">sudo mkdir -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo tee /etc/systemd/system/docker.service.d/http-proxy.conf &lt;&lt;EOF</span><br><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://your_proxy_address:proxy_port&quot;</span><br><span class="line">Environment=&quot;HTTPS_PROXY=http://your_proxy_address:proxy_port&quot;</span><br><span class="line">Environment=&quot;NO_PROXY=localhost,127.0.0.1,.baidu.com&quot;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>先安装 jdk + maven + gradle, jdk 选择了 8, 17, 21 三个 openjdk 的版本. 而 mvn 和 gradle 暂时只安装了最新版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pacman -Ssq jdk</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S jdk8-openjdk openjdk8-doc openjdk8-src jdk21-openjdk openjdk21-src openjdk21-doc jdk17-openjdk openjdk17-src openjdk17-doc</span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S maven gradle visualvm</span><br><span class="line">$ mvn --version</span><br><span class="line"><span class="comment"># Apache Maven 3.9.10 (5f519b97e944483d878815739f519b2eade0a91d)</span></span><br><span class="line">gradle --version</span><br><span class="line"><span class="comment"># Gradle 8.14.3</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># .zshrc, .bashrc 中添加:</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/default</span><br><span class="line"><span class="comment"># export PATH=$JAVA_HOME/bin:$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>版本管理选择就很简单了, Debian 系需要给每个命令配置使用 <code>sudo update-alternatives --config xxx</code>, 但是 Arch 只需要:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> archlinux-java <span class="built_in">set</span> java-8-openjdk</span><br></pre></td></tr></table></figure>
+
+<p>如果想要任意系统上很好地管理, 可以使用 <code>SDKMAN</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列出所有可用的 Java 版本</span></span><br><span class="line">sdk list java</span><br><span class="line"><span class="comment"># 安装一个特定版本的 Java (例如 Adoptium Temurin 17)</span></span><br><span class="line">sdk install java 17.0.11-tem</span><br><span class="line"><span class="comment"># 在当前终端临时使用某个版本</span></span><br><span class="line">sdk use java 17.0.11-tem</span><br><span class="line"><span class="comment"># 设置某个版本为默认版本</span></span><br><span class="line">sdk default java 17.0.11-tem</span><br><span class="line"><span class="comment"># 查看当前正在使用的版本</span></span><br><span class="line">sdk current java</span><br></pre></td></tr></table></figure>
+
+<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><p>持续更新中~</p>
+<h3 id="qemu"><a href="#qemu" class="headerlink" title="qemu"></a>qemu</h3><p>持续更新中~</p>
+<h2 id="终端美化"><a href="#终端美化" class="headerlink" title="终端美化"></a>终端美化</h2><p>windows terminal 字体还是使用的 firacode, 主题是官方自带的 Dark++.</p>
+<h3 id="oh-my-zsh"><a href="#oh-my-zsh" class="headerlink" title="oh-my-zsh"></a>oh-my-zsh</h3><p>首先安装 zsh, 并且设置为默认</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> -E pacman -S zsh</span><br></pre></td></tr></table></figure>
+
+<p>然后安装 oh my zsh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>之后 <code>sudo su root</code> 重新给 root 也配置下.</p>
+<p>之后配置下主题和插件, 主要参考 <a target="_blank" rel="noopener" href="https://www.haoyep.com/posts/zsh-config-oh-my-zsh/">Leehow</a> 和 <a target="_blank" rel="noopener" href="https://arch.icekylin.online/guide/advanced/beauty-3">arch gaidline</a>.</p>
+<p>oh my zsh 主题众多, 可以 <code>ls ~/.oh-my-zsh/themes</code> 看到全部的主题. 参考一个主题的 <a target="_blank" rel="noopener" href="https://www.slant.co/topics/7553/~theme-for-oh-my-zsh">投票排名</a>, 最终选择最热门的 Powerlevel10k. 类似风格的还有 Powerlevel9K, Bullet Train, agnoster.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载主题到指定路径</span></span><br><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="variable">$&#123;ZSH_CUSTOM:-<span class="variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+
+<p>之后设置 <code>.zshrc</code> 修改变量 <code>ZSH_THEME=&quot;powerlevel10k/powerlevel10k&quot;</code>. 直接 <code>source</code> 执行可以进入配置, 重新配置可以 <code>p10k configure</code>. 按照提示来选择喜欢的配置即可, 也可以参考 <a target="_blank" rel="noopener" href="https://www.itqaq.com/index/585.html">梁臣洋博客</a>.</p>
+<p>之后就是安装插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zsh-autosuggestions, 根据历史进行提示</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-autosuggestions</span><br><span class="line"><span class="comment"># zsh-syntax-highlighting</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting</span><br><span class="line"><span class="comment"># z (builtin)</span></span><br><span class="line"><span class="comment"># cd xxx/xxx/abc</span></span><br><span class="line"><span class="comment"># cd ~</span></span><br><span class="line"><span class="comment"># to goto folder `abc`, `z abc` is all u need</span></span><br><span class="line"><span class="comment"># eXtract  (builtin)</span></span><br><span class="line"><span class="comment"># x xxx.zip/gz any compressed file</span></span><br><span class="line"><span class="comment"># websearch (builtin)</span></span><br><span class="line"><span class="comment"># google zsh 安装</span></span><br><span class="line"><span class="comment"># in .zshrc</span></span><br><span class="line">plugins=(git zsh-autosuggestions zsh-syntax-highlighting z extract web-search)</span><br><span class="line"><span class="comment"># 也可以安装一些 tmux 和 docker 以及 pacman 的插件</span></span><br></pre></td></tr></table></figure>
+
+<p>root 用户也重新配置下. 不常用命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uninstall_oh_my_zsh</span><br><span class="line">upgrade_oh_my_zsh</span><br></pre></td></tr></table></figure>
+
+<p>另外发现了个很好的字体网站: <a target="_blank" rel="noopener" href="https://www.nerdfonts.com/">nerd font</a></p>
+<img src="/2025/ArchLinux-in-wsl/zsh.png" class="" title="zsh">
+
+<h3 id="vim-plus"><a href="#vim-plus" class="headerlink" title="vim-plus"></a>vim-plus</h3><p>第一反应, 还是使用 oh-my, 很久之前就看到还有一个 <a target="_blank" rel="noopener" href="https://github.com/liangxianzhe/oh-my-vim?tab=readme-ov-file">oh-my-vim</a>, 但是看了一眼, 发现项目用的人不多, 并且存在一些 bug. 所以选择 <a target="_blank" rel="noopener" href="http://github.com/junegunn/vim-plug">vim-plug</a> 来管理插件.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/autoload/plug.vim --create-dirs \</span><br><span class="line">    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br></pre></td></tr></table></figure>
+
+<p>然后安装 Airline 状态栏插件. <code>~/.vimrc</code> 添加:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">call plug#begin()</span><br><span class="line"></span><br><span class="line">Plug &#x27;vim-airline/vim-airline&#x27;</span><br><span class="line">Plug &#x27;vim-airline/vim-airline-themes&#x27;</span><br><span class="line">let g:airline_theme=&#x27;ayu_dark&#x27;</span><br><span class="line"></span><br><span class="line">call plug#end()</span><br></pre></td></tr></table></figure>
+
+<p>vim 中执行安装插件 <code>:PlugInstall</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim -c <span class="string">&quot;PlugInstall&quot;</span> -c <span class="string">&quot;q&quot;</span> -c <span class="string">&quot;q&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>想安装一些插件, 但是注意到这些相关地不是很多, 最终选择参考 <a target="_blank" rel="noopener" href="https://github.com/FLHonker/vim-plus-plus">vim-plus-plus</a>, 看了下 <code>install.sh</code> 感觉也没什么多余地, 直接安装 vim plus plus 了. <strong>千万不要直接使用</strong>, 会有大量的报错, 但是插件可以依然参考之前的. 卸载之后从头开始安装:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> vim-plus-plus</span><br><span class="line">./uninstall</span><br><span class="line"><span class="built_in">rm</span> ~/.vimrc      </span><br><span class="line"><span class="built_in">rm</span> ~/.vimrc.local</span><br><span class="line"><span class="built_in">cp</span> .vimrc ~</span><br><span class="line"><span class="built_in">cp</span> .vimrc.local ~</span><br><span class="line"><span class="built_in">cp</span> -r colors ~/.vim/colors</span><br><span class="line"><span class="built_in">cp</span> -r UltiSnips ~/.vim/UltiSnips </span><br><span class="line">vim -c <span class="string">&quot;PlugInstall&quot;</span> -c <span class="string">&quot;q&quot;</span> -c <span class="string">&quot;q&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>还是出现了之前的问题, 应该是插件的问题, 先卸载插件, 从插件来看是 <code>vim-keysound</code> 和 <code>tabnine-vim</code> 去掉这两个插件完美运行. 太电动轮椅了, 感觉早晚还得出问题. 只是暂时配置下外观和插件, 其他的暂时不配置, 最终效果如下:</p>
+<img src="/2025/ArchLinux-in-wsl/vim.png" class="" title="vim">
+
+<p>同样也为 root 配置安装</p>
+<p>补充下期间学到的 vim 快捷键:</p>
+<ul>
+<li><code>Ctrl+R</code>: ReDo</li>
+<li><code>/&lt;pattern&gt;\c</code>: 忽视大小写, <code>C</code> 默认支持大小写</li>
+<li><code>set smartcase</code>: 只能大小写</li>
+<li><code>set ignorecase</code>: 忽略大小写</li>
+</ul>
+<p>例如 vscode 的调试, <code>vimspector</code> 以后需要再做, 一个 vscode 配置就已经够麻烦了.</p>
+<h3 id="oh-my-tmux"><a href="#oh-my-tmux" class="headerlink" title="oh-my-tmux"></a>oh-my-tmux</h3><p>这个又是一个 oh-my, 但是名字其实是 <a target="_blank" rel="noopener" href="https://github.com/gpakosz/.tmux">.tmux</a>. 安装过程参考 <a target="_blank" rel="noopener" href="https://blog.yuuzi.cc/posts/notes/oh-my-tmux-record/">Yuuzi</a></p>
+<p>首先安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --single-branch https://github.com/gpakosz/.tmux.git</span><br><span class="line"><span class="built_in">ln</span> -s -f .tmux/.tmux.conf</span><br><span class="line"><span class="built_in">cp</span> .tmux/.tmux.conf.local .</span><br></pre></td></tr></table></figure>
+
+<p>首先安装 TPM 和 主题:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm</span><br><span class="line">vim ~/.tmux.conf.local</span><br><span class="line"><span class="comment"># 编辑 ~/.tmux.conf.local, 添加下面</span></span><br><span class="line"><span class="comment"># List of plugins</span></span><br><span class="line"><span class="built_in">set</span> -g @plugin <span class="string">&#x27;tmux-plugins/tpm&#x27;</span></span><br><span class="line"><span class="built_in">set</span> -g @plugin <span class="string">&#x27;tmux-plugins/tmux-sensible&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># rose pine 主题</span></span><br><span class="line"><span class="built_in">set</span> -g @plugin <span class="string">&#x27;rose-pine/tmux&#x27;</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_variant <span class="string">&#x27;main&#x27;</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_host <span class="string">&#x27;on&#x27;</span> <span class="comment"># Enables hostname in the status bar</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_date_time <span class="string">&#x27;%H:%M&#x27;</span> <span class="comment"># It accepts the date UNIX command format (man date for info)</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_user <span class="string">&#x27;on&#x27;</span> <span class="comment"># Turn on the username component in the statusbar</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_directory <span class="string">&#x27;on&#x27;</span> <span class="comment"># Turn on the current folder component in the status bar</span></span><br><span class="line"><span class="built_in">set</span> -g @rose_pine_window_separator <span class="string">&#x27;   &#x27;</span> <span class="comment"># Replaces the default `:` between the window number and name</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)</span></span><br><span class="line">run <span class="string">&#x27;~/.tmux/plugins/tpm/tpm&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>重启 <code>tmux kill-server</code></p>
+<img src="/2025/ArchLinux-in-wsl/tmux.png" class="" title="tmux">
+
+
+<h3 id="小玩具"><a href="#小玩具" class="headerlink" title="小玩具"></a>小玩具</h3><p>还有一些没用的小玩具. 本来没想安装这么多的, 只是最多安装个 fastfetch  就好了. 但是安装 zsh 的时候看到一篇 <a target="_blank" rel="noopener" href="https://arch.icekylin.online/guide/advanced/beauty-3">博客</a> 感觉很有意思.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># yay -S neofetch</span></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S fastfetch lolcat --noconfirm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符画</span></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S figlet cowsay --noconfirm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 海洋馆, matrix 字符雨 </span></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S asciiquarium cmatrix --noconfirm</span><br><span class="line"></span><br><span class="line"><span class="built_in">sudo</span> -E pacman -S asciiquarium cmatrix --noconfirm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 截屏, 参考 https://cn.linux-console.net/?p=13842</span></span><br><span class="line"><span class="comment"># 全屏幕截屏 &amp; 截屏, 需要开启 X11 forward</span></span><br><span class="line"><span class="comment"># sudo -E pacman -S scrot imagemagick</span></span><br><span class="line"><span class="comment"># 输出一些乱起八糟的东西</span></span><br><span class="line">fastfetch | lolcat</span><br><span class="line"><span class="built_in">echo</span> zombie | figlet | lolcat</span><br><span class="line"></span><br><span class="line"><span class="comment"># 截屏</span></span><br><span class="line"><span class="comment"># scrot ./snipping.png</span></span><br><span class="line"><span class="comment"># import ./screenshot.png</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2025/ArchLinux-in-wsl/fastfetch.png" class="" title="fastfetch">
+
+<img src="/2025/ArchLinux-in-wsl/figlet_zombie.png" class="" title="figlet zombie">
+
+<p>但是一个问题就是, 截屏 scrot 返回的是空白的花纹; import 会直接卡住. LLM 给出的原因是:</p>
+<blockquote>
+<p>当您在 Windows 上以 多窗口模式 (multi-window mode) 运行 VcXsrv 或 X410 时, X Server 会创建一个 <strong>不可见的、虚拟的桌面背景</strong>, 这就是 “根窗口”. 您启动的每一个 Linux GUI 程序 (如 <code>xeyes</code>, <code>gedit</code>)都会在这个根窗口之上, 被渲染成一个独立的, 由 Windows 窗口管理器负责管理的 Windows 窗口. 所以, 当您运行 <code>scrot</code> 时, 它忠实地完成了任务: 连接到 VcXsrv, 截取了整个 “根窗口”. 但这个根窗口本身是空的, 或者只有一个默认的灰度花纹背景. </p>
+</blockquote>
+<blockquote>
+<p>当您完成拖拽操作后, <code>import</code> 就会截取您选择的区域, 保存为 <code>screenshot.png</code>, 然后命令才会结束并返回到您的终端提示符. 因为您不知道它在等待您的操作, 所以看起来就像是卡住了.</p>
+</blockquote>
+<p>所以看起来还是只能截图 WSL 产生的 GUI, 截图基本上还是没什么用. 还以为获取整个 shell 文字渲染成好看的图片, 原来是直接截图 Linux GUI, 运行时候还在想为什么还需要 X11-Forward.</p>
+<h2 id="IDE-配置"><a href="#IDE-配置" class="headerlink" title="IDE 配置"></a>IDE 配置</h2><h3 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h3><p>IDEA 并不适合 WSL 中安装, 即使配置了 wsl 中的 java &amp; gradle, 在例如: 分析依赖, 其脚本模板的临时文件路径是写死的, 因此不能正常工作. 这里仅仅介绍 Windows 中的配置, wsl 如果想用, 只需要修改 java &amp; gradle &amp; gradle user home 的配置即可.</p>
+<p>更新中</p>
+<h3 id="Vscode-通用"><a href="#Vscode-通用" class="headerlink" title="Vscode 通用"></a>Vscode 通用</h3><p>之前一直使用默认皮肤, 后来发现高对比度皮肤非常好用, 但是又太丑了. 最终还是选择了一个非常中庸的主题 Theme + icon</p>
+<img src="/2025/ArchLinux-in-wsl/theme.png" class="" title="theme">
+
+<img src="/2025/ArchLinux-in-wsl/icon.png" class="" title="icon">
+
+<h3 id="VSCode-C"><a href="#VSCode-C" class="headerlink" title="VSCode C++"></a>VSCode C++</h3><h3 id="VSCode-Java"><a href="#VSCode-Java" class="headerlink" title="VSCode Java"></a>VSCode Java</h3><p>相比于 Idea, vscode 的配置就麻烦多了. Java语法, gradle&#x2F;maven编译, 反编译, import及优化, unittest和覆盖率, lint和style.</p>
+<p>首先安装一个基础的 Java pack, 配置好各种的 gradle, maven, jdk 路径等, 这时候就是一个最基础的 Java 环境了</p>
+<img src="/2025/ArchLinux-in-wsl/java_pack.png" class="" title="java_pack">
+
+<p>配置好 Language Support for Java(TM) by Red Hat 插件的相关配置, 随便改了下, 重点是下面的 java 的格式化的配置:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;java.debug.settings.vmArgs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-Xmx2G&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;gradle.allowParallelRun&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.maven.downloadSources&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.import.gradle.wrapper.enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.import.gradle.version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8.14.3&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.compile.nullAnalysis.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;automatic&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.symbols.includeSourceMethodDeclarations&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.format.settings.url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;java.format.settings.profile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GoogleStyle&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;editor.formatOnSave&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br></pre></td></tr></table></figure>
+
+<p>再安装一个 Spring Boot extension 基本上就可以了, 后面需要什么再补充.</p>
+<img src="/2025/ArchLinux-in-wsl/springboot_extension_pack.png" class="" title="springboot_extension_pack">
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>sudo -E</code> 还是有一些风险的, 只是本地使用, 当时没有给 root 配置 proxy. 可以直接 <a target="_blank" rel="noopener" href="https://archlinux.org/mirrors/">修改镜像</a> 或者配置 root 代理 &#x2F; 透明代理即可.</p>
+<p>安装环境还是适可而止, 现在这些各种 oh-my, 已经在我家目录生成了大量的隐藏文件夹, 以及 trae, vscode, cursor 的, <code>ls -alh</code> 已经不太人类可读了. 并且好看的工具层出不穷, 是否真正提升生产力还是未知数, 比如 <code>.tmux</code> 感觉就完全没必要安装. 我个人感觉 tmux + vim 基本操作 + vscode remote 体验就已经不错了.</p>
+
+    </div>
+
+    
+    
+    
+
+      <div> <div class="my-post-copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>ArchLinux & Windows 开发环境配置</a></p>
+  <p><span>文章作者:</span></a></p>
+  <p><span>发布时间:</span>2025年08月31日 - 00:26:44</p>
+  <p><span>最后更新:</span>2025年09月20日 - 18:20:59</p>
+  <p><span>原始链接:</span><a href="/2025/ArchLinux-in-wsl/" title="ArchLinux & Windows 开发环境配置">https://zombie12138.github.io/2025/ArchLinux-in-wsl/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2025/ArchLinux-in-wsl/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          html: false,
+          timer: 500,
+          showConfirmButton: false
+        });
+      });
+    }));
+</script>
+ </div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/proxy-in-docker/" rel="prev" title="Docker 中的 Proxy">
+      <i class="fa fa-chevron-left"></i> Docker 中的 Proxy
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/android-root/" rel="next" title="OnePlus13 一加13 Root">
+      OnePlus13 一加13 Root <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">系统环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#proxy"><span class="nav-number">1.1.</span> <span class="nav-text">proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locales-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">locales 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-build-%E5%B7%A5%E5%85%B7"><span class="nav-number">1.3.</span> <span class="nav-text">其他 build 工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X11-Forward"><span class="nav-number">1.4.</span> <span class="nav-text">X11-Forward</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">2.</span> <span class="nav-text">开发工具链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hexo-%E7%8E%AF%E5%A2%83"><span class="nav-number">2.1.</span> <span class="nav-text">Hexo 环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-Docker-docker-compose"><span class="nav-number">2.2.</span> <span class="nav-text">安装 Docker &amp; docker-compose</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">2.3.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python"><span class="nav-number">2.4.</span> <span class="nav-text">Python</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qemu"><span class="nav-number">2.5.</span> <span class="nav-text">qemu</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">终端美化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#oh-my-zsh"><span class="nav-number">3.1.</span> <span class="nav-text">oh-my-zsh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim-plus"><span class="nav-number">3.2.</span> <span class="nav-text">vim-plus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oh-my-tmux"><span class="nav-number">3.3.</span> <span class="nav-text">oh-my-tmux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%8E%A9%E5%85%B7"><span class="nav-number">3.4.</span> <span class="nav-text">小玩具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDE-%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">IDE 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA"><span class="nav-number">4.1.</span> <span class="nav-text">IDEA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vscode-%E9%80%9A%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">Vscode 通用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VSCode-C"><span class="nav-number">4.3.</span> <span class="nav-text">VSCode C++</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VSCode-Java"><span class="nav-number">4.4.</span> <span class="nav-text">VSCode Java</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
