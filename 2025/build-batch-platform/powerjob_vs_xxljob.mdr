@@ -1,0 +1,53 @@
+下面把 **XXL-Job** 和 **PowerJob** 放在同一坐标系里比一比：先讲“适用场景差异”，再给“实现与能力差异表”，最后给出“什么时候选谁”的一句话结论。
+
+---
+
+# 一、应用场景差异（怎么用更顺手）
+
+* **XXL-Job**：更像“**中心式定时调度平台**”。上手快、Web 控制台完整、**GLUE Web IDE** 能直接写脚本（Shell/Python/NodeJS…），路由/分片/失败重试/日志告警都很全；**依赖是“父子任务”级别**，不主打可视化 DAG。适合“**定时 + 脚本/Java Handler**”“**分片广播**”“**快速落地统一调度中心**”这类需求。([GitHub][1])
+
+* **PowerJob**：定位“**调度 + 轻量分布式计算**”。内置**工作流（DAG）**，并且有 **Map/MapReduce** 等执行模式，既能做定时，也能把同一任务切分到集群节点并行跑；同样有 Web 控制台与在线日志。适合“**有 DAG**”“**有并行加速诉求**（Map/MapReduce/广播）”“**要开放 OpenAPI 的触发**”。([GitHub][2])
+
+---
+
+# 二、实现与功能对照
+
+| 维度           | XXL-Job                                                                   | PowerJob                                                   |
+| ------------ | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **总体定位**     | 中心式分布式**任务调度平台**                                                          | **调度 + 分布式计算**中间件                                          |
+| **核心架构**     | **调度中心（Admin）+ 执行器（Executor）**；执行器自动注册，中心下发触发                             | **Server + Worker**；横向扩展的服务端与工作节点                          |
+| **一致性/并发控制** | 调度中心通过**数据库锁（DB Lock）**确保“一次调度只触发一次”                                      | 官方更强调**高可用与水平扩展**；不以 DB 锁为卖点                               |
+| **触发方式**     | Cron / 固定间隔 / 固定延时 / API / 人工 / 父子任务                                      | Cron / 固定频率 / 固定延迟 / **OpenAPI**                           |
+| **依赖/编排**    | **子任务依赖**（父成–>子触发），**无可视化 DAG**                                           | **工作流（DAG）**，支持任务间数据传递                                     |
+| **执行/并行模型**  | 普通执行 + **路由策略**（一致性Hash/LFU/LRU/故障转移/忙碌转移…）+ **分片广播**                     | **单机 / 广播 / Map / MapReduce** 四种模式，天然并行切分                  |
+| **脚本与多语言**   | **GLUE Web IDE**（在线编辑/版本回溯）；**脚本任务**支持 Shell/Python/NodeJS/PHP/PowerShell | **Processor** 支持 **Java、Shell、Python**（以及 HTTP/SQL 等官方处理器） |
+| **Web 控制面**  | 任务 CRUD、启停、路由/分片、实例与**Rolling 实时日志**、告警                                   | 任务管理、状态监控、**在线日志**、工作流配置                                   |
+| **集群与伸缩**    | 调度中心 HA，执行器集群；新机器上线下次调度自动分配                                               | **Server/Worker 任意扩容**，面向水平扩展                              |
+| **DAG 场景适配** | 弱（仅父子触发）                                                                  | 强（原生 DAG）                                                  |
+| **脚本环境管理**   | **不内置**虚拟环境/依赖隔离（调用系统解释器/你自建容器）                                           | 同样**不内置**环境管理（常配合容器/自管运行时）                                 |
+
+关键出处：XXL-Job 的特性列表里明确了 **DB 锁一致性**、**路由策略/分片广播**、**GLUE Web IDE**、**脚本任务**、**父子任务依赖**与**在线日志**；PowerJob 的 README 明确了 **DAG 工作流**、**Map/MapReduce**、**多种触发**、**多种 Processor** 与 **UI/日志**。([GitHub][1])
+
+> 安全提醒：XXL-Job 的 **GLUE 在线脚本**曾有安全议题（涉及 RCE 研究/复现）。生产环境务必**关闭公网暴露、加鉴权、最小权限**，或限制 GLUE 的使用范围。([GitHub][3])
+
+---
+
+# 三、什么时候选谁？（给实操结论）
+
+* **选 XXL-Job** 如果：
+  你要**快速落地**统一调度中心；以 **Cron + 脚本/Java** 为主；需要**分片广播**和丰富的**路由/阻塞/重试/超时**策略；**不强依赖可视化 DAG**；喜欢 **Web IDE 在线改脚本** 的便捷。([GitHub][1])
+
+* **选 PowerJob** 如果：
+  你**需要 DAG**，并且希望**同一任务能并行切分**（Map/MapReduce/广播）来加速；还想保留 **OpenAPI** 的灵活触发、多处理器（Java/Shell/Python/HTTP/SQL）生态，并且期望未来**横向扩展**更顺手。([GitHub][2])
+
+---
+
+# 四、工程侧小建议
+
+不管选谁，**Python/Shell 的“环境管理”都不是内建强项**：把依赖放进 **容器镜像/Conda/venv**，由执行节点按“镜像/环境标签”来路由；生产上对 Web/开放接口做**鉴权与网段隔离**，日志落 **集中式观测**（ES/ClickHouse + Grafana/Alert）。
+
+如果你给我你的**优先级**（DAG 强度 vs 路由/分片 vs Web IDE 便捷度），我可以把这两者按你实际工作负载做一份 **带权重的 10×10 对比表**，方便落博客“结论”。
+
+[1]: https://github.com/xuxueli/xxl-job/ "GitHub - xuxueli/xxl-job: A distributed task scheduling framework.（分布式任务调度平台XXL-JOB）"
+[2]: https://github.com/PowerJob/PowerJob "GitHub - PowerJob/PowerJob: Enterprise job scheduling middleware with distributed computing ability."
+[3]: https://github.com/xuxueli/xxl-job/issues/3745?utm_source=chatgpt.com "XXL-JOB GLUE RCE · Issue #3745 · xuxueli/xxl-job"

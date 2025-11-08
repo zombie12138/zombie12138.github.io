@@ -22,7 +22,7 @@
 
   <meta name="description" content="最近想要做点量化交易的回测分析什么的, 首先第一就是数据库的选择, 最终选择了 TDengine.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="安装 TDengine">
+<meta property="og:title" content="「Abyss」安装 TDengine">
 <meta property="og:url" content="https://zombie12138.github.io/2025/install-TDengine/index.html">
 <meta property="og:site_name" content="zombie&#39;s">
 <meta property="og:description" content="最近想要做点量化交易的回测分析什么的, 首先第一就是数据库的选择, 最终选择了 TDengine.">
@@ -30,10 +30,10 @@
 <meta property="og:image" content="https://zombie12138.github.io/2025/install-TDengine/tdengine_write.png">
 <meta property="og:image" content="https://zombie12138.github.io/2025/install-TDengine/tdengine_node.png">
 <meta property="article:published_time" content="2025-02-04T13:20:00.000Z">
-<meta property="article:modified_time" content="2025-08-04T17:49:59.916Z">
+<meta property="article:modified_time" content="2025-11-08T17:14:04.904Z">
 <meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Abyss">
 <meta property="article:tag" content="Database">
-<meta property="article:tag" content="Quantitative Trading">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zombie12138.github.io/2025/install-TDengine/tdengine_write.png">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>安装 TDengine | zombie's</title>
+  <title>「Abyss」安装 TDengine | zombie's</title>
   
 
 
@@ -173,7 +173,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          安装 TDengine
+          「Abyss」安装 TDengine
         </h1>
 
         <div class="post-meta">
@@ -190,7 +190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-05 01:49:59" itemprop="dateModified" datetime="2025-08-05T01:49:59+08:00">2025-08-05</time>
+                <time title="修改时间：2025-11-09 01:14:04" itemprop="dateModified" datetime="2025-11-09T01:14:04+08:00">2025-11-09</time>
               </span>
 
           
@@ -259,7 +259,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"><span class="keyword">import</span> taos</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置信息</span></span><br><span class="line">CSV_FILE = <span class="string">&quot;BTCUSDT-aggTrades-2025-02-02.csv&quot;</span></span><br><span class="line">BATCH_SIZE = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_database_and_table</span>(<span class="params">conn</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建数据库和表结构&quot;&quot;&quot;</span></span><br><span class="line">    cursor = conn.cursor()</span><br><span class="line">    cursor.execute(<span class="string">&quot;CREATE DATABASE IF NOT EXISTS trade_db&quot;</span>)</span><br><span class="line">    cursor.execute(<span class="string">&quot;USE trade_db&quot;</span>)</span><br><span class="line">    cursor.execute(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        CREATE STABLE IF NOT EXISTS trade_data (</span></span><br><span class="line"><span class="string">            ts TIMESTAMP,</span></span><br><span class="line"><span class="string">            price FLOAT,</span></span><br><span class="line"><span class="string">            quantity FLOAT,</span></span><br><span class="line"><span class="string">            first_trade_id BIGINT,</span></span><br><span class="line"><span class="string">            last_trade_id BIGINT,</span></span><br><span class="line"><span class="string">            agg_trade_id BIGINT,</span></span><br><span class="line"><span class="string">            is_buyer_maker TINYINT</span></span><br><span class="line"><span class="string">        ) TAGS (symbol BINARY(10))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Database and table created&quot;</span>)</span><br><span class="line">    cursor.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">process_csv</span>():</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 第一阶段连接（无数据库）</span></span><br><span class="line">        conn = taos.connect(</span><br><span class="line">            host=<span class="string">&quot;localhost&quot;</span>,</span><br><span class="line">            user=<span class="string">&quot;root&quot;</span>,</span><br><span class="line">            password=<span class="string">&quot;taosdata&quot;</span></span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 创建库表</span></span><br><span class="line">        create_database_and_table(conn)</span><br><span class="line">        conn.close()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 第二阶段连接（指定数据库）</span></span><br><span class="line">        conn = taos.connect(</span><br><span class="line">            host=<span class="string">&quot;localhost&quot;</span>,</span><br><span class="line">            user=<span class="string">&quot;root&quot;</span>,</span><br><span class="line">            password=<span class="string">&quot;taosdata&quot;</span>,</span><br><span class="line">            database=<span class="string">&quot;trade_db&quot;</span></span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 分批读取</span></span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(CSV_FILE, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            cursor = conn.cursor()</span><br><span class="line">            reader = csv.DictReader(f)</span><br><span class="line">            batch = []</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">                ts = <span class="built_in">int</span>(row[<span class="string">&#x27;transact_time&#x27;</span>])</span><br><span class="line">                batch.append((</span><br><span class="line">                    ts,</span><br><span class="line">                    <span class="built_in">float</span>(row[<span class="string">&#x27;price&#x27;</span>]),</span><br><span class="line">                    <span class="built_in">float</span>(row[<span class="string">&#x27;quantity&#x27;</span>]),</span><br><span class="line">                    <span class="built_in">int</span>(row[<span class="string">&#x27;first_trade_id&#x27;</span>]),</span><br><span class="line">                    <span class="built_in">int</span>(row[<span class="string">&#x27;last_trade_id&#x27;</span>]),</span><br><span class="line">                    <span class="built_in">int</span>(row[<span class="string">&#x27;agg_trade_id&#x27;</span>]),</span><br><span class="line">                    <span class="number">1</span> <span class="keyword">if</span> row[<span class="string">&#x27;is_buyer_maker&#x27;</span>].lower() == <span class="string">&#x27;true&#x27;</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">                ))</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(batch) &gt;= BATCH_SIZE:</span><br><span class="line">                    sql = <span class="string">&quot;INSERT INTO trade_db.btc_trade_data USING trade_db.trade_data TAGS(&#x27;BTCUSDT&#x27;) VALUES&quot;</span></span><br><span class="line">                    affected_rows = cursor.execute_many(sql, batch)</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">f&quot;Inserted <span class="subst">&#123;affected_rows&#125;</span> rows&quot;</span>)</span><br><span class="line"></span><br><span class="line">                    batch = []</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> batch:</span><br><span class="line">                cursor.execute_many(sql, batch)</span><br><span class="line">            cursor.close()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Import completed&quot;</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Error: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="keyword">if</span> conn:</span><br><span class="line">            conn.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    process_csv()</span><br></pre></td></tr></table></figure>
 
 <p>写入了两次, 其结构为</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">du --max-depth=1 -h /var/lib/taos/vnode/vnode3</span><br><span class="line">6.8M    /var/lib/taos/vnode/vnode3/tsdb # db data</span><br><span class="line">12K     /var/lib/taos/vnode/vnode3/sync # Raft config</span><br><span class="line">68K     /var/lib/taos/vnode/vnode3/meta # meta data</span><br><span class="line">45M     /var/lib/taos/vnode/vnode3/wal  # wal log</span><br><span class="line">160K    /var/lib/taos/vnode/vnode3/tq</span><br><span class="line">52M     /var/lib/taos/vnode/vnode3</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">du --max-depth=1 -h /var/lib/taos/vnode/vnode3</span><br><span class="line">6.8M    /var/lib/taos/vnode/vnode3/tsdb # db data</span><br><span class="line">12K     /var/lib/taos/vnode/vnode3/sync # Raft config</span><br><span class="line">68K     /var/lib/taos/vnode/vnode3/meta # meta data</span><br><span class="line">45M     /var/lib/taos/vnode/vnode3/wal  # wal log</span><br><span class="line">160K    /var/lib/taos/vnode/vnode3/tq</span><br><span class="line">52M     /var/lib/taos/vnode/vnode3</span><br></pre></td></tr></table></figure>
 
 <p><code>wal</code> 理论上是可以删除的, 只有这个 <code>db data</code> 是真是需要存储的数据, 也就是说 7M, 比 <code>DuckDB</code> 要小很多很多了, 5% 附近的压缩率也和 Deepseek 不知道从哪找的数据很接近.</p>
 <p>唯一的缺点就是生态不太完善, 资料是比较少的, 以后如果遇见问题免不了需要自己看源码.</p>
@@ -277,124 +277,8 @@
 <li><code>TDengine</code>: 列式存储的 <code>TSDB</code>, 压缩性能良好, 生态 (学习资料基本上只有官方文档) 有待进一步完善.</li>
 </ul>
 <p>最终在 King3399 的嵌入式 ARM 主机安装了 <code>TDengine</code> 的 Docker 服务器</p>
-<p>调研的时候意外发现了一个 DB 的 <a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking">ranking 网站</a>, 就是不知道是什么来做的排名, 似乎是按人气多一些. 想过用 <code>InfluxDB</code> 和 <code>timescaledb</code> 来做, 但是看了 <code>TDengine</code> 的 <a target="_blank" rel="noopener" href="https://tdengine.com/influxdb-vs-tdengine-performance-comparison/">官方性能对比报告</a>, 并且到手之后比较好的满足了我的需求 (只有一个就是 节约磁盘), 就没有尝试.</p>
-<h2 id="附录-DeepSeek-的呓语"><a href="#附录-DeepSeek-的呓语" class="headerlink" title="附录 - DeepSeek 的呓语"></a>附录 - DeepSeek 的呓语</h2><p>好的，我现在需要帮用户选择一个适合存储高频交易数据的数据库。用户的需求包括：每秒存储交易价格、深度等信息，用于回测分析，需要数据库易于用Python和C++读取，高效压缩列存储，支持时序数据，并在ARMv8a架构上运行良好，节省内存。</p>
-<p>首先，用户的需求很明确，主要是高频金融数据的存储和后续分析。这类数据具有时间序列特性，所以时序数据库是首选。同时，用户提到列存储和高效压缩，这通常与分析型数据库相关，比如列式存储的数据库能更好地处理大量数据查询和聚合操作，压缩也能节省存储空间。</p>
-<p>接下来，支持ARMv8a架构和节省内存，这点需要注意。有些数据库可能对ARM的支持不够好，或者在某些架构上性能不佳。比如，InfluxDB虽然流行，但社区版可能在集群或高可用方面有限制，且ARM支持可能需要确认。TimescaleDB是基于PostgreSQL的，PostgreSQL本身对ARM支持不错，但TimescaleDB作为扩展，可能需要检查是否有ARM的优化版本。</p>
-<p>列存储方面，ClickHouse是一个很强的候选，它专为OLAP设计，列式存储，压缩效率高，查询速度快。但ClickHouse在ARM上的支持如何呢？需要确认是否有官方支持或者社区版本在ARM上运行良好。另外，用户提到节省内存，ClickHouse在处理大数据时可能占用较多内存，但高效的压缩可能抵消部分内存消耗。</p>
-<p>Apache Parquet是文件格式，如果用户想用文件系统管理，可能需要结合其他工具，比如DuckDB。DuckDB支持列存储，嵌入式，适合分析，且支持ARM，内存占用低。这可能是一个轻量级的选择，特别是如果用户不需要复杂的数据库服务，而是直接处理文件的话。</p>
-<p>Prometheus虽然时序数据库，但更适用于监控场景，可能不适合高频金融数据的复杂查询。TDengine是专为时序设计的国产数据库，资源效率高，ARM支持好，适合物联网和金融时序数据，这也是一个候选。</p>
-<p>Cassandra是宽列存储，适合写多读少，但用户可能需要更高效的时序查询，可能不如专门的时序数据库合适。</p>
-<p>总结候选名单：</p>
-<ul>
-<li>TimescaleDB（基于PostgreSQL，时序扩展，ARM支持）</li>
-<li>ClickHouse（列存储，高效压缩，需确认ARM支持）</li>
-<li>TDengine（专为时序，ARM支持，资源高效）</li>
-<li>DuckDB（嵌入式，列存储，适合分析，ARM支持）</li>
-<li>InfluxDB（时序，但社区版功能有限，ARM可能支持）</li>
-</ul>
-<p>需要进一步考虑的点：</p>
-<ol>
-<li>数据写入速度：每秒的数据量很大，数据库的写入性能是否足够。</li>
-<li>查询需求：回测分析可能需要复杂查询和聚合，列存储更适合。</li>
-<li>系统资源：ARM架构下内存和CPU的限制，需要选择轻量级或优化好的数据库。</li>
-<li>易用性：Python和C++的库支持是否良好。</li>
-</ol>
-<p>比如，ClickHouse有Python的客户端库，C++也可以直接使用，但ARM支持可能需要查证。TDengine官方文档显示支持ARM，且有Python和C&#x2F;C++的接口，可能更适合。DuckDB作为嵌入式库，无需服务器，适合单机应用，节省资源，但管理大量数据文件可能不如数据库方便。</p>
-<p>权衡下来，如果用户需要高性能的列存储和压缩，且确认ClickHouse在ARMv8a上的支持，可以选择它。否则，TDengine或DuckDB可能是更稳妥的选择，特别是在资源受限的环境下。TimescaleDB也是一个可靠选项，但可能在列存储和压缩方面不如ClickHouse或TDengine高效。</p>
-<hr>
-<p>根据你的需求，高频金融时序数据存储需要兼顾写入性能、压缩效率、时序优化和ARM架构适配，以下是经过筛选的推荐方案：</p>
-<p>首推组合：TDengine + DuckDB</p>
-<ol>
-<li>核心存储层：TDengine</li>
-</ol>
-<ul>
-<li>时序优化：专为高频时序数据设计，数据分区和聚合查询效率远超通用数据库</li>
-<li>ARM性能：官方原生支持ARMv8架构，在树莓派&#x2F;飞腾等平台有生产级部署案例</li>
-<li>压缩黑科技：列存压缩率可达5%~10%（如1GB原始数据压缩至50MB）</li>
-<li>写入吞吐：单节点可支撑百万点&#x2F;秒写入，完美匹配交易所数据频率</li>
-<li>内存控制：数据块内存管理机制避免OOM，适合长期运行</li>
-<li>开发友好：提供Python&#x2F;C&#x2F;C++&#x2F;Go等驱动，支持REST API</li>
-</ul>
-<ol>
-<li>分析加速层：DuckDB</li>
-</ol>
-<ul>
-<li>嵌入式列存引擎：将TDengine原始数据按日期分片导出为Parquet</li>
-<li>内存分析：在Python中通过dtype优化内存布局，比pandas节省50%内存</li>
-<li>C++协同：通过Arrow格式与C++策略引擎无缝对接</li>
-<li>ARM向量化：利用NEON指令集加速回测指标计算</li>
-</ul>
-<p>架构示意图</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[Binance API] → [TDengine Cluster]  </span><br><span class="line">                   ↓ 定期冷数据导出</span><br><span class="line">[Parquet Files] → [DuckDB In-Memory Engine]  </span><br><span class="line">                   ↓ 生成信号</span><br><span class="line">[C++ Backtesting Framework] ← Arrow IPC</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> taos <span class="keyword">import</span> *</span><br><span class="line">conn = connect(host=<span class="string">&quot;localhost&quot;</span>, user=<span class="string">&quot;root&quot;</span>, password=<span class="string">&quot;taosdata&quot;</span>, config=<span class="string">&quot;/etc/taos&quot;</span>)</span><br><span class="line">conn.execute(<span class="string">&quot;CREATE DATABASE binance KEEP 365 DAYS 10 BLOCKS 8&quot;</span>)</span><br><span class="line">conn.execute(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">CREATE STABLE IF NOT EXISTS tick_data (</span></span><br><span class="line"><span class="string">  ts TIMESTAMP, </span></span><br><span class="line"><span class="string">  price DOUBLE, </span></span><br><span class="line"><span class="string">  bid1 DOUBLE, bid1_size DOUBLE,</span></span><br><span class="line"><span class="string">  ask1 DOUBLE, ask1_size DOUBLE,</span></span><br><span class="line"><span class="string">  trade_volume DOUBLE</span></span><br><span class="line"><span class="string">) TAGS (symbol BINARY(16))</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量写入每秒数据</span></span><br><span class="line">prepared = conn.prepare(<span class="string">&quot;INSERT INTO ? USING tick_data TAGS(?) VALUES (?,?,?,?,?,?,?)&quot;</span>)</span><br><span class="line">prepared.bind_params([</span><br><span class="line">    [<span class="string">&quot;BTCUSDT_1&quot;</span>, <span class="string">&quot;BTCUSDT&quot;</span>, <span class="number">1718000000000</span>, <span class="number">61023.5</span>, <span class="number">61020.1</span>, <span class="number">0.5</span>, <span class="number">61025.3</span>, <span class="number">0.8</span>, <span class="number">120.3</span>],</span><br><span class="line">    [<span class="string">&quot;ETHUSDT_1&quot;</span>, <span class="string">&quot;ETHUSDT&quot;</span>, <span class="number">1718000001000</span>, <span class="number">3801.2</span>, <span class="number">3800.5</span>, <span class="number">2.1</span>, <span class="number">3802.0</span>, <span class="number">1.7</span>, <span class="number">45.6</span>]</span><br><span class="line">])</span><br><span class="line">prepared.execute()</span><br></pre></td></tr></table></figure>
-
-<p>Deepseek 给的数据, 估计是各种博客的数据, 但是评分就比较有参考价值了, 并且给的信息比较准确</p>
-<table>
-<thead>
-<tr>
-<th align="center">数据库</th>
-<th align="center">写入速度 (QPS)</th>
-<th align="center">压缩率</th>
-<th align="center">查询延迟</th>
-<th align="center">CPU开销</th>
-<th align="center">ARM支持</th>
-<th align="center">内存开销</th>
-<th align="center">学习曲线</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><strong>TDengine</strong></td>
-<td align="center">★★★★★ (120K rows&#x2F;s)</td>
-<td align="center">★★★★☆ (5.8%)</td>
-<td align="center">0.8ms (单设备)</td>
-<td align="center">22% (写入负载)</td>
-<td align="center">★★★★★ (原生)</td>
-<td align="center">2GB~</td>
-<td align="center">中等</td>
-</tr>
-<tr>
-<td align="center"><strong>InfluxDB</strong></td>
-<td align="center">★★☆☆☆ (35K rows&#x2F;s)</td>
-<td align="center">★★★☆☆ (15.3%)</td>
-<td align="center">3.2ms (单设备)</td>
-<td align="center">68% (写入负载)</td>
-<td align="center">★★★☆☆ (兼容)</td>
-<td align="center">3.8GB+</td>
-<td align="center">中等</td>
-</tr>
-<tr>
-<td align="center">ClickHouse</td>
-<td align="center">★★★★☆ (85K rows&#x2F;s)</td>
-<td align="center">★★★★★ (8.2%)</td>
-<td align="center">12ms (主键查询)</td>
-<td align="center">45% (写入负载)</td>
-<td align="center">★★★☆☆ (需适配)</td>
-<td align="center">8GB+</td>
-<td align="center">陡峭</td>
-</tr>
-<tr>
-<td align="center">DuckDB</td>
-<td align="center">★★☆☆☆ (10K rows&#x2F;s)</td>
-<td align="center">★★★★☆ (7.5%)</td>
-<td align="center">5ms (全表扫描)</td>
-<td align="center">30% (查询负载)</td>
-<td align="center">★★★★★ (原生)</td>
-<td align="center">1GB~</td>
-<td align="center">简单</td>
-</tr>
-<tr>
-<td align="center">TimescaleDB</td>
-<td align="center">★★★☆☆ (25K rows&#x2F;s)</td>
-<td align="center">★★★☆☆ (18%)</td>
-<td align="center">50ms (时间聚合)</td>
-<td align="center">55% (写入负载)</td>
-<td align="center">★★★★☆ (兼容)</td>
-<td align="center">4GB+</td>
-<td align="center">中等</td>
-</tr>
-</tbody></table>
+<p>调研的时候意外发现了一个 DB 的 <a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking">ranking 网站</a>. 想过用 <code>InfluxDB</code> 和 <code>timescaledb</code> 来做, 看了 rank 里面收录的 db 感觉可以选择的 db 更多, 不应该花经历在尝试 duckdb 这种嵌入式 DB. 但是看了 <code>TDengine</code> 的 <a target="_blank" rel="noopener" href="https://tdengine.com/influxdb-vs-tdengine-performance-comparison/">官方性能对比报告</a>, 并且这个列式存储和时序数据库, 以及超级表的设计, 比较好的满足了我的需求 (大量雷同的表设计, 时序数据列式压缩存储), 就没有尝试.</p>
+<p>大部分的 CSV 写入 DB 都可以使用导入命令, 本文使用 python 过于复杂且性能低下.</p>
 
     </div>
 
@@ -410,11 +294,11 @@
   <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
   <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
 
-  <p><span>本文标题:</span>安装 TDengine</a></p>
+  <p><span>本文标题:</span>「Abyss」安装 TDengine</a></p>
   <p><span>文章作者:</span></a></p>
   <p><span>发布时间:</span>2025年02月04日 - 21:20:00</p>
-  <p><span>最后更新:</span>2025年08月05日 - 01:49:59</p>
-  <p><span>原始链接:</span><a href="/2025/install-TDengine/" title="安装 TDengine">https://zombie12138.github.io/2025/install-TDengine/</a>
+  <p><span>最后更新:</span>2025年11月09日 - 01:14:04</p>
+  <p><span>原始链接:</span><a href="/2025/install-TDengine/" title="「Abyss」安装 TDengine">https://zombie12138.github.io/2025/install-TDengine/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2025/install-TDengine/"  aria-label="复制成功！"></i></span>
   </p>
   <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
@@ -438,8 +322,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/Abyss/" rel="tag"># Abyss</a>
               <a href="/tags/Database/" rel="tag"># Database</a>
-              <a href="/tags/Quantitative-Trading/" rel="tag"># Quantitative Trading</a>
           </div>
 
         
@@ -513,7 +397,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Clickhouse-%E4%BB%8E-pull-%E5%88%B0-give-up"><span class="nav-number">1.</span> <span class="nav-text">Clickhouse 从 pull 到 give up</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DuckDB-%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">DuckDB 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TDengine"><span class="nav-number">3.</span> <span class="nav-text">TDengine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">最终的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95-DeepSeek-%E7%9A%84%E5%91%93%E8%AF%AD"><span class="nav-number">6.</span> <span class="nav-text">附录 - DeepSeek 的呓语</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Clickhouse-%E4%BB%8E-pull-%E5%88%B0-give-up"><span class="nav-number">1.</span> <span class="nav-text">Clickhouse 从 pull 到 give up</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DuckDB-%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">DuckDB 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TDengine"><span class="nav-number">3.</span> <span class="nav-text">TDengine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">最终的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -527,12 +411,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

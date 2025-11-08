@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zombie12138.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="调研并部署一个 Java 批处理系统, 用来某交易平台的数据的抓取和分析.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="「Abyss」构建批处理平台 xxl-job">
+<meta property="og:url" content="https://zombie12138.github.io/2025/build-batch-platform/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="调研并部署一个 Java 批处理系统, 用来某交易平台的数据的抓取和分析.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/executor.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/nodes.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/bean_job.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/demoJobHandler_run.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/demoJobHandler_log.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/shell_job.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/glue_ide.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/shell.png">
+<meta property="og:image" content="https://zombie12138.github.io/2025/build-batch-platform/sh_log.png">
+<meta property="article:published_time" content="2025-11-01T13:54:03.000Z">
+<meta property="article:modified_time" content="2025-11-08T17:46:54.314Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Abyss">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/2025/build-batch-platform/executor.png">
+
+<link rel="canonical" href="https://zombie12138.github.io/2025/build-batch-platform/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>「Abyss」构建批处理平台 xxl-job | zombie's</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">zombie's</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zombie12138.github.io/2025/build-batch-platform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zombie12138">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zombie's">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          「Abyss」构建批处理平台 xxl-job
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-11-01 21:54:03" itemprop="dateCreated datePublished" datetime="2025-11-01T21:54:03+08:00">2025-11-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-11-09 01:46:54" itemprop="dateModified" datetime="2025-11-09T01:46:54+08:00">2025-11-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>调研并部署一个 Java 批处理系统, 用来某交易平台的数据的抓取和分析.</p>
+<span id="more"></span>
+
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近一直想自己搞搞自动交易. 第一步就是先部署一下这个数据抓取的平台. 有了数据才能后面考虑回测, 最终部署到真实的交易中. 经过调研, 某平台提供了两种数据, 一种是历史数据, 是一个压缩过的 csv 文件; 还有一种就是通过 API 查询实时价格. 这里先爬取历史数据, 后续再考虑 API 来抓实时的数据.</p>
+<h2 id="框架选择"><a href="#框架选择" class="headerlink" title="框架选择"></a>框架选择</h2><h3 id="最初的设计"><a href="#最初的设计" class="headerlink" title="最初的设计"></a>最初的设计</h3><p>这个最初使用 Python 实现了一版, 当时参考的是一个 <a target="_blank" rel="noopener" href="https://github.com/ma6174/acmjudger">OJ 系统的调度设计</a>, 写了不到 500 行, 只实现了 Worker 以及 Worker 节点和 Manager 节点的同步和通讯, 但是感觉实现的可维护性非常差, 很多设计上也存在缺陷, 重新总结重构.</p>
+<ul>
+<li>最初的 Python 实现的是单机多进程的. 若干个 Worker 和一个 Master 进程.</li>
+<li>Worker 包含一个主线程和一个执行线程, 主线程负责和 Manager 的通讯, 执行线程需要自己 override, 来执行实际的任务.</li>
+<li>Worker 自己管理执行进度, 管理 Checkpoint.</li>
+<li>Worker 和 Manager 是通过队列来进行通讯的, 来定期汇报执行的进度, 以及 manager 的指令.</li>
+</ul>
+<p>这些设计有几个问题:</p>
+<ul>
+<li>Manager 和 Worker 耦合比较严重.</li>
+<li>Manager 的工作太繁重, 需要自己从 DB 来扫描任务, 管理 Worker 的状态, 以及执行的进度, 最终还需要写回 DB.</li>
+<li>想要的精细控制太多, 定制一个 Worker 非常复杂, 需要自己实现 Checkpoint 以支持暂停, 记录执行进度百分比等. 我实现了一个 Sleep 任务的 demo 就写了 60 行的代码.</li>
+<li>需要自己实现 Worker, 我想要的是直接在平台上进行编写一小部分 Python&#x2F;Shell 等代码, 配置依赖和调度策略, 之后执行.</li>
+</ul>
+<p>理想中的设计:</p>
+<ul>
+<li><strong>容错</strong>: 系统可以容忍简单的 Worker 的错误, 可以配置重试机制.</li>
+<li><strong>DAG 依赖</strong>: Task 的调度需要自动解析依赖关系 (DAG).</li>
+<li><strong>语言</strong>: 语言上使用 <strong>Java</strong> 进行开发, 主要是 Python 在开发这种复杂的系统时, 代码量并没有减少. 这时候即使很多 type hint 开发时候也是比较麻烦.</li>
+<li><strong>模型设计</strong>: 任务有 Job, Task, Instance 的概念. 一个 Job 是一类任务的模板, 通过配置不同的参数可以配置成不同的 Task; Task 每次执行生成 Instance. 每个 Instance 可以手动重新执行, 手动成功, 手动失败等等.</li>
+<li><strong>任务状态</strong>: Task 的状态有等待中, 执行中, 执行成功, 执行失败. 我们 <strong>不需要暂停</strong>, 如果暂停执行, 直接从头再来, 减轻了代码的复杂性.</li>
+<li><strong>分布式和横向拓展</strong>: Worker 和 manager 的组件可以分开部署, 不再依赖进程的通讯, 而是通过专用的消息队列或者 RPC.</li>
+<li><strong>日志和文件</strong>: Task 的执行进度 <strong>不再依赖进度条</strong>, 而是直接可以 <strong>查看日志</strong>. Task 的 Stdout 可以随时浏览器查看, 任务可以自己实例的 PWD 下使用临时文件, 并且完成之后删除, 甚至支持任务之间的文件传递.</li>
+<li><strong>支持类型</strong>: Task 可以是 <strong>各种类型</strong> 的, 可以是 shell 脚本, python, Java, 或者简单的一段命令. 后面最好还要支持 Python 环境的管理.</li>
+</ul>
+<p>但是没有参考其他开源的情况下自己独立完成一个结构不错的框架还是有些困难, 主要是耗费时间太长. 因此准备先参考开源类似框架部署使用, 学习源码和进行改造.</p>
+<h3 id="PowerJob"><a href="#PowerJob" class="headerlink" title="PowerJob"></a>PowerJob</h3><p><a target="_blank" rel="noopener" href="https://github.com/PowerJob/PowerJob">PowerJob</a> 是我最先看到的一个 Java 实现框架 (截至当前 7.6k star).</p>
+<ul>
+<li>提供前端 Web 界面, 允许开发者可视化地完成调度任务的管理, 任务运行状态监控和运行日志查看等功能.</li>
+<li>支持 CRON&#x2F;固定频率&#x2F;固定延迟&#x2F;OpenAPI 等调度方式</li>
+<li>支持完整的 DAG 编排.</li>
+<li>支持 单机&#x2F;广播&#x2F;Map&#x2F;MapReduce 四种执行模式.</li>
+<li>支持 Spring Bean, 内置&#x2F;外置 Java 类. 另外可以通过引入官方提供的依赖包, 一键集成 Shell, Python, HTTP, SQL 等处理器.</li>
+<li>“无锁” 调度, 支持多种调度策略, 任何组件可以水平拓展.</li>
+</ul>
+<p>但是我实际看源码和使用, 存在很多问题:</p>
+<ul>
+<li>部分实现不够完善: 前端比较简陋, 例如, 填写时候很多没有提醒是否是必填项, 提交表格时候才会返回报错.</li>
+<li>Python &amp;&amp; Shell 功能比较简陋, 是直接把 Python 的脚本作为参数传递进去的, 不适合大型脚本, 缺乏对于 python 环境管理的支持. 甚至示例中 Docker 安装的是 Python2.</li>
+<li>代码: 代码风格比较混乱, 同时夹带私货.</li>
+</ul>
+<p>之前一直看的就是这个框架, 这个应该是最接近我的需求的了, 本来想要 fork 魔改一下自己用, 后来重新调研发现还有一些其他的工具.</p>
+<h3 id="xxl-job"><a href="#xxl-job" class="headerlink" title="xxl-job"></a>xxl-job</h3><p><a target="_blank" rel="noopener" href="https://github.com/xuxueli/xxl-job/tree/master?tab=readme-ov-file">xxl-job</a> 是一个分布式任务调度平台, 其核心设计目标是开发迅速, 学习简单, 轻量级, 易扩展 (29.1k star 截至当前).</p>
+<ul>
+<li>分为调度中心 Admin 和 执行器 Executor (相当于一个特定任务类型的 worker)</li>
+<li>调度: 同样支持 CRON&#x2F;固定频率&#x2F;固定延迟&#x2F;API&#x2F;父子任务等触发方式.</li>
+<li>横向拓展: 执行器是可以直接横向拓展, 新上线的会自动注册和发现.</li>
+<li>任务类型: 这个是最吸引我的地方, 提供一个 Web IDE, 可以编写 python, shell 等</li>
+</ul>
+<p>缺点就是 DAG <a target="_blank" rel="noopener" href="https://github.com/xuxueli/xxl-job/issues/172">支持较弱</a>, 但是目前看来 <a target="_blank" rel="noopener" href="https://github.com/xuxueli/xxl-job/issues/3158">依然在开发</a>.</p>
+<h3 id="最终选择-xxl-job"><a href="#最终选择-xxl-job" class="headerlink" title="最终选择: xxl-job"></a>最终选择: xxl-job</h3><p>目前基本上确定了 xxl-job 替代 PowerJob 的方案, 但是为了防止调研不充分导致的无用功, 还是根据 ChatGPT 的推荐进行逐个框架的筛选. 一些框架有些应用场景不同, 一些不适用于 Python 等批处理任务的编排和调度, 还有一些过于复杂, 具体见: <a href="/2025/build-batch-platform/frameworks.mdr" title="点击下载MD">点击下载MD</a></p>
+<p>IMO, PowerJob 更多的强调分布式, 例如组件可以水平拓展; 支持 MapReduce; 最大优势就是支持简单的 DAG; 更多的是强调 Java 任务. XXL-JOB 则是更多的强调定时调度, 内置了一个 Web 编辑器, 可以方便地编辑脚本; 但是缺少任务之间依赖或者 DAG 的支持; 有子任务 &#x2F;回调串联, 可以做线性链或树状依赖. 两者都支持 Python, 但是XXL-JOB 的集成体验明显更好一些.</p>
+<p>虽然我已经看了很多 PowerJob 的源码, 也简单进行上手体验, 但是最终还是选择 XXL-JOB.</p>
+<h2 id="安装和部署"><a href="#安装和部署" class="headerlink" title="安装和部署"></a>安装和部署</h2><h3 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h3><p>我这里已经有一个 Mysql 的 docker 了 (其实是 MariaDB), 但是准备再 xxl-job 中补充一个 docker compose, 以保证可以随时直接拉起. 因为我已有独立的 MySQL 服务, 所以也单独做成一个容器.</p>
+<h4 id="配置-mysql-docker"><a href="#配置-mysql-docker" class="headerlink" title="配置 mysql docker"></a>配置 mysql docker</h4><p>xxl-job 根目录新建一个文件夹 <code>mysql</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./mysql</span><br><span class="line">├── db</span><br><span class="line">│   └── tables_xxl_job.sql</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">└── .env</span><br></pre></td></tr></table></figure>
+
+<p><code>.env</code> 集中管理配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 基础</span><br><span class="line">MYSQL_IMAGE=mysql:8.4</span><br><span class="line">MYSQL_PORT=3306</span><br><span class="line">CONTAINER_NAME=xxl-mysql</span><br><span class="line"></span><br><span class="line"># root 密码</span><br><span class="line">MYSQL_ROOT_PASSWORD=MysqlPassw0rd</span><br><span class="line"></span><br><span class="line"># 应用库与用户（首次初始化时自动创建并授权）</span><br><span class="line">MYSQL_DATABASE=xxl_job</span><br><span class="line">MYSQL_USER=xxl</span><br><span class="line">MYSQL_PASSWORD=xxl_PaSsW0rD</span><br><span class="line"></span><br><span class="line"># 数据目录映射到宿主机</span><br><span class="line">MYSQL_DATA_DIR=./data</span><br></pre></td></tr></table></figure>
+
+<p><code>docker-compose.yml</code> 配置如下</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.9&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mysql:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">$&#123;MYSQL_IMAGE&#125;</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">$&#123;CONTAINER_NAME&#125;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;$&#123;MYSQL_PORT&#125;:3306&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">$&#123;MYSQL_ROOT_PASSWORD&#125;</span></span><br><span class="line">      <span class="comment"># 官方镜像会在“首次初始化数据目录”时自动创建下列库与用户并授权</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">$&#123;MYSQL_DATABASE&#125;</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">$&#123;MYSQL_USER&#125;</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">$&#123;MYSQL_PASSWORD&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 指定映射：数据目录 + 初始化脚本（可选）</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">$&#123;MYSQL_DATA_DIR&#125;:/var/lib/mysql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">bind</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">./db/tables_xxl_job.sql</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/docker-entrypoint-initdb.d/tables_xxl_job.sql</span></span><br><span class="line">        <span class="attr">read_only:</span> <span class="literal">true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">bind</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">./my.conf</span></span><br><span class="line">        <span class="attr">target:</span> <span class="string">/etc/mysql/my.cnf</span></span><br><span class="line">        <span class="attr">read_only:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">300M</span></span><br><span class="line">          <span class="attr">cpus:</span> <span class="number">2.0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 限制容器日志（防止占满磁盘）</span></span><br><span class="line">    <span class="attr">logging:</span></span><br><span class="line">      <span class="attr">driver:</span> <span class="string">&quot;json-file&quot;</span></span><br><span class="line">      <span class="attr">options:</span></span><br><span class="line">        <span class="attr">max-size:</span> <span class="string">&quot;10m&quot;</span></span><br><span class="line">        <span class="attr">max-file:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">ulimits:</span></span><br><span class="line">      <span class="attr">nofile:</span></span><br><span class="line">        <span class="attr">soft:</span> <span class="number">65536</span></span><br><span class="line">        <span class="attr">hard:</span> <span class="number">65536</span></span><br><span class="line">    <span class="attr">security_opt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="literal">no</span><span class="string">-new-privileges:true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 健康检查</span></span><br><span class="line">    <span class="attr">healthcheck:</span></span><br><span class="line">      <span class="attr">test:</span> [<span class="string">&quot;CMD-SHELL&quot;</span>, <span class="string">&quot;mysqladmin ping -h 127.0.0.1 -uroot -p$$&#123;MYSQL_ROOT_PASSWORD&#125; || exit 1&quot;</span>]</span><br><span class="line">      <span class="attr">interval:</span> <span class="string">10s</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">5s</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">start_period:</span> <span class="string">20s</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--skip-name-resolve</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--character-set-server=utf8mb4</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">--collation-server=utf8mb4_unicode_ci</span></span><br></pre></td></tr></table></figure>
+
+<p>最后的 <code>command</code> 编码配置也可以固定到配置中, 但是不想留太多文件:</p>
+<p>直接 <code>sudo docker compose up -d</code> 拉起即可, 然后</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">watch <span class="built_in">sudo</span> docker ps</span><br><span class="line"><span class="built_in">sudo</span> docker <span class="built_in">exec</span> -it xxl-mysql mysql --default-character-set=utf8mb4 -uxxl -p<span class="string">&quot;xxl_PaSsW0rD&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>登录后查看库表, 发现已经完成创建</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USE xxl_job;</span><br><span class="line"><span class="keyword">SHOW</span> TABLES;</span><br></pre></td></tr></table></figure>
+
+<p>我这里实际部署的时候要使用现有的 mysql, 所以执行这个 sql 文件后还有指定用户, 手动赋予权限:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;xxl&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;xxl_PaSsW0rD&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> xxl_job.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;xxl&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<h4 id="编码配置"><a href="#编码配置" class="headerlink" title="编码配置"></a>编码配置</h4><p>如果客户端不带 <code>--default-character-set=utf8mb4</code>, 就会默认使用 <code>latin1</code>, 如果执行查询就会乱码. JDBC 也需要在 URL 加 <code>useUnicode=true&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_0900_ai_ci</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> xxl_job_group;</span><br><span class="line"><span class="comment">-- 中文乱码</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;character_set%&#x27;</span>;</span><br><span class="line"><span class="comment">-- | character_set_client     | latin1                         |</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;collation%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>或者挂载外部的配置文件, 例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">character-set-server = utf8mb4</span><br><span class="line">collation-server     = utf8mb4_0900_ai_ci</span><br><span class="line"># skip-character-set-client-handshake</span><br><span class="line">[client]</span><br><span class="line">default-character-set = utf8mb4</span><br></pre></td></tr></table></figure>
+
+<p>所以最好的方法还是不要写非 ASCII 字符, 免得面对这些麻烦, 后续我会一点点清理掉项目中的中文数据.</p>
+<h3 id="xxl-job-Docker"><a href="#xxl-job-Docker" class="headerlink" title="xxl-job Docker"></a>xxl-job Docker</h3><h4 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h4><p>首先编译出来, 这里切换到 jdk17, <code>sudo archlinux-java set java-17-openjdk</code>, 之后执行编译 (跳过单测):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn -U -DskipTests clean package</span><br></pre></td></tr></table></figure>
+
+<h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><p>官方给的 docker 其实是非常简单的, 这里进行简单的改造.</p>
+<p>最初我实现了一个 jdk 容器构建, 拷贝源码之后构建, jar 拷贝至 jre 容器. 但是这样每次构建, 并且构建时间太长, 最终决定直接拷贝 jar 到 jre:</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> eclipse-temurin:<span class="number">17</span>-jre-jammy</span><br><span class="line"><span class="comment"># FROM openjdk:21-jdk-slim</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 tini 与基础工具</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; DEBIAN_FRONTEND=noninteractive \</span></span><br><span class="line"><span class="language-bash">    apt-get install -y --no-install-recommends tini wget curl bash &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">rm</span> -rf /var/lib/apt/lists/*</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制 JAR</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> xxl-job-admin/target/*.jar /app/xxl-job-admin.jar</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建日志目录（含 GC 日志）</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> -p /data/applogs /data/gclogs &amp;&amp; <span class="built_in">chmod</span> -R 777 /data</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># JVM 调优</span></span><br><span class="line"><span class="comment"># G1GC, MaxRAMPercentage (Xmx比例),</span></span><br><span class="line"><span class="comment"># InitialRAMPercentage (Xms比例),</span></span><br><span class="line"><span class="comment"># G1: 字符串去重</span></span><br><span class="line"><span class="comment"># TieredStopAtLevel: c1 jit</span></span><br><span class="line"><span class="comment"># OOM Exit</span></span><br><span class="line"><span class="keyword">ENV</span> JAVA_TOOL_OPTIONS=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">    -XX:+UseG1GC \</span></span><br><span class="line"><span class="string">    -XX:MaxRAMPercentage=70 \</span></span><br><span class="line"><span class="string">    -XX:MinRAMPercentage=70 \</span></span><br><span class="line"><span class="string">    -XX:InitialRAMPercentage=70 \</span></span><br><span class="line"><span class="string">    -XX:+UseStringDeduplication \</span></span><br><span class="line"><span class="string">    -XX:TieredStopAtLevel=1 \</span></span><br><span class="line"><span class="string">    -XX:+ExitOnOutOfMemoryError \</span></span><br><span class="line"><span class="string">    -Xlog:gc*,safepoint:file=/data/gclogs/gc.log:time,level,tags:filecount=3,filesize=10M \</span></span><br><span class="line"><span class="string">    &quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程调试, 5005 端口</span></span><br><span class="line"><span class="keyword">ENV</span> JAVA_TOOL_OPTIONS=<span class="string">&quot;$&#123;JAVA_TOOL_OPTIONS&#125; -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8080</span> <span class="number">5005</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> JAVA_OPTS=<span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> TZ=PRC</span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="variable">$TZ</span> &gt; /etc/timezone</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># tini 转发信号, 回收 zombie, 优雅关闭</span></span><br><span class="line"><span class="comment"># sh -c: shell, 展开环境变量</span></span><br><span class="line"><span class="comment"># ENTRYPOINT [&quot;/usr/bin/tini&quot;,&quot;--&quot;,&quot;sh&quot;,&quot;-c&quot;]</span></span><br><span class="line"><span class="comment"># exec: 用当前进程替换 shell, 配合 sh -c</span></span><br><span class="line"><span class="comment"># JAVA_OPTS 和默认变量 JAVA_TOOL_OPTIONS 同时生效</span></span><br><span class="line"><span class="comment"># 无需 PARAMS 变量, 直接 enterpoint 追加</span></span><br><span class="line"><span class="comment"># CMD [&quot;exec java -jar $JAVA_OPTS /app/xxl-job-admin.jar&quot;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果不需要 JAVA_OPTS 变量可以直接</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;/usr/bin/tini&quot;</span>,<span class="string">&quot;--&quot;</span>]</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;/app/xxl-job-admin.jar&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>此外还修改了 executor 的 dockerfile, 以及一个包含一个 admin 和两个 executor 的 docker compose. 详情见 <a target="_blank" rel="noopener" href="https://github.com/xuxueli/xxl-job/compare/master...zombie12138:Orth:main#diff-e45e45baeda1c1e73482975a664062aa56f20c03dd9d64a827aba57775bed0d3">commit</a>. 先构建 <code>mvn -B -DskipTests -am package</code>, 然后 <code>docker compose up -d</code> 自动构建执行和部署.</p>
+<h3 id="部署第一个任务"><a href="#部署第一个任务" class="headerlink" title="部署第一个任务"></a>部署第一个任务</h3><h4 id="executor-上线"><a href="#executor-上线" class="headerlink" title="executor 上线"></a>executor 上线</h4><p>输入 <code>http://127.0.0.1:18080/xxl-job-admin</code> 使用 <code>admin</code> + <code>123456</code> 这个最强弱密码登录. 可以看到没有执行机. AppName 需要手动录入之前 env 名称: <code>spring-executor</code> (这里名字还是 <code>demo-executor</code>, 后续进行了调整; 如果使用我的 repo 则无需添加, 我已经在初始化 SQL 中添加了这个 executor).</p>
+<img src="/2025/build-batch-platform/executor.png" class="" title="executor configration">
+
+<p>这时候依然没有 executor 上线, 可手动重启 Executor 来重新注册, executor: <code>sudo docker compose restart xxl-job-worker-1 xxl-job-worker-2</code>. 之后刷新页面, 可以看到两台机器上线:</p>
+<img src="/2025/build-batch-platform/nodes.png" class="" title="nodes">
+
+<h4 id="第一个-bean-任务"><a href="#第一个-bean-任务" class="headerlink" title="第一个 bean 任务"></a>第一个 bean 任务</h4><p><code>demo-executor</code> 下创建 <code>demoJobHandler</code> 的一个任务:</p>
+<img src="/2025/build-batch-platform/bean_job.png" class="" title="bean_job">
+
+<p>之后 enable 任务, 手动触发执行:</p>
+<img src="/2025/build-batch-platform/demoJobHandler_run.png" class="" title="demoJobHandler_run">
+
+<p>在实例页面可查看执行日志</p>
+<img src="/2025/build-batch-platform/demoJobHandler_log.png" class="" title="demoJobHandler_log">
+
+<h4 id="Shell-任务"><a href="#Shell-任务" class="headerlink" title="Shell 任务"></a>Shell 任务</h4><p>复制 bean 任务, 任务类型改为 <code>GLUE_shell</code>. 这里参数不应该写的, 因为没有弹出来编辑器, 还以为和 powerjob 一样要参数传入数据:</p>
+<img src="/2025/build-batch-platform/shell_job.png" class="" title="shell_job">
+
+<p>保存之后点击 glue ide:</p>
+<img src="/2025/build-batch-platform/glue_ide.png" class="" title="glue_ide">
+
+<p>这里可以编辑 shell 脚本:</p>
+<img src="/2025/build-batch-platform/shell.png" class="" title="shell">
+
+<p>类似 bean 任务, 手动触发之后, 执行, 可以查看日志:</p>
+<img src="/2025/build-batch-platform/sh_log.png" class="" title="sh_log">
+
+<h2 id="Docker-资源管理"><a href="#Docker-资源管理" class="headerlink" title="Docker 资源管理"></a>Docker 资源管理</h2><p>因为部署的环境只有 2GB 内存, 因此为了保证不占用过多内存, docker compose 中限制了内存.</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">limits:</span></span><br><span class="line">      <span class="attr">memory:</span> <span class="string">200m</span></span><br><span class="line">      <span class="attr">cpus:</span> <span class="string">&quot;3.0&quot;</span></span><br><span class="line">    <span class="attr">reservations:</span></span><br><span class="line">      <span class="attr">memory:</span> <span class="string">200m</span></span><br><span class="line">      <span class="attr">cpus:</span> <span class="string">&quot;0.5&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>docker 中的 limit 的限制是通过 cgroup 设置的, 但是实际使用中, 容器内的软件还是需要内存容量感知的, 否则无限制的申请还是会导致 OOM.</p>
+<h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>admin 预留 200M, Java 程序配置了 <code>-XX:MaxRAMPercentage=70</code>, 使用的大小是机器内存的 70%; 执行机给了 256M, 和 40% 的堆内存, 毕竟还要运行 Python, 需要留一些堆外内存.</p>
+<p>那么这个资源限制是否生效了呢, 可以直接进入容器查看, <code>sudo docker exec -it xxl-job-worker-1 free -h</code> 可以看到内存依然是我物理机器的内存 (wsl, 13G). 如果进入 docker 查看 top 发现 cpu 其实也还是和物理机相同. 这个原因是实际限制是大部分工具不会感知 cgroup 的限制, cgroup 的限制在下面文件中:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># v1</span></span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/memory/memory.limit_in_bytes</span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/cpu/cpu.cfs_quota_us</span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/cpu/cpu.cfs_period_us</span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/cpuset/cpuset.cpus</span><br><span class="line"><span class="comment"># v2</span></span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/memory.max          <span class="comment"># 内存上限（字节）, 若为 &quot;max&quot; 表示不限</span></span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/memory.swap.max     <span class="comment"># swap 上限</span></span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/cpu.max             <span class="comment"># 形如 &quot;quota period&quot;（例如 &quot;200000 100000&quot; = 2 CPU）</span></span><br><span class="line"><span class="built_in">cat</span> /sys/fs/cgroup/cpuset.cpus.effective</span><br><span class="line"><span class="comment"># 物理机本身</span></span><br><span class="line"><span class="built_in">cat</span> /proc/meminfo</span><br><span class="line"><span class="built_in">cat</span> /proc/cpuinfo</span><br></pre></td></tr></table></figure>
+
+<p>可以写一个程序, 展示实际的 cgroup 和 物理机资源信息, 源码较长 <a href="/2025/build-batch-platform/get_limit.c" title="点击下载">点击下载</a>. 之后 <code>sudo gcc get_limit.c -o get_limit -static</code> 编译后丢进 docker (一定 static, 否则大部分没有 glibc 的), 执行后输出如下, 限制内存 200m, 实际内存 13+g:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">./get_limit </span><br><span class="line">=== CGroup Resource Limits ===</span><br><span class="line">Failed to open file: No such file or directory</span><br><span class="line">CGroup Memory Limit: 209715200 bytes</span><br><span class="line">Failed to open file: No such file or directory</span><br><span class="line">CGroup CPU Limit: 3 CPU shares</span><br><span class="line"></span><br><span class="line">=== Linux System Resource Limits ===</span><br><span class="line">Total Physical Memory: 14495854592 bytes</span><br><span class="line">CPU Cores: 16</span><br><span class="line">Max Open Files (RLIMIT_NOFILE): 1024</span><br></pre></td></tr></table></figure>
+
+<p>另一个问题就是 JVM 是否能够感知 cgroup 限制呢? 首先从结果看, <code>sudo docker stats</code> 查看统计, 得到内存都是按照我们自己设置的情况执行的:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID   NAME               CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O   PIDS </span><br><span class="line">f30d6866c538   xxl-job-worker-2   0.15%     150.9MiB / 256MiB   58.93%    4.58kB / 4.95kB   0B / 0B     53 </span><br><span class="line">1cd3347209be   xxl-job-worker-1   0.26%     150.5MiB / 256MiB   58.80%    4.7kB / 5.08kB    0B / 0B     53 </span><br><span class="line">7cb5256f47f4   xxl-job-admin      0.66%     167.7MiB / 200MiB   83.85%    213kB / 165kB     0B / 0B     50 </span><br><span class="line">6b866a50d9a0   xxl-mysql          0.80%     495.2MiB / 1GiB     48.36%    70.1MB / 83.4MB   0B / 0B     50 </span><br></pre></td></tr></table></figure>
+
+<p>GC 文件可以通过 <a target="_blank" rel="noopener" href="https://github.com/chewiebug/GCViewer/releases">GCViewer</a> 查看, 也可以自己直接看. 从 GC 中的信息看到的实在有限, 比如能看到 metaspace 的大小, 看到 young gc 的变化, 如果想查看具体的参数可以用 jdk 的工具, 由于容器仅仅安装了 jre, 所以没有 <code>jps</code> 等工具, 需要宿主机执行, 需要使用 root 权限.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">sudo</span> jps</span><br><span class="line">4144 spring-boot-language-server-1.64.1-SNAPSHOT-exec.jar</span><br><span class="line">377744 Jps</span><br><span class="line">2726 org.eclipse.equinox.launcher_1.7.0.v20250519-0528.jar</span><br><span class="line">291315 xxl-job-executor.jar</span><br><span class="line">291323 xxl-job-executor.jar</span><br><span class="line">291387 xxl-job-admin.jar</span><br><span class="line">&gt; <span class="built_in">sudo</span> jps -v</span><br><span class="line">291387 xxl-job-admin.jar -XX:+UseG1GC -XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70 -XX:+UseStringDeduplication -XX:TieredStopAtLevel=1 -XX:+ExitOnOutOfMemoryError -Xlog:gc*,safepoint:file=/data/gclogs/gc.log:<span class="keyword">time</span>,level,tags:filecount=3,filesize=10M -agentlib:jdwp=transport=dt_socket,server=y,<span class="built_in">suspend</span>=n,address=*:5005</span><br><span class="line">&gt; <span class="built_in">sudo</span> jcmd 291387 VM.flags</span><br><span class="line">-XX:CICompilerCount=2 -XX:ConcGCThreads=1 -XX:+ExitOnOutOfMemoryError -XX:G1ConcRefinementThreads=3 -XX:G1EagerReclaimRemSetThreshold=8 -XX:G1HeapRegionSize=1048576 -XX:GCDrainStackTargetSize=64 -XX:InitialHeapSize=104857600 -XX:InitialRAMPercentage=70.000000 -XX:MarkStackSize=4194304 -XX:MaxHeapSize=104857600 -XX:MaxNewSize=62914560 -XX:MaxRAM=209715200 -XX:MaxRAMPercentage=70.000000 -XX:MinHeapDeltaBytes=1048576 -XX:MinHeapSize=8388608 -XX:NonProfiledCodeHeapSize=0 -XX:-ProfileInterpreter -XX:ProfiledCodeHeapSize=0 -XX:SoftMaxHeapSize=104857600 -XX:TieredStopAtLevel=1 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC -XX:+UseStringDeduplication </span><br><span class="line"></span><br><span class="line"><span class="comment"># sudo jmap -heap 291387 not work</span></span><br><span class="line"><span class="comment"># 查看 top 的内存对象</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> jmap -histo 291387 | <span class="built_in">head</span></span><br><span class="line"><span class="comment"># 也可以 dump 出来用工具分析: sudo jmap -heap:format=b,file=xxx 291387</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 100M 堆大小, 2/20 M Young, 0 s0 1M s1, Eden 19M, 32M/100M Old, 51/1G Meta, </span></span><br><span class="line">&gt; <span class="built_in">sudo</span> jstat -gccapacity 291387</span><br><span class="line">   NGCMN        NGCMX         NGC          S0C     S1C              EC         OGCMN        OGCMX         OGC           OC         MCMN       MCMX        MC       CCSMN     CCSMX     CCSC     YGC    FGC   CGC </span><br><span class="line">         0.0     102400.0      20480.0         0.0      1024.0      19456.0          0.0     102400.0      32768.0      32768.0        0.0  1114112.0    52288.0       0.0 1048576.0    7488.0     38     0    18</span><br></pre></td></tr></table></figure>
+
+<p>jstat 还有很多其他的 <a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/jstat.html">用法</a>, 各种 gc, jit, jvm 内存等都可以查看. 但是从 <code>jcmd xxx VM.flags</code> 和 <code>sudo jstat -gccapacity xxx</code> 可以看出, 其实堆内存占了 100M, 占容器的 50%, 没有按我们设置的 70% 进行. <code>MaxRAMPercentage</code> <strong>只在大内存生效</strong>, 补充小内存主机下的 <code>MinRAMPercentage</code> 重新观测 Xmx 配置, 发现 JVM 使用了 70% 的堆, JVM 也会遵循 CGroups 的设定.</p>
+<p>具体 JDK 的说明可以看下 <a target="_blank" rel="noopener" href="https://saowu.top/blog/Jl7Lzwrgj/">cgroups aware 的博客</a>, 里面讲到 <a target="_blank" rel="noopener" href="https://blogs.oracle.com/java/post/java-se-support-for-docker-cpu-and-memory-limits">jdk9 开始实验性支持 cgroups</a>, <a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/10-relnote-issues.html">jdk10</a> 进一步改进, 最终 feat 后移到 <a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/8u191-relnotes.html">jdk8 也支持</a>.</p>
+<h3 id="Mysql-1"><a href="#Mysql-1" class="headerlink" title="Mysql"></a>Mysql</h3><p>MySQL 不会自动感知 cgroup 限制, 需要手动配置. 一些相关的参数可以 SQL 查看:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 151</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;max_connections&#x27;</span>;</span><br><span class="line"><span class="comment">-- 128MiB</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;innodb_buffer_pool_size&#x27;</span>;</span><br><span class="line"><span class="comment">-- 16MiB (几乎无使用的 mariadb); 64MiB mysql</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;innodb_log_buffer_size&#x27;</span>;</span><br><span class="line"><span class="comment">-- 16MiB</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;tmp_table_size&#x27;</span>;q</span><br><span class="line"><span class="comment">-- 16MiB</span></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;max_heap_table_size&#x27;</span>;</span><br><span class="line"><span class="comment">-- 0</span></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Handler_alloc&#x27;</span>;</span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Handler_read_first&#x27;</span>;</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%buffer%&#x27;</span>;</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%cache%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>为了实现极致的内存压缩, 简单配置了下 mysql 的资源相关配置, 之后再看, mysql 使用内存仅占 165M:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line"></span><br><span class="line"># close performance mode</span><br><span class="line">performance_schema = OFF</span><br><span class="line"></span><br><span class="line"># ===================================================================</span><br><span class="line"># Global Buffers</span><br><span class="line"># ===================================================================</span><br><span class="line"></span><br><span class="line">innodb_buffer_pool_size = 128M</span><br><span class="line"></span><br><span class="line"># default 64</span><br><span class="line">innodb_log_buffer_size = 16M</span><br><span class="line"></span><br><span class="line">key_buffer_size = 16M</span><br><span class="line"></span><br><span class="line"># ===================================================================</span><br><span class="line"># Per-Connection Buffers</span><br><span class="line"># Total = max_connections * Sum(above)</span><br><span class="line"># ===================================================================</span><br><span class="line"></span><br><span class="line"># mem / 10</span><br><span class="line">max_connections = 10</span><br><span class="line"></span><br><span class="line"># default 1M</span><br><span class="line">thread_stack = 512K</span><br><span class="line"></span><br><span class="line"># use default value</span><br><span class="line"># (ORDER BY, GROUP BY)</span><br><span class="line">sort_buffer_size = 256K</span><br><span class="line">read_buffer_size = 128K</span><br><span class="line">read_rnd_buffer_size = 256K</span><br><span class="line">join_buffer_size = 256K</span><br><span class="line"></span><br><span class="line"># max size of tmp table memory</span><br><span class="line"># default 16</span><br><span class="line">tmp_table_size = 1M</span><br><span class="line">max_heap_table_size = 1M</span><br><span class="line"></span><br><span class="line"># ===================================================================</span><br><span class="line"># Other InnoDB Tweaks</span><br><span class="line"># ===================================================================</span><br><span class="line"></span><br><span class="line"># one file per table, default on</span><br><span class="line">innodb_file_per_table = 1</span><br><span class="line"></span><br><span class="line"># less io threads, default 8</span><br><span class="line">innodb_read_io_threads = 2</span><br><span class="line">innodb_write_io_threads = 2</span><br><span class="line"></span><br><span class="line"># 2 = write log file per second</span><br><span class="line"># innodb_flush_log_at_trx_commit = 2</span><br><span class="line"></span><br><span class="line"># frm cache</span><br><span class="line">table_definition_cache = 400</span><br><span class="line"></span><br><span class="line">table_open_cache = 256</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>为了实现批处理定时调度, 先是自己写了一个版本的 Python 版本, 后转向开源框架. 经过调研后, 主要测试使用了两个基于 Java 生态的框架, PowerJob 和 xxl-job. 前者拥有更加丰富和完备的功能, 支持 DAG, docker compose 等更加完备; 而后者则支持 GLUE IDE, 代码更加规范, 代码量更少更整洁, 拥有更多的用户. 基于我目前的需求, 下载安装部署了 xxl-job, 尤其是对 docker 文件进行了简单的改造. 由于资源限制, 部署对于资源还是非常重视的, 简单讨论了 cgroups 和容器应用的联动, 以及 jvm 实际表现; 同时对于 Mysql 的内存相关参数进行了严格的限制.</p>
+<p>其实最后的资源可以压缩地更小, 比如 mysql 压缩到 100M 以内, xxl-job executor 也是没有引入 springboot, admin 也非常轻量. 但 2GB 的嵌入式设备资源毕竟有限, 如果上一些 ES 之类的 Java 生态的中间件整个机器的内存也不够用, 后续还是准备上个二手笔记本做服务器. 虽然目前内存可以很低就跑起来, 但是还有很多问题和风险: 按比例分配内存的使用确实不太稳定, 还是直接指定 <code>Xmx</code> 更好, <code>InitialRAMPercentage</code> 在 JDK17 也被移除; mysql 的资源限制也过于严苛, <code>thread_stack</code> 给的太小, 部分复杂查询可能失败; docker compose 也可以考虑添加 <code>depends_on</code> 和 wait-for-it 脚本, 后续可能考虑调整这些参数.</p>
+<p>后续需要做的事情有:</p>
+<ul>
+<li><strong>上线实际需要的任务</strong>.</li>
+<li>添加 Formatter 和 Lint 检查</li>
+<li>更多具体的任务前端选择, 比如天级, 月级; 日期参数自动配置.</li>
+<li>批量任务回跑.</li>
+<li>资源感知的调度, 任务并发设置.</li>
+<li>下线期间定时任务的恢复.</li>
+<li>支持文件结果输出和传递.</li>
+<li>一些前端 bug 的修复, 组件的升级.</li>
+<li>添加 <code>uv</code>&#x2F;<code>venv</code> 环境管理支持.</li>
+</ul>
+<p>本文对于 xxl-job 全部的改造参见 <a target="_blank" rel="noopener" href="https://github.com/xuxueli/xxl-job/compare/master...zombie12138:Orth:main">commit</a>.</p>
+
+    </div>
+
+    
+    
+    
+
+      <div> <div class="my-post-copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>「Abyss」构建批处理平台 xxl-job</a></p>
+  <p><span>文章作者:</span></a></p>
+  <p><span>发布时间:</span>2025年11月01日 - 21:54:03</p>
+  <p><span>最后更新:</span>2025年11月09日 - 01:46:54</p>
+  <p><span>原始链接:</span><a href="/2025/build-batch-platform/" title="「Abyss」构建批处理平台 xxl-job">https://zombie12138.github.io/2025/build-batch-platform/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://zombie12138.github.io/2025/build-batch-platform/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>特殊声明:</span>本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。</p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          html: false,
+          timer: 500,
+          showConfirmButton: false
+        });
+      });
+    }));
+</script>
+ </div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Abyss/" rel="tag"># Abyss</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/android-root/" rel="prev" title="OnePlus13 一加13 Root">
+      <i class="fa fa-chevron-left"></i> OnePlus13 一加13 Root
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9"><span class="nav-number">2.</span> <span class="nav-text">框架选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%88%9D%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.1.</span> <span class="nav-text">最初的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PowerJob"><span class="nav-number">2.2.</span> <span class="nav-text">PowerJob</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xxl-job"><span class="nav-number">2.3.</span> <span class="nav-text">xxl-job</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E9%80%89%E6%8B%A9-xxl-job"><span class="nav-number">2.4.</span> <span class="nav-text">最终选择: xxl-job</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">安装和部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql"><span class="nav-number">3.1.</span> <span class="nav-text">Mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-mysql-docker"><span class="nav-number">3.1.1.</span> <span class="nav-text">配置 mysql docker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.2.</span> <span class="nav-text">编码配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xxl-job-Docker"><span class="nav-number">3.2.</span> <span class="nav-text">xxl-job Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">3.2.1.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Docker"><span class="nav-number">3.2.2.</span> <span class="nav-text">Docker</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.3.</span> <span class="nav-text">部署第一个任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#executor-%E4%B8%8A%E7%BA%BF"><span class="nav-number">3.3.1.</span> <span class="nav-text">executor 上线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA-bean-%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.3.2.</span> <span class="nav-text">第一个 bean 任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Shell-%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.3.3.</span> <span class="nav-text">Shell 任务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">Docker 资源管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">4.1.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql-1"><span class="nav-number">4.2.</span> <span class="nav-text">Mysql</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zombie12138</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zombie12138</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
