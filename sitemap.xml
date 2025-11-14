@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zombie12138.github.io/2025/Chinese-punctuation/</loc>
+    
+    <lastmod>2025-11-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/ArchLinux-in-wsl/</loc>
+    
+    <lastmod>2025-11-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2025/build-batch-platform/</loc>
     
     <lastmod>2025-11-08</lastmod>
@@ -14,15 +32,6 @@
     <loc>https://zombie12138.github.io/2025/install-TDengine/</loc>
     
     <lastmod>2025-11-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/ArchLinux-in-wsl/</loc>
-    
-    <lastmod>2025-11-02</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -308,7 +317,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/docker-file-size/</loc>
+    <loc>https://zombie12138.github.io/2024/first-linux-patch/</loc>
     
     <lastmod>2025-08-04</lastmod>
     
@@ -317,7 +326,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/first-linux-patch/</loc>
+    <loc>https://zombie12138.github.io/2024/docker-file-size/</loc>
     
     <lastmod>2025-08-04</lastmod>
     
@@ -337,7 +346,7 @@
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -345,420 +354,427 @@
   
   <url>
     <loc>https://zombie12138.github.io/tags/AMD/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Deep-Learning/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Inference/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Linux/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/DevOps/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/Arduino/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/WebServer/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Network/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <loc>https://zombie12138.github.io/tags/water/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/hexo/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Arduino/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/WebServer/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Network/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Water/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Daily/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/TVM/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Link/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Load/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Linux-Programming/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/C/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Folly/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Magic/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/toys/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Android/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/English/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Interview/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Collections/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Blog/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Books/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/OS/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Java/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Docker/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Abyss/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Paper/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/C/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/HPC/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <loc>https://zombie12138.github.io/tags/Folly/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/NUMA/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <loc>https://zombie12138.github.io/tags/Magic/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/OpenMP/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <loc>https://zombie12138.github.io/tags/English/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/tags/Kunpeng/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <loc>https://zombie12138.github.io/tags/Interview/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Collections/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Blog/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Books/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/OS/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Peterson-Algorithm-Serial/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Java/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Docker/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Abyss/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Paper/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Git/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/C/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/HPC/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/NUMA/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/OpenMP/</loc>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Kunpeng/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/js/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Github/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/OpenSource/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/ARM/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/SIMD/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/CPU/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Lua/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Virtual-Machine/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Compiler/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Paper-Reading/</loc>
-    <lastmod>2025-11-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/tags/Database/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Operating-System/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Survey/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/tags/Database/</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Linker/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Redis/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Performance/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Cloud-Computing/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Tips/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Shell/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Dynamic-Linking/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Hook/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Instrument/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zombie12138.github.io/tags/Trace/</loc>
-    <lastmod>2025-11-08</lastmod>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
