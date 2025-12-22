@@ -1,0 +1,1344 @@
+# DeepSeek Markdown 归档分析报告
+生成时间: 2025-12-13 16:28:20
+文件总数: 38
+
+---
+
+### hello-world.md
+- **行数**: 47 lines
+- **Tags**: 无
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了Hexo博客框架的基本使用，包括创建新文章、运行服务器、生成静态文件和部署到远程站点。
+
+- **评分**: **1.6 / 10**
+
+- **评分明细**
+  - technical_depth: 1.0
+  - originality: 1.0
+  - completeness: 3.0
+  - practical_value: 2.0
+  - workload_signal: 1.0
+
+- **技术栈和工具**
+  - Hexo
+
+- **优点**
+  - 提供了Hexo框架的基本操作步骤，适合初学者快速上手。
+
+- **缺点**
+  - 内容主要是官方文档的整理和翻译，缺乏原创技术分析或深度探讨。
+
+---
+
+### I-was-hacked.md
+- **行数**: 112 lines
+- **Tags**: `Water`, `Daily`
+
+#### AI 评审
+
+- **摘要**
+  作者描述了电脑感染挖矿木马的过程，通过分析攻击者的控制面板和数据库，尝试通过向SQLite数据库写入垃圾数据的方式进行反击。
+
+- **评分**: **3.5 / 10**
+
+- **评分明细**
+  - technical_depth: 4.0
+  - originality: 3.0
+  - completeness: 5.0
+  - practical_value: 2.0
+  - workload_signal: 3.0
+
+- **技术栈和工具**
+  - Windows
+  - 火绒
+  - nmap
+  - SQLite
+  - UnamWebPanel
+
+- **优点**
+  - 通过分析攻击者的控制面板和数据库，展示了初步的反查和信息收集过程。
+  - 尝试通过构造请求向SQLite数据库写入垃圾数据，体现了主动反击的思路。
+
+- **缺点**
+  - 技术分析较浅，未深入探讨木马感染机制或源码级漏洞。
+  - 反击方法简单且效果有限，攻击者很快恢复了服务，缺乏系统性解决方案。
+
+---
+
+### classic-papers.md
+- **行数**: 71 lines
+- **Tags**: `Paper`
+
+#### AI 评审
+
+- **摘要**
+  文章回顾了MapReduce经典论文，介绍了其作为Bulk Synchronized Parallel范式的核心原理，包括Map和Reduce函数、分布式任务调度、容错机制和优化技术。
+
+- **评分**: **6.0 / 10**
+
+- **评分明细**
+  - technical_depth: 6.5
+  - originality: 5.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - MapReduce
+  - GFS
+  - RPC
+
+- **优点**
+  - 详细解释了MapReduce的调度和容错机制，如Worker失效处理和Backup Tasks。
+  - 提供了MapReduce的代码示例和实现细节，如Partitioning Function和Combiner Function。
+
+- **缺点**
+  - 文章主要基于论文复述，缺乏原创分析或独立实验验证。
+  - 技术深度有限，未涉及源码级推导或现代系统对比分析。
+
+---
+
+### implement-of-lua.md
+- **行数**: 181 lines
+- **Tags**: `Lua`, `Virtual Machine`, `Compiler`, `Paper Reading`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了Lua 5.0的实现细节，包括其基于寄存器的虚拟机、table的混合数据结构、闭包机制以及协程实现。
+
+- **评分**: **7.0 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 6.5
+
+- **技术栈和工具**
+  - Lua 5.0
+  - C语言
+  - yacc
+  - Brent's Method
+
+- **优点**
+  - 详细解释了Lua table的混合数据结构及其性能优势。
+  - 对比了Lua 4.0和5.0的虚拟机指令差异，并提供了具体示例。
+
+- **缺点**
+  - 文章部分内容如协程实现描述较为简略，缺乏深入分析。
+  - 原创性较低，主要基于论文和现有资料整理，缺乏独立实验或新见解。
+
+---
+
+### interview-mistakes.md
+- **行数**: 38 lines
+- **Tags**: `Operating System`, `Interview`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者在技术面试中遇到的关于算法和操作系统概念的误解，包括对树的直径定义和共享库中变量共享机制的误解。
+
+- **评分**: **2.9 / 10**
+
+- **评分明细**
+  - technical_depth: 3.0
+  - originality: 2.0
+  - completeness: 4.0
+  - practical_value: 3.0
+  - workload_signal: 2.0
+
+- **技术栈和工具**
+  - Linux (操作系统)
+  - 共享库 (so) (动态链接库)
+  - BSS段 (内存管理)
+
+- **优点**
+  - 通过具体面试案例生动展示了技术误解的常见场景。
+  - 强调了面试中沟通和确认问题理解的重要性。
+
+- **缺点**
+  - 缺乏对技术原理的深入分析，仅停留在误解描述层面。
+  - 内容零散，未形成系统性总结或可复用的技术结论。
+
+---
+
+### awesome-books.md
+- **行数**: 52 lines
+- **Tags**: `Water`, `Books`, `Collections`
+
+#### AI 评审
+
+- **摘要**
+  文章对《Java 性能优化实践》一书进行了技术性评价，指出其在Java性能优化原理（如垃圾回收）和工具实现方面深度不足，并批评了书中对艾尔斯伯格悖论的解释错误。
+
+- **评分**: **4.5 / 10**
+
+- **评分明细**
+  - technical_depth: 4.0
+  - originality: 5.0
+  - completeness: 6.0
+  - practical_value: 4.0
+  - workload_signal: 3.0
+
+- **技术栈和工具**
+  - Java (编程语言)
+  - G1 (垃圾回收器)
+
+- **优点**
+  - 对书中技术深度不足的具体点（如垃圾回收细节）进行了明确批评。
+  - 指出了书中对艾尔斯伯格悖论解释的错误，并提供了正确分析。
+
+- **缺点**
+  - 文章主要基于个人阅读感受，缺乏实验或源码级分析来支撑技术评价。
+  - 技术栈和工具部分仅简单提及，未深入探讨其实现原理或实际应用。
+
+---
+
+### proxy-in-docker.md
+- **行数**: 86 lines
+- **Tags**: `Water`, `Linux`, `Network`, `Docker`
+
+#### AI 评审
+
+---
+
+### frpc-in-docker.md
+- **行数**: 96 lines
+- **Tags**: `Linux`, `Docker`, `Network`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了在 Docker 中运行 frpc 的配置和启动方法，包括 TOML 配置文件示例和 Docker 命令或 Docker Compose 文件的使用。
+
+- **评分**: **2.4 / 10**
+
+- **评分明细**
+  - technical_depth: 2.0
+  - originality: 1.0
+  - completeness: 4.0
+  - practical_value: 3.0
+  - workload_signal: 2.0
+
+- **技术栈和工具**
+  - Docker（容器化平台）
+  - frpc（FRP 客户端，用于内网穿透）
+  - Docker Compose（容器编排工具）
+
+- **优点**
+  - 提供了具体的 frpc TOML 配置文件示例，包括用户认证、日志设置和代理规则。
+  - 展示了两种启动方式：直接使用 Docker 命令和通过 Docker Compose 文件，便于读者参考。
+
+- **缺点**
+  - 文章缺乏技术原理分析或源码级推导，仅停留在配置和命令的罗列层面。
+  - 内容主观性较强，开头部分包含非技术性评论，降低了技术博客的专业性。
+
+---
+
+### first-linux-patch.md
+- **行数**: 140 lines
+- **Tags**: `Linux`, `Git`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者在Linux内核中发现并修复一个拼写错误（'reguest'应为'request'）的过程，包括从日志发现错误、查找源码、提交补丁的步骤。
+
+- **评分**: **3.2 / 10**
+
+- **评分明细**
+  - technical_depth: 2.0
+  - originality: 1.0
+  - completeness: 7.0
+  - practical_value: 4.0
+  - workload_signal: 3.0
+
+- **技术栈和工具**
+  - Linux内核
+  - Git
+  - git-email
+  - scripts/get_maintainer.pl
+  - scripts/checkpatch.pl
+
+- **优点**
+  - 详细描述了从发现错误到提交补丁的完整流程，包括具体命令和配置步骤。
+  - 提供了外部参考链接，如Linux文档和博客，增强了可操作性。
+
+- **缺点**
+  - 技术深度有限，仅涉及简单的拼写错误修复，未深入分析内核驱动或代码原理。
+  - 原创性较低，主要是遵循现有指南和工具的操作记录，缺乏独立技术分析。
+
+---
+
+### ssh-remote-command.md
+- **行数**: 73 lines
+- **Tags**: `Tips`, `Shell`, `Linux`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了在多人共用账户的SSH登录场景下，通过配置SSH的RemoteCommand和RequestTTY选项，结合环境变量和bashrc脚本，实现自动切换个人目录和加载个人bashrc，以简化环境配置过程。
+
+- **评分**: **5.3 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 4.0
+
+- **技术栈和工具**
+  - SSH (RemoteCommand, RequestTTY)
+  - Bash (bashrc, 环境变量)
+  - Linux (SSH配置)
+
+- **优点**
+  - 提供了具体的SSH配置示例，便于读者直接复制使用。
+  - 通过环境变量和bashrc脚本的组合，解决了多人账户下个人环境自动加载的问题。
+
+- **缺点**
+  - 技术深度较浅，仅涉及基础配置，未深入分析SSH或bashrc的工作原理。
+  - 原创性不足，主要基于常见SSH功能的应用，缺乏独立分析或创新点。
+
+---
+
+### redis-benchmark.md
+- **行数**: 331 lines
+- **Tags**: `Redis`, `Performance`, `Cloud Computing`
+
+#### AI 评审
+
+- **摘要**
+  文章通过实测和源码分析探讨了Redis的吞吐量性能，使用redis-benchmark工具在腾讯云服务器上进行测试，并解析了redis-benchmark.c源码中的关键函数和工作机制。
+
+- **评分**: **6.8 / 10**
+
+- **明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 7.0
+  - practical_value: 6.5
+  - workload_signal: 6.0
+
+- **技术栈和工具**
+  - Redis
+  - redis-benchmark
+  - C语言
+  - epoll
+  - 腾讯云轻量应用服务器
+  - htop
+  - gdb
+
+- **优点**
+  - 通过源码分析详细解释了redis-benchmark的工作流程，包括事件循环和I/O多路复用机制。
+  - 实测部分提供了不同线程和pipeline配置下的吞吐量数据，展示了性能变化趋势。
+
+- **缺点**
+  - 测试环境受限且不严谨，缺乏分离客户端与服务端、随机键模拟等更真实的负载条件。
+  - 源码分析仅聚焦于set命令和部分函数，未覆盖其他命令或更深入的技术细节。
+
+---
+
+### gflops.md
+- **行数**: 238 lines
+- **Tags**: `ARM`, `Kunpeng`, `HPC`, `SIMD`, `CPU`
+
+#### AI 评审
+
+- **摘要**
+  文章通过理论计算和汇编实验验证了鲲鹏920处理器的浮点运算性能上限，并与AMD EPYC 7302进行了对比。
+
+- **评分**: **7.7 / 10**
+
+- **评分明细**
+  - technical_depth: 8.5
+  - originality: 7.0
+  - completeness: 8.0
+  - practical_value: 7.5
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - ARM Kunpeng 920-6426
+  - AMD EPYC 7302
+  - GCC 7.5.0
+  - OpenMP
+  - NEON/ASIMD指令集
+  - AVX256指令集
+
+- **优点**
+  - 通过汇编代码实验验证了理论计算的上限值，增强了结论的可信度。
+  - 对比了不同来源的数据，并指出了错误，展示了独立分析能力。
+
+- **缺点**
+  - 实验部分缺乏详细的失败路径或对照分析，workload_signal信号较弱。
+  - 对技术栈的深入分析有限，例如未详细探讨指令集微架构或性能瓶颈的具体原因。
+
+---
+
+### udp2raw.md
+- **行数**: 341 lines
+- **Tags**: `C++`, `Network`, `Linux`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了使用 udp2raw 工具将 UDP 流量伪装成 TCP 以绕过网络封锁，并修改其源码以支持 DNS 解析，同时讨论了 MTU 设置和分片机制。
+
+- **评分**: **7.1 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.5
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 6.0
+
+- **技术栈和工具**
+  - udp2raw: UDP 伪装成 TCP 的工具
+  - Wireguard: VPN 协议
+  - Docker: 容器化平台
+  - systemd: Linux 服务管理
+  - C++: 编程语言用于源码修改
+
+- **优点**
+  - 详细分析了 MTU 计算和分片机制，解释了网络包传输过程。
+  - 修改 udp2raw 源码以支持 DNS 解析，提供了具体代码实现和修改思路。
+
+- **缺点**
+  - DNS 解析修改部分未深入测试或性能评估，缺乏实验数据支撑。
+  - 文章部分内容如 Docker 配置和命令罗列，技术增量有限。
+
+---
+
+### fix-hexo-tag-escape.md
+- **行数**: 591 lines
+- **Tags**: `js`, `hexo`, `Github`, `OpenSource`
+
+#### AI 评审
+
+- **摘要**
+  文章描述了在Hexo博客中使用hexo-reference-plus插件时遇到的渲染问题，通过分析Hexo源码中的escapeAllSwigTags函数，发现标签前缀冲突导致Markdown渲染失败，并提出了基于记录标签类型的修复方案。
+
+- **评分**: **6.9 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 6.5
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - Hexo
+  - hexo-reference-plus
+  - hexo-renderer-marked
+  - Node.js
+  - Nunjucks
+  - marked
+
+- **优点**
+  - 通过源码级分析定位了Hexo核心的escapeAllSwigTags函数中标签前缀冲突的具体问题。
+  - 提出了基于记录标签类型的修复方案，并进行了初步实现和测试。
+
+- **缺点**
+  - 修复方案仅针对特定问题，未深入解决Nunjucks标签嵌套或复杂语法的支持。
+  - 文章未提供完整的修复代码或最终PR的详细结果，技术结论的可迁移性有限。
+
+---
+
+### install-TDengine.md
+- **行数**: 373 lines
+- **Tags**: `Database`, `Abyss`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了在ARM架构设备上为量化交易回测选择时序数据库的过程，包括放弃ClickHouse、测试DuckDB压缩性能，最终选择并安装TDengine，并提供了配置和写入代码示例。
+
+- **评分**: **5.6 / 10**
+
+- **评分明细**
+  - technical_depth: 5.5
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.5
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - ClickHouse (数据库，用于OLAP分析)
+  - DuckDB (嵌入式数据库，用于OLAP分析)
+  - TDengine (时序数据库，用于时序数据存储)
+  - Docker (容器化工具，用于部署应用)
+  - Python (编程语言，用于数据处理和数据库操作)
+  - taospy (Python库，用于连接TDengine)
+
+- **优点**
+  - 详细记录了从ClickHouse到TDengine的选型过程，包括放弃原因和测试数据。
+  - 提供了TDengine的安装配置和写入代码示例，具有可操作性。
+
+- **缺点**
+  - 技术深度较浅，主要停留在安装和基本使用层面，缺乏源码级分析或深入原理探讨。
+  - 原创性不足，大部分内容为工具使用记录和官方文档整理，缺乏独立技术见解。
+
+---
+
+### TVM-LIBCXX.md
+- **行数**: 283 lines
+- **Tags**: `Link`, `Load`, `TVM`, `Linux Programming`
+
+#### AI 评审
+
+- **摘要**
+  文章分析了在TVM环境中因动态库加载顺序导致的GLIBCXX版本错误问题，通过strace、objdump等工具定位到RPATH/RUNPATH机制的影响，并探讨了动态库加载顺序的BFS特性。
+
+- **评分**: **7.0 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - TVM
+  - Python
+  - strace
+  - ldd
+  - objdump
+  - readelf
+  - patchelf
+  - chrpath
+  - gcc
+  - LD_DEBUG
+
+- **优点**
+  - 通过strace和objdump等工具系统性地定位了动态库加载问题的根本原因。
+  - 使用自定义编译示例验证了动态库加载顺序的BFS特性，增强了结论的可信度。
+  - 提供了修改RPATH和使用LD_DEBUG等具体解决方案，具有实践指导意义。
+
+- **缺点**
+  - 对动态库加载顺序的BFS结论仅基于简单测试，缺乏官方文档或源码级验证。
+  - 原创性不足，主要依赖现有工具和已知机制分析问题，未提出新的技术见解。
+  - 实验设计较为基础，未涉及复杂场景或失败路径的对照分析。
+
+---
+
+### first-touch-on-numa.md
+- **行数**: 1044 lines
+- **Tags**: `C`, `C++`, `HPC`, `NUMA`, `OpenMP`, `Kunpeng`, `Linux Programming`
+
+#### AI 评审
+
+- **摘要**
+  文章探讨了在鲲鹏920服务器上使用malloc和OpenMP时First-Touch策略失效的现象，通过实验和源码分析追踪了内存分配不均的原因，但未得出明确结论。
+
+- **评分**: **6.9 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 6.5
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - C/C++
+  - OpenMP
+  - NUMA
+  - GCC 7.5.0
+  - GNU libc 2.17
+  - strace
+  - gdb
+  - numactl
+  - taskset
+  - MPI
+
+- **优点**
+  - 通过strace和源码分析深入追踪了malloc内存分配细节。
+  - 实验设计包括对照测试，如比较malloc与mmap的行为差异。
+  - 详细探讨了NUMA绑核策略及其在OpenMP和MPI中的应用。
+
+- **缺点**
+  - 未能最终确定First-Touch失效的根本原因，结论不明确。
+  - 部分实验描述冗长，如strace输出分析过于详细但未直接解决问题。
+  - 技术栈列表包含MPI但文中相关分析较浅，与核心问题关联度不高。
+
+---
+
+### disaster-reconstruction.md
+- **行数**: 105 lines
+- **Tags**: `Linux`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了在四台鲲鹏920 ARM服务器上，因系统重装导致数据丢失后，从零开始重新配置开发环境的过程，包括使用tmux同步操作、配置代理、通过Spack包管理器安装GCC、Python等软件。
+
+- **评分**: **3.5 / 10**
+
+- **评分明细**
+  - technical_depth: 3.5
+  - originality: 2.0
+  - completeness: 5.0
+  - practical_value: 4.0
+  - workload_signal: 3.0
+
+- **技术栈和工具**
+  - Linux (Ubuntu 22.04, Kernel 5.15.0-94-generic)
+  - tmux (终端复用工具，用于同步多台机器的输入)
+  - Spack (包管理器，用于安装GCC、Python等软件)
+  - ssh/scp (远程连接和文件传输工具)
+  - bash (shell脚本，用于配置代理和自动化安装)
+
+- **优点**
+  - 详细记录了在多台ARM服务器上同步配置环境的实用技巧，如使用tmux的set synchronize-panes功能。
+  - 提供了具体的bash脚本示例，如代理设置和Spack安装重试逻辑，对类似场景有参考价值。
+
+- **缺点**
+  - 文章主要侧重于环境搭建的步骤记录，缺乏对技术原理或源码的深入分析，技术深度不足。
+  - 内容以流水账形式呈现，没有实验设计、失败分析或可迁移的技术结论，原创性较低。
+
+---
+
+### ESPAsyncWebSrv.md
+- **行数**: 392 lines
+- **Tags**: `Arduino`, `WebServer`, `Network`
+
+#### AI 评审
+
+- **摘要**
+  文章分析了ESPAsyncWebSrv库在处理HTTP POST请求时，由于ESP8266默认MSS设置较小导致TCP分包，而库未完整组装数据，导致JSON解析失败的问题。通过抓包和源码分析定位原因，并提出了几种解决方案，最终选择调整MSS配置以解决。
+
+- **评分**: **7.0 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - ESP8266
+  - Arduino
+  - ESPAsyncWebSrv
+  - ESPAsyncTCP
+  - Nginx
+  - tcpdump
+  - ArduinoJson
+  - Via浏览器
+
+- **优点**
+  - 通过抓包和源码分析，系统性地定位了TCP分包导致JSON解析失败的根本原因。
+  - 详细分析了ESPAsyncWebSrv库的数据处理流程，揭示了库在分包处理上的局限性。
+  - 提出了多种解决方案，包括配置调整和代码修改，展示了问题解决的思路。
+
+- **缺点**
+  - 原创性较低，主要基于现有库和工具的分析，缺乏独立的技术创新或深度推导。
+  - 最终解决方案选择调整MSS配置，技术深度有限，未深入探讨库的改进或更优的工程实践。
+  - 文章部分内容如拓扑图和抓包截图较多，但技术分析相对集中在问题定位，整体工作量信号中等。
+
+---
+
+### before-peterson-algorithm.md
+- **行数**: 278 lines
+- **Tags**: `OS`, `C++`, `Linux Programming`, `Peterson Algorithm Serial`
+
+#### AI 评审
+
+- **摘要**
+  文章探讨了在共享库（so）中实现多进程间变量共享与互斥访问的方法，通过实验验证了动态库全局变量因写时复制（Copy-On-Write）而不共享，并对比了使用共享内存结合信号量、互斥锁、原子操作和自旋锁的性能差异。
+
+- **评分**: **6.3 / 10**
+
+- **评分明细**
+  - technical_depth: 6.5
+  - originality: 5.0
+  - completeness: 7.0
+  - practical_value: 7.0
+  - workload_signal: 6.0
+
+- **技术栈和工具**
+  - mmap (Linux系统调用，用于映射共享内存)
+  - sem_t (POSIX信号量，用于进程间同步)
+  - pthread_mutex_t (POSIX互斥锁，支持进程共享的互斥访问)
+  - std::atomic_int (C++原子操作，用于无锁并发访问)
+  - pthread_spinlock_t (POSIX自旋锁，用于轻量级锁机制)
+
+- **优点**
+  - 通过实验验证了动态库全局变量在多进程间不共享，并提供了共享内存的解决方案。
+  - 对比了多种互斥机制（信号量、互斥锁、原子操作、自旋锁）的性能，给出了具体耗时数据。
+
+- **缺点**
+  - 文章未深入分析技术原理，如自旋锁比原子操作快的原因仅停留在推测层面。
+  - 缺乏对Peterson算法或其他软件互斥算法的实际实现，与标题和引言中的承诺不符。
+
+---
+
+### TVM-0.md
+- **行数**: 326 lines
+- **Tags**: `TVM`, `Deep Learning`, `Inference`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了TVM深度学习编译器的基本安装流程，并通过tvmc命令行工具演示了从ONNX模型编译、自动调优到推理的完整过程，包括对编译后内核融合和性能变化的初步分析。
+
+- **评分**: **5.3 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - TVM
+  - tvmc
+  - ONNX
+  - LLVM
+  - CUDA
+  - NCCL
+  - NVTX
+  - OpenCL
+  - OpenMP
+  - Python
+  - CMake
+  - AutoTVM
+  - AutoScheduler
+
+- **优点**
+  - 完整演示了TVM从安装到模型编译、调优和推理的端到端流程，适合初学者入门。
+  - 对编译后内核融合和性能变化进行了初步分析，提供了实际观察结果。
+
+- **缺点**
+  - 技术深度较浅，主要依赖官方文档和命令操作，缺乏源码级或原理性分析。
+  - 原创性不足，内容基本为官方教程的复现和简单注释，未提出独立见解或结论。
+
+---
+
+### ArchLinux-in-wsl.md
+- **行数**: 487 lines
+- **Tags**: `Linux`, `DevOps`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了在WSL2中安装和配置ArchLinux开发环境的过程，包括系统环境设置、开发工具链安装、终端美化以及IDE配置。
+
+- **评分**: **5.4 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - WSL2
+  - ArchLinux
+  - Xming
+  - oh-my-zsh
+  - vim-plug
+  - tmux
+  - Docker
+  - Java
+  - Python
+  - Hexo
+  - VSCode
+
+- **优点**
+  - 详细记录了从系统安装到工具配置的完整步骤，适合初学者参考。
+  - 提供了代理配置和X11转发等实用技巧，增强了环境可用性。
+
+- **缺点**
+  - 内容多为配置命令和步骤罗列，缺乏技术原理或源码级分析。
+  - 部分章节如Python和qemu标记为'持续更新中'，导致内容不完整。
+
+---
+
+### aphorisms.md
+- **行数**: 76 lines
+- **Tags**: `English`, `Interview`, `Water`, `Collections`
+
+#### AI 评审
+
+- **摘要**
+  文章收录了计算机领域的术语、缩写、理论和名言警句，包括数据库执行模型、编译技术、性能定律等概念的定义和解释。
+
+- **评分**: **2.1 / 10**
+
+- **评分明细**
+  - technical_depth: 2.0
+  - originality: 1.0
+  - completeness: 5.0
+  - practical_value: 2.0
+  - workload_signal: 1.0
+
+- **技术栈和工具**
+
+- **优点**
+  - 收录了多个计算机领域的术语和缩写，便于快速查阅参考。
+  - 对部分术语如火山模型和向量化模型提供了简要解释，有助于理解基本概念。
+
+- **缺点**
+  - 文章缺乏原创分析或深度技术推导，仅为术语和名言的整理。
+  - 内容未形成闭环，没有具体问题背景、实验或结论支撑。
+
+---
+
+### vsftpd.md
+- **行数**: 106 lines
+- **Tags**: `Linux`, `Docker`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者在RK3399开发板上从尝试使用Docker运行VSFTPD到最终选择本地安装并配置VSFTPD的过程，包括虚拟用户设置、PAM配置和FTPS证书生成。
+
+- **评分**: **4.6 / 10**
+
+- **评分明细**
+  - technical_depth: 4.5
+  - originality: 3.0
+  - completeness: 6.5
+  - practical_value: 5.0
+  - workload_signal: 4.0
+
+- **技术栈和工具**
+  - VSFTPD (FTP服务器软件)
+  - Docker (容器化平台)
+  - db-util (数据库工具)
+  - OpenSSL (加密工具)
+  - PAM (可插拔认证模块)
+
+- **优点**
+  - 详细记录了从Docker迁移到本地安装的决策过程，包括具体配置步骤。
+  - 提供了虚拟用户和FTPS配置的实操命令，便于读者参考。
+
+- **缺点**
+  - 技术深度不足，缺乏对VSFTPD原理或源码的分析，仅停留在配置层面。
+  - 原创性较低，内容主要是常见配置的整理和记录，没有独立的技术见解或实验。
+
+---
+
+### awesome-blogs.md
+- **行数**: 60 lines
+- **Tags**: `Blog`, `Water`, `Collections`
+
+#### AI 评审
+
+- **摘要**
+  文章整理并分类列举了多个技术博客和资源，包括企业官方博客、个人技术博客、面试准备资料和算法学习资源。
+
+- **评分**: **2.5 / 10**
+
+- **评分明细**
+  - technical_depth: 2.0
+  - originality: 1.0
+  - completeness: 5.0
+  - practical_value: 3.0
+  - workload_signal: 2.0
+
+- **技术栈和工具**
+
+- **优点**
+  - 分类清晰，便于读者快速查找相关技术资源。
+  - 提供了博客链接和简要描述，方便访问。
+
+- **缺点**
+  - 内容仅为列表整理，缺乏技术分析或深度讨论。
+  - 没有原创技术内容或独立见解，属于信息汇总。
+
+---
+
+### HEXO-beautify.md
+- **行数**: 623 lines
+- **Tags**: `hexo`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者对Hexo博客进行美化的过程，包括SEO配置、参考文献脚注、版权声明添加、主题更换为Butterfly，并利用AI分析文章内容进行标签整理。
+
+- **评分**: **5.3 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - Hexo
+  - NexT主题
+  - Butterfly主题
+  - Google Search Console
+  - hexo-generator-sitemap
+  - hexo-reference-plus
+  - clipboard.js
+  - sweetalert
+  - OpenAI API
+  - DeepSeek模型
+
+- **优点**
+  - 详细记录了从NexT主题切换到Butterfly主题的配置步骤和自定义功能实现。
+  - 提供了使用AI分析文章内容并生成标签的Python脚本示例，展示了自动化工具的应用。
+
+- **缺点**
+  - 技术深度较浅，主要涉及配置和插件使用，缺乏源码级分析或深入技术原理探讨。
+  - 原创性不足，大部分内容为常见Hexo美化技巧的实践记录，未提出新颖的技术见解或结论。
+
+---
+
+### weak-symbol.md
+- **行数**: 142 lines
+- **Tags**: `Link`, `Load`, `Linux Programming`
+
+#### AI 评审
+
+- **摘要**
+  文章通过编译Graph500时遇到的符号重定义错误，探讨了C/C++中强符号、弱符号、公共符号的概念及其在链接过程中的行为差异，并介绍了弱引用的实现方式。
+
+- **评分**: **7.0 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 6.5
+
+- **技术栈和工具**
+  - GCC@13.2.0
+  - nm
+  - Graph500
+  - VSCode
+
+- **优点**
+  - 通过具体编译错误案例，清晰解释了强符号、弱符号和公共符号的区别及其在链接器中的行为。
+  - 提供了弱引用的实际代码示例和测试结果，增强了技术内容的可操作性。
+
+- **缺点**
+  - 对弱引用的测试部分存在错误描述，需要修正代码示例以准确反映弱引用的正确用法。
+  - 文章结尾部分引入了强/弱类型和静态/动态类型等概念，但与核心主题关联较弱，略显分散。
+
+---
+
+### kunpeng920.md
+- **行数**: 96 lines
+- **Tags**: `ARM`, `Survey`, `Kunpeng`, `CPU`, `HPC`
+
+#### AI 评审
+
+- **摘要**
+  文章汇总了鲲鹏920处理器的相关资料，包括官方论文、文档、PPT、书籍、博客和性能数据来源，并指出了资料查找的困难和一些数据的准确性。
+
+- **评分**: **3.5 / 10**
+
+- **评分明细**
+  - technical_depth: 3.0
+  - originality: 2.0
+  - completeness: 6.0
+  - practical_value: 4.0
+  - workload_signal: 3.0
+
+- **技术栈和工具**
+  - 鲲鹏920处理器
+  - ARMv8架构
+  - Linux内核PMU
+  - LLVM编译器
+  - GitHub
+
+- **优点**
+  - 汇总了鲲鹏920处理器的多种资料类型，包括官方和非官方来源。
+  - 指出了资料查找的困难和一些数据的准确性，如GFLOPS结论的正确率。
+  - 提供了具体链接，便于读者进一步查阅。
+
+- **缺点**
+  - 文章主要是资料罗列和简单评论，缺乏深入的技术分析或原创内容。
+  - 未包含实验设计、源码分析或技术推导，技术深度不足。
+  - 表达较为零散，没有形成系统性的技术总结或闭环结论。
+
+---
+
+### AMD-IPU.md
+- **行数**: 71 lines
+- **Tags**: `AMD`, `Deep Learning`, `Inference`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者在搭载AMD IPU的笔记本电脑上，从BIOS启用、驱动安装到运行官方示例的完整过程，并初步测试了IPU的推理性能。
+
+- **评分**: **4.8 / 10**
+
+- **评分明细**
+  - technical_depth: 4.5
+  - originality: 3.0
+  - completeness: 7.0
+  - practical_value: 5.0
+  - workload_signal: 4.0
+
+- **技术栈和工具**
+  - AMD IPU (Intelligent Process Unit)
+  - Vitis AI Execution Provider (Vitis AI EP)
+  - Vitis AI ONNXRuntime Engine (VOE)
+  - Conda
+  - CMake
+  - Visual Studio
+  - ONNX Runtime
+
+- **优点**
+  - 完整记录了从BIOS启用到运行示例的实践步骤，对遇到类似问题的用户有参考价值。
+  - 通过日志分析初步验证了IPU的负载情况，提供了实际性能观察。
+
+- **缺点**
+  - 缺乏对IPU技术原理、架构或性能基准的深入分析，技术深度不足。
+  - 性能测试仅基于一个简单示例，未进行系统性的模型对比或量化分析，结论不可外推。
+
+---
+
+### wireguard-x-qbittorrent.md
+- **行数**: 174 lines
+- **Tags**: `Linux`, `Docker`, `Network`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了在WireGuard VPN内运行Qbittorrent的方案，通过自定义iptables规则和Docker Compose配置实现端口转发和网络隔离。
+
+- **评分**: **6.2 / 10**
+
+- **评分明细**
+  - technical_depth: 6.5
+  - originality: 5.0
+  - completeness: 7.0
+  - practical_value: 7.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - WireGuard (VPN工具)
+  - Docker (容器化平台)
+  - Docker Compose (容器编排工具)
+  - iptables (Linux防火墙工具)
+  - Qbittorrent (BT客户端)
+  - udp2raw (UDP隧道工具)
+
+- **优点**
+  - 提供了具体的iptables规则和Docker Compose配置，便于读者复现部署。
+  - 结合了WireGuard和Qbittorrent的Docker化方案，展示了网络隔离和端口转发的实践方法。
+
+- **缺点**
+  - 技术深度有限，主要依赖现有工具配置，缺乏源码级分析或原理推导。
+  - 原创性不足，方案基于常见工具组合，未提出新颖的技术见解或独立实验验证。
+
+---
+
+### trace-dlopen.md
+- **行数**: 738 lines
+- **Tags**: `Dynamic Linking`, `Hook`, `Instrument`, `Trace`
+
+#### AI 评审
+
+- **摘要**
+  文章探讨了在动态链接库通过dlopen加载时，使用ltrace无法追踪函数调用的问题，并分析了GOT/PLT机制、编译器插桩、动态二进制插桩和hook dlsym等多种追踪思路。
+
+- **评分**: **6.9 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.5
+  - completeness: 8.0
+  - practical_value: 6.0
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - ltrace
+  - GOT/PLT
+  - gcc -finstrument-functions
+  - LLVM Pass
+  - dlopen/dlsym
+  - LD_PRELOAD
+  - mprotect
+  - SIGSEGV
+  - gdb
+  - pwntools
+  - objdump
+
+- **优点**
+  - 详细分析了GOT/PLT机制，并通过汇编代码示例解释了动态链接过程。
+  - 尝试了多种追踪方法，包括编译器插桩和hook dlsym，展示了实际代码实现。
+  - 文章结构清晰，从问题分析到多种解决方案的探讨，覆盖了技术背景和实验过程。
+
+- **缺点**
+  - hook dlsym的实现存在bug，如寄存器保存不完整和上下文问题，未提供有效调试或解决方案。
+  - 部分方法（如内存权限和SIGSEGV）被指出不可行，但未深入分析原因或提供改进思路。
+  - 对TVM API的追踪功能仅简单提及未找到，缺乏进一步调查或替代方案探讨。
+
+---
+
+### ddns.md
+- **行数**: 80 lines
+- **Tags**: `Network`, `Linux`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了在拥有公网IP的ARMv7设备上，通过编译安装ddclient并配置dynv6服务实现DDNS，以及后续使用Docker容器化部署的过程。
+
+- **评分**: **4.8 / 10**
+
+- **评分明细**
+  - technical_depth: 4.0
+  - originality: 3.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 4.0
+
+- **技术栈和工具**
+  - ddclient: 动态DNS客户端工具，用于定期向DNS服务商报告IP地址
+  - dynv6: 免费的DDNS服务提供商，提供域名解析服务
+  - Docker: 容器化平台，用于部署和管理ddclient服务
+  - ip.sb: 在线API，用于获取公网IP地址
+
+- **优点**
+  - 详细记录了从源码编译ddclient到配置dynv6的完整步骤，适合初学者参考。
+  - 提供了Docker部署的替代方案，增加了部署的灵活性。
+
+- **缺点**
+  - 技术深度较浅，主要侧重于操作步骤，缺乏对DDNS原理或源码的深入分析。
+  - 原创性不足，内容多为常见配置和部署流程，没有独立的技术见解或经验总结。
+
+---
+
+### docker-file-size.md
+- **行数**: 162 lines
+- **Tags**: `Docker`, `Linux`, `Water`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了作者因Docker容器日志文件过大导致磁盘空间耗尽的问题，通过分析日志、使用Docker命令清理空间、设置日志轮转和迁移Docker数据目录到更大存储盘来解决。
+
+- **评分**: **5.4 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - Docker: 容器化平台，用于部署和管理服务
+  - overlay2: Docker存储驱动，用于管理容器文件系统
+  - crontab: Linux定时任务工具，用于自动化清理任务
+  - bash shell: 脚本语言，用于执行清理和迁移命令
+
+- **优点**
+  - 详细记录了从问题发现到解决的完整排查过程，包括日志分析和磁盘空间检查。
+  - 提供了具体的Docker清理命令和配置示例，如docker system prune和日志轮转设置，具有可操作性。
+
+- **缺点**
+  - 技术深度较浅，主要依赖标准Docker命令和基础Linux操作，缺乏源码级分析或高级优化技巧。
+  - 原创性不足，内容多为常见Docker维护实践，如清理日志和迁移数据目录，没有提出新颖的见解或方法。
+
+---
+
+### linkers.md
+- **行数**: 565 lines
+- **Tags**: `Compiler`, `Linker`, `Survey`
+
+#### AI 评审
+
+- **摘要**
+  文章对比了四种链接器（ld.bfd、ld.gold、lld、mold）在并行和增量链接方面的设计，重点分析了它们如何通过优化流程、多线程、数据结构改进来提升链接速度。
+
+- **评分**: **7.0 / 10**
+
+- **评分明细**
+  - technical_depth: 7.5
+  - originality: 6.0
+  - completeness: 8.0
+  - practical_value: 7.0
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - ld.bfd (GNU链接器，基于BFD库)
+  - ld.gold (Google开发的ELF链接器，支持多线程和增量链接)
+  - lld (LLVM链接器，支持跨平台和并行化)
+  - mold (现代C++20链接器，高度并行化)
+
+- **优点**
+  - 详细对比了四种链接器的设计差异，包括流程优化、并行策略和增量链接实现。
+  - 提供了具体案例和数据（如符号数量、性能对比图）来支撑分析。
+  - 解释了链接器内部机制，如COMDAT合并、字符串驻留和重定位处理。
+
+- **缺点**
+  - 文章主要基于外部文档和设计手册的总结，缺乏原创实验或源码级深度分析。
+  - 对某些技术细节（如并行算法的具体实现）描述较浅，未深入探讨底层原理。
+  - 结尾提到后续计划但未执行，导致分析闭环性略有不足。
+
+---
+
+### build-batch-platform.md
+- **行数**: 572 lines
+- **Tags**: `Java`, `Docker`, `DevOps`, `Abyss`, `Orth`
+
+#### AI 评审
+
+- **摘要**
+  文章介绍了为交易平台数据抓取和分析搭建任务调度平台的过程，包括从最初Python实现转向开源框架的调研，重点对比了PowerJob和xxl-job，并选择xxl-job进行Docker化部署和资源优化。
+
+- **评分**: **6.2 / 10**
+
+- **评分明细**
+  - technical_depth: 6.5
+  - originality: 5.0
+  - completeness: 7.5
+  - practical_value: 6.5
+  - workload_signal: 6.0
+
+- **技术栈和工具**
+  - xxl-job: 分布式任务调度平台
+  - Docker: 容器化部署工具
+  - MySQL/MariaDB: 数据库服务
+  - Java: 后端开发语言
+  - Python: 脚本语言
+  - Maven: Java项目构建工具
+  - cgroups: Linux资源控制机制
+
+- **优点**
+  - 详细对比了PowerJob和xxl-job的优缺点，基于实际需求做出选择。
+  - 提供了Docker部署和资源限制的具体配置，包括内存和CPU优化。
+  - 讨论了JVM和MySQL在cgroups限制下的行为，并给出调优建议。
+
+- **缺点**
+  - 技术深度有限，主要停留在部署和配置层面，缺乏源码级分析或机制深入解释。
+  - 原创性不足，大部分内容为框架调研和标准部署步骤，未提出独立技术结论。
+  - 文章后半部分资源管理讨论较散，未形成闭环的实验或系统化验证。
+
+---
+
+### Chinese-punctuation.md
+- **行数**: 24 lines
+- **Tags**: `water`, `hexo`
+
+#### AI 评审
+
+- **摘要**
+  文章讨论了作者在博客写作中从使用英文标点转向中文标点的决策过程，主要基于AI生成内容普遍使用中文标点带来的格式调整挑战。
+
+- **评分**: **2.8 / 10**
+
+- **评分明细**
+  - technical_depth: 2.0
+  - originality: 3.0
+  - completeness: 5.0
+  - practical_value: 2.0
+  - workload_signal: 2.0
+
+- **技术栈和工具**
+  - markdownlint-cli2: Markdown格式检查工具
+  - cjk-word-handler: VSCode插件用于处理CJK文本光标控制
+
+- **优点**
+  - 文章清晰描述了从英文标点转向中文标点的个人决策逻辑，包括AI时代的影响。
+  - 提到了使用markdownlint-cli2和cjk-word-handler插件来管理标点格式，展示了工具应用。
+
+- **缺点**
+  - 技术深度不足，缺乏对标点切换背后的技术原理或源码级分析。
+  - 文章内容偏向个人经验记录，缺乏系统性实验或可复用的技术结论。
+
+---
+
+### access-private-member-in-cpp.md
+- **行数**: 432 lines
+- **Tags**: `C++`, `Folly`, `Magic`
+
+#### AI 评审
+
+- **摘要**
+  文章探讨了如何绕过C++类的访问控制来修改std::vector的私有成员，以实现不初始化的resize操作，并介绍了多种方法如继承、内存地址计算、模板特化和劫持私有函数，最后分析了Folly库的实现。
+
+- **评分**: **7.7 / 10**
+
+- **评分明细**
+  - technical_depth: 8.5
+  - originality: 7.0
+  - completeness: 8.0
+  - practical_value: 7.5
+  - workload_signal: 7.0
+
+- **技术栈和工具**
+  - C++
+  - GCC 7.5.0
+  - GNU libc 2.17
+  - Folly库
+  - std::vector
+
+- **优点**
+  - 详细分析了std::vector的resize初始化机制，包括源码级追踪到__builtin_memset调用。
+  - 系统性地比较了多种访问私有成员的方法，并指出了各自的限制和适用场景。
+  - 结合Folly库的实际实现，展示了工业级解决方案的细节和跨平台考虑。
+
+- **缺点**
+  - 部分方法（如直接计算内存地址）的讨论较浅，未深入探讨内存布局复杂性或潜在未定义行为。
+  - 对Folly库MSVC实现的解释不够清晰，读者可能难以理解宏和模板参数的具体作用。
+
+---
+
+### android-root.md
+- **行数**: 138 lines
+- **Tags**: `toys`, `Android`
+
+#### AI 评审
+
+- **摘要**
+  文章记录了在OnePlus 13手机上解锁Bootloader并使用KernelSU获取Root权限的过程，包括工具使用、模块安装和Root应用配置。
+
+- **评分**: **5.3 / 10**
+
+- **评分明细**
+  - technical_depth: 5.0
+  - originality: 4.0
+  - completeness: 7.0
+  - practical_value: 6.0
+  - workload_signal: 5.0
+
+- **技术栈和工具**
+  - Android SDK Platform-Tools (adb & fastboot)
+  - payload-dumper-go
+  - KernelSU
+  - ZygiskNext
+  - LSPosed
+  - Shamiko
+  - Hail
+  - Native Detector
+  - 应用列表隐藏模块
+  - Revanced Manager
+
+- **优点**
+  - 详细记录了从解锁Bootloader到安装Root模块的完整步骤，适合新手参考。
+  - 提到了Root生态的现状和厂商限制，增加了背景信息。
+  - 列举了多种Root应用和工具，提供了实用选择。
+
+- **缺点**
+  - 技术深度较浅，主要依赖现有工具和命令，缺乏源码或原理分析。
+  - 原创性不足，内容多为常见Root流程和工具介绍，没有独立见解。
+  - 部分步骤如隐藏Root的配置描述不够详细，可能影响可复现性。
+
+---
+

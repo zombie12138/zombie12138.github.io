@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>小而美的 Lua 实现 | Implement of Lua | zombie's</title><meta name="author" content="zombie12138"><meta name="copyright" content="zombie12138"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0[lua].">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小而美的 Lua 实现 | Implement of Lua">
+<meta property="og:url" content="https://zombie12138.github.io/2025/plcompiler/implement-of-lua/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0[lua].">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-02-04T13:38:51.000Z">
+<meta property="article:modified_time" content="2025-12-22T17:43:11.894Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Featured">
+<meta property="article:tag" content="Reading">
+<meta property="article:tag" content="Design">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "小而美的 Lua 实现 | Implement of Lua",
+  "url": "https://zombie12138.github.io/2025/plcompiler/implement-of-lua/",
+  "image": "https://zombie12138.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-02-04T13:38:51.000Z",
+  "dateModified": "2025-12-22T17:43:11.894Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "zombie12138",
+      "url": "https://zombie12138.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://zombie12138.github.io/2025/plcompiler/implement-of-lua/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '小而美的 Lua 实现 | Implement of Lua',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">zombie's</span></a><a class="nav-page-title" href="/"><span class="site-name">小而美的 Lua 实现 | Implement of Lua</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">小而美的 Lua 实现 | Implement of Lua</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-04T13:38:51.000Z" title="发表于 2025-02-04 21:38:51">2025-02-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-22T17:43:11.894Z" title="更新于 2025-12-23 01:43:11">2025-12-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/PL-Compiler/">PL&amp;Compiler</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>最近看了一个 Lua 相关的项目, 对于 Lua 很感兴趣. 看一下 Lua 是怎么实现的. 主要参考 Lua 的论文: The Implementation of Lua 5.0<sup class="refplus-num"><a href="#ref-lua">[1]</a></sup>.
+
+<span id="more"></span>
+
+## Lua
+
+- Lua 的设计理念, 也是 Lua 能广泛应用的原因: simple, efficient, portable, and lightweight.
+- Lua 的重大变更: 5.0 coroutines, 5.1 incremental garbage collection
+
+一些 Lua 5.0 相比于 Lua 4.0 新增的东西
+
+- Register based virtual machine
+- New algorithm for optimizing tables used as arrays
+- The implementation of closures
+- The addition of coroutines
+
+Lua 虚拟机最初是手写的 Scanner 和 Parser, 后来 3.0 换成了 yacc. 并且, Lua 没有独立的 IR, 是 parse 之后直接 emits instructions for the virtual machine on the fly
+
+此外 Lua 采用 while-switch dispatch loop, 而非 direct threaded code, 以保留更好的兼容性. 两者的示例大概如下, DTC 使用到了非标准的 C 拓展<sup class="refplus-num"><a href="#ref-wiki">[2]</a></sup><sup class="refplus-num"><a href="#ref-usenix">[3]</a></sup><sup class="refplus-num"><a href="#ref-Wien">[4]</a></sup>:
+
+</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// direct threaded code</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span>* dispatch_table[] = { &amp;&amp;ADD, &amp;&amp;SUB, &amp;&amp;MUL }; <span class="comment">// goto table</span></span><br><span class="line"><span class="keyword">goto</span> *dispatch_table[opcode];</span><br><span class="line">ADD:</span><br><span class="line">  <span class="comment">// do add here</span></span><br><span class="line">  <span class="keyword">goto</span> *dispatch_table[next_opcode];</span><br><span class="line"></span><br><span class="line"><span class="comment">// -----------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// while-switch</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) {</span><br><span class="line">    <span class="keyword">switch</span> (opcode) {</span><br><span class="line">        <span class="keyword">case</span> ADD:</span><br><span class="line">            <span class="comment">// do add here</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> ...:</span><br><span class="line">            ...</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// next code</span></span><br><span class="line">    opcode = fetch_next_opcode();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+## Lua 的数据表示
+
+Lua 包含几种基本类型: `nil`, `boolean`, `number`, `string`, `table`, `function`, `userdata` (include heavy and light), and `thread`
+
+Lua 的数据存储为 tagged unions, 这种设计兼顾可移植性, 空间和性能:
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> {</span> </span><br><span class="line">    <span class="type">int</span> t;  <span class="comment">// tag, type of value V</span></span><br><span class="line">    Value v;    <span class="comment">// 除了 nil, 表示值</span></span><br><span class="line">} TObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">    GCObject *gc;   <span class="comment">// gc header</span></span><br><span class="line">    <span class="type">void</span> *p;        <span class="comment">// other</span></span><br><span class="line">    lua_Number n;   <span class="comment">// number (double)</span></span><br><span class="line">    <span class="type">int</span> b;      <span class="comment">// bool</span></span><br><span class="line">} Value;</span><br></pre></td></tr></table></figure>
+
+和很多语言的设计一样, lua 中的 `internalizes string` 是存在 `hash` 表中, 并且 `string` 都是 `immutable` 的.
+对于很长的 String, 为了节约性能, Lua Hash 不会去关注每一个 Byte.
+
+## Lua table
+
+`Table` 是 `Lua` 中的唯一的数据结构, 其性能对于 Lua 至关重要.
+
+Lua 中的 `Table` 是一个 `associative arrays`, 可以使用 `nil` 外任何数据来作为 key. 其实 Lua 中的 `table` 就是 array + hashmap, 实现也是.
+这种实现有以下好处:
+
+1. 是不需要维护两种数据结构, 保持了本身的紧凑;
+2. 用户不需要做选择;
+3. 对于稀疏的数组更加友好;
+4. 对于存在数组中的元素访问速度会很快
+
+<img src="/2025/plcompiler/implement-of-lua/lua_table.png" title="Lua table">
+
+4.0 之前, Lua 的 `Table` 全部都在哈希表中, 5.0 之后, lua 带来了一种上图中的混合的数据结构, 包含一个 Array 和一个 HashMap. Lua 会动态调整这两个部分, 两者可以同时存在.
+数组和哈希部分都可以扩展, 其中数组会保证新的大小 n 至少有一半 slot 在使用, 并且 `[n/2, n)` 存在元素.
+
+哈希部分则是使用的 Brent's Method 的变体, 具体可以参考这个论文<sup class="refplus-num"><a href="#ref-brent">[5]</a></sup>
+
+具体的实现可以看一下 Lua Table 分析的源代码.
+
+## Lua 的函数和代码
+
+Lua 在编译函数的时候, 都会创建一个包含机器指令, 变量和调试信息的 `prototype`.
+Lua 执行 `function...end` 语句的时候, 就会产生一个闭包 (`closure`), 包含 `prototype` 的引用, 一个用于查询全局变量的 `environment`, 以及一个 `upvalue` 的数组.
+
+除了 C 大部分语言都有闭包的概念, 解决的就是下面, 函数引用外层的局部变量的问题:
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span> <span class="params">(x)</span></span> </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="params">(y)</span></span> </span><br><span class="line">        <span class="keyword">return</span> x+y</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="comment">-- x is a local variable, and it has already gone out of scope</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">add2 = add(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(add2(<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+
+大部分语言处理闭包都加了一些限制, 比如 python 无法引用一个可变的外层局部变量, 除非使用了 `nonlocal`; 而一些语言则采用了更复杂的机制, 但这与 Lua 追求简洁的设计理念相悖
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">outer_function</span>():</span><br><span class="line">    x = <span class="number">10</span>  <span class="comment"># 外部变量</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner_function</span>():</span><br><span class="line">        <span class="comment"># nonlocal x</span></span><br><span class="line">        x += <span class="number">1</span>  <span class="comment"># 修改外部变量会报错, 除非使用 nonlocal</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    <span class="keyword">return</span> inner_function</span><br><span class="line"></span><br><span class="line">add = outer_function()</span><br><span class="line"><span class="comment"># 报错：UnboundLocalError: local variable 'x'  cannot access local variable 'x' where it is not associated with a value</span></span><br><span class="line"><span class="built_in">print</span>(add())</span><br></pre></td></tr></table></figure>
+
+Lua 使用了一种 `upvalue` 的东西来实现的闭包.
+
+<img src="/2025/plcompiler/implement-of-lua/upvalue.png" title="Lua 的 upvalue">
+
+首先闭包的变量可能存活在一个栈上 (上图左边所示), 这个 `upvalue` 会引用到栈上的变量; 当栈上变量脱离作用域的时候, 则会拷贝到 `upvalue` 中.
+`Mutable` 的状态在闭包中仅仅创建一次, 所有的 `upvalue` 串成一个链表 (图上 pending vars 的部分), 插入新的 `upvalue` 之前, 先遍历链表查看是否存在可复用的 `upvalue`.
+
+如果引用外层的外层函数, Lua 使用 Flat Closure 来解决这个问题. 当一个函数引用了外层的外层的变量, 这个变量也会加入外层的闭包. 因此一个函数实例化的时候, 闭包中的变量要么来自于外层的 stack, 要么来自直接外层的函数的 closure.
+
+## Coroutines
+
+5.1 之后, Lua 实现了一个 asymmetric coroutines / semi-coroutine, 实现包含三个 coroutine 下的标准库函数: `create`, `resume`, and `yield`.
+`create` 创建返回一个 `thread`; `resume` 执行; `yield` 返还控制权.
+
+一个关键是不能使用 C 语言的 stack 来实现, 也叫 stackless interpreter. 这里有点没看懂, LLM 的解释是, Lua 使用 C 栈来保持调用关系, 但是 `yield` 返回的时候除了退出之外, 还保留了虚拟栈的上下文, 下次调用的时候直接恢复.
+
+## Lua VM
+
+Lua 会编译源码到 `opcodes`, 每个函数 Lua 会编译成成一个 prototype, 包含 Lua 的 `opcodes` 的数组和一个常量的数组 (Array of TObjects).
+
+5.0 之前 Lua 使用的是 stack based vm, 之后使用的是 register based vm. 但是 register based VM 也会使用 stack 来分配 activation records, 包含局部变量, 返回值等. 不同是避免了 push, pop 这些 Lua 中昂贵的操作.
+register based VM 对于内存访问效率更高, 对于 JIT 也更加友好; 但是带来的问题就是 指令操作数更大 (指令数也会少一些), 解码也更加费力 (但是无需计算隐式参数, 如栈顶; 同时也某种程度避免了内存对齐等问题的开销).
+
+Lua VM 共有 35 个指令. 一条指令 32 bit, 6b 来存放指令类型, 剩下 A, B, C 8+9+9 是操作数. A 一般为返回值结果的寄存器, B 和 C 为操作数 (register / constant), 这样的设计可以使用更少的指令.
+
+一条跳转指令需要容纳两个操作数和一个跳转偏移量, 如果将这些都放在单条指令中, 空间会不足, 只能 9 bit 的跳转长度. 因此 Lua 的跳转也是一个 test 跟着一个跳转指令.
+
+下面可以看到 Lua 4.0 和 Lua 5.0 实现相同功能, 指令的差距:
+
+<img src="/2025/plcompiler/implement-of-lua/instructions.png" title="Lua 指令数对比">
+
+## 总结
+
+Lua 是第一个大规模使用 register based VM 的语言, Lua 的闭包, Lua 的 `table` 也确实非常 unique.
+
+作者用 [The Great Computer Language Shootout](https://en.wikipedia.org/wiki/The_Computer_Language_Benchmarks_Game) 做了一个性能比较, 得益于新的 VM, Lua 的运行时间最多减少了 56%.
+
+## 参考文献
+
+<ul id="refplus"><li id="ref-lua" data-num="1">[1]  Ierusalimschy, Roberto, Luiz Henrique De Figueiredo, and Waldemar Celes Filho. "The Implementation of Lua 5.0." J. Univers. Comput. Sci. 11.7 (2005): 1159-1176.</li><li id="ref-wiki" data-num="2">[2]  <a href="https://en.wikipedia.org/wiki/Threaded_code" title="" target="">Wikipedia - Threaded code</a></li><li id="ref-usenix" data-num="3">[3]  <a href="https://www.usenix.org/legacy/publications/library/proceedings/jvm01/gagnon/gagnon_html/node4.html" title="" target="">usenix - Threaded Interpreter</a></li><li id="ref-Wien" data-num="4">[4]  <a href="https://www.complang.tuwien.ac.at/forth/threaded-code.html" title="" target="">Technische Universität Wien - Threaded Code</a></li><li id="ref-brent" data-num="5">[5]  <a href="" title="" target="">Zombie's - Brent's Method (TODO) #more</a></li></ul><p></p>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    </article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io">zombie12138</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io/2025/plcompiler/implement-of-lua/">https://zombie12138.github.io/2025/plcompiler/implement-of-lua/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明来源 <a href="https://zombie12138.github.io" target="_blank">zombie's</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Featured/">Featured</a><a class="post-meta__tags" href="/tags/Reading/">Reading</a><a class="post-meta__tags" href="/tags/Design/">Design</a><a class="post-meta__tags" href="/tags/C/">C</a><a class="post-meta__tags" href="/tags/Lua/">Lua</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/engineer/fix-hexo-tag-escape/" title="给 Hexo 提交 PR"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">给 Hexo 提交 PR</div></div><div class="info-2"><div class="info-item-1">之前一直使用 hexo-reference-plus 作为插件渲染的工具, 但是最近突然会导致渲染失败. 排查问题发现是 hexo 本身的 bug.   背景一般来说, 我的参考链接都是直接用 markdown 的链接放到引用位置; 但是有些时候, 希望集中放一下文章的参考引用, 以及论文的引用, 这时候需要使用引用插件. 我使用的是一个 hexo-reference-plus 的插件, 还算比较好用. 但是最近突然会影响文章的解析和渲染, 在第一个 {% ref xxx %} 标签后面的几乎所有的 markdown 都停止了渲染. 来排查一下. 本人对于 hexo &amp; js &amp; nodejs 都不熟悉, 只是为了快速解决问题. 因此可能有些不是很专业的操作. BUG正常的渲染的语法是 12345xxxxxxxx &#123;% ref reftag %&#125;# Title&#123;% references %&#125;[reftag] &#123;% post_link collections/hello-world hello-world %&#12...</div></div></div></a><a class="pagination-related" href="/2025/database/install-TDengine/" title="「Abyss」安装 TDengine"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">「Abyss」安装 TDengine</div></div><div class="info-2"><div class="info-item-1">最近想要做点量化交易的回测分析什么的, 首先第一就是数据库的选择, 最终选择了 TDengine.   环境: rk3399 2 Cortex-A72 + 4 Cortex-A53; 2 GB RAM Clickhouse 从 pull 到 give up官方网站 提供了几种安装方式, Linux 包, 源码编译, Docker. 本着能 Docker 就 Docker 的想法, 最终选择了 Docker 来配置. Dockerhub 查看说明, 提示:  The arm64 image requires support for the ARMv8.2-A architecture⁠ and additionally the Load-Acquire RCpc register. The register is optional in version ARMv8.2-A and mandatory in ARMv8.3-A⁠. Supported in Graviton &gt;&#x3D;2, Azure and GCP instances. Examples for unsu...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/plcompiler/weak-symbol/" title="强符号, 弱符号 -- 语言中的各种强和弱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-02-17</div><div class="info-item-2">强符号, 弱符号 -- 语言中的各种强和弱</div></div><div class="info-2"><div class="info-item-1">最近用 GCC@13.2.0 去编译 Graph500, 发生了报错符号重定义. 结果是编译器太新了.   问题执行命令: 12345678$ makempicc -Drestrict=__restrict__ -O3 -DGRAPH_GENERATOR_MPI -DREUSE_CSR_FOR_VALIDATION -I../aml -DSSSP -pthread -o graph500_reference_bfs_sssp bfs_reference.c sssp_reference.c csr_reference.c main.c utils.c validate.c ../aml/aml.c ../generator/graph_generator.c ../generator/make_graph.c ../generator/splittable_mrg.c ../generator/utils.c -lm /tmp/ccfToPfi.o:(.bss+0x10): multiple definition of `weights&#x27;/tmp/cc4uSqIL.o:...</div></div></div></a><a class="pagination-related" href="/2025/distributedsystem/classic-papers/" title="那些经典论文"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-08</div><div class="info-item-2">那些经典论文</div></div><div class="info-2"><div class="info-item-1">记录 2012 年之前的又老又经典论文阅读.   MapReduce: Simplified Data Processing on Large ClustersMapReduce[1] 是一种通用的 Bulk Synchronized Parallel 的典型范式. 用户只需要定义一个 Map 函数, 一个 Reduce 函数即可在上千台实例上运行分布式任务, 可以完成 PageRank, Inverted Index 等任务. 例如词频统计的一个例子:  123456789101112map(String key, String value):    // key: document name    // value: document contents    for each word w in value:        EmitIntermediate(w, "1");reduce(String key, Iterator values):    // key: a word    // values: a list of counts    int result = 0...</div></div></div></a><a class="pagination-related" href="/2023/architecture/gflops/" title="CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-16</div><div class="info-item-2">CPU 浮点数运算速度理论上限 | 如何计算 GFLOPS</div></div><div class="info-2"><div class="info-item-1">最近看了一些 ARM 测评的文章, 注意到鲲鹏 920-6426 的浮点计算性能似乎有很多不同的说法, 来盘点一下到底怎么计算和测量一个 CPU 的 GFLOPS.   实验在 2Socket * 鲲鹏 920-Server (一共 128C 256G 4NUMA) 进行, 操作系统 CentOS Linux release 7.9.2009 (AltArch), 内核版本 4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了透明大页 (65536, 64KB), (GNU libc) 2.17 1 问题的开始1.1 665 Tflops 的鲲鹏由于鲲鹏本身不是为了 HPC 设计的, NEON 矢量指令集又只有 128 bit, 浮点数比较孱弱, 但是其具备 多少 GFLOP, 不同论文有着完全不同的说法. 首先是参考文献[1]中提到, 如下图所示, 给出的结果是单精度的峰值是 `1.331 TFlop/s`, 双精度峰值是 `665 TFlop/s`, 标量的计算峰值是 `332 Gflops`.    这个结果显然是不正确的, 至少单位写错了...</div></div></div></a><a class="pagination-related" href="/2025/collections/butterfly/" title="Butterfly 主题使用 | 重塑博客分类和标签"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-13</div><div class="info-item-2">Butterfly 主题使用 | 重塑博客分类和标签</div></div><div class="info-2"><div class="info-item-1">目前的博客依然使用的是 NexT, 其风格是极简纯粹, 安装之后几乎不用配置; 但是功能太少, 依然是默认的使用逻辑. 这种 “开箱即用” 的便利在内容积累到一定程度后, 反而成了桎梏. 最大的问题在于信息密度的扁平化. 在默认的 NexT 时间流视图下, 一篇耗时两周写成的深入的源码剖析+实验性能分析和一篇耗时 5 分钟记录的 Docker 环境配置占据了同等的视觉版面. 这导致高质量的思考被淹没在大量的实验流水账中, 读者无法在第一时间感知到博客的核心价值.   为了优化读者体验, 强调重点内容, 优化检索难度, 本文将重构整个博客的 categories 和 tags; 并且更换主题为 Butterfly. 核心重构需求为了解决上述问题, 结合 AI 提供的优化思路, 我对新版博客的主题选型和功能定制提出了以下硬性指标: 主页布局的 “CMS 化” (非单纯 Timeline)我不希望主页仅仅是一个按时间倒序的列表. 我需要主页具备 “门户” 属性, 能够进行分栏展示. 例如顶部导航栏可以设置不同的专项, 精品文章; 首页新增磁铁和置顶文章. 需求点: 主题需要支持自定义首...</div></div></div></a><a class="pagination-related" href="/2023/plcompiler/access-private-member-in-cpp/" title="访问类私有成员 | 劫持类私有成员函数 | Folly 库"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-20</div><div class="info-item-2">访问类私有成员 | 劫持类私有成员函数 | Folly 库</div></div><div class="info-2"><div class="info-item-1">最近遇到一个问题, 如何不初始化地对一个 std::vector 进行 resize? resize 会进行初始化, 而 reserve 可以扩容但不会改变 size (实际实现为 begin &amp; end), 因此就可以先 reserve 申请空间之后进行 size 的修改, 但是 size 相关的成员变量其实是 protected. 这就变成了, 如何修改 C++ 类的保护成员? 本文将通过以下几种方法介绍几种私有成员的外部访问方法.   实验在 2Socket * 鲲鹏 920-Server (一共 128C 256G 4NUMA) 进行, 操作系统 CentOS Linux release 7.9.2009 (AltArch), 内核版本 4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了 Page Size (65536, 64KB), GNU libc 2.17 1 vector 中 resize 的初始化问题1.1 为什么想要不初始化?对于 std::vector, 使用初始化函数和 resize 都会有初始化操作. 但是,...</div></div></div></a><a class="pagination-related" href="/2023/architecture/first-touch-on-numa/" title="一次对 malloc 与 OpenMP 下 First-Touch 策略失效的失败追踪"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-17</div><div class="info-item-2">一次对 malloc 与 OpenMP 下 First-Touch 策略失效的失败追踪</div></div><div class="info-2"><div class="info-item-1">最近看的 NUMA 绑核比较多, 来盘点一下 NUMA, 绑核, 以及 NUMA 系统中分配策略 (First Touch), 以及遇到的 First-Touch 失效的情况.   实验在 2Socket * 鲲鹏 920-Server (一共 128C 256G 4NUMA) 进行, 操作系统 CentOS Linux release 7.9.2009 (AltArch), 内核版本 4.14.0-115.el7a.0.1.aarch64, GCC 7.5.0, 开启了透明大页 (65536, 64KB), GNU libc 2.17 1 NUMA一般的个人电脑都是 UMA (Uniform Memory Access), 不同的核心访问内存的速度是相同的. 但是在服务器 CPU 中, 可能有多个 CPU socket, CPU 访问另一个处理器上的内存会更慢一些, 但是访问本地的内存会快一些， 这就是NUMA (Non-Uniform Memory Access). 有些时候, 为了提高单个处理器的带宽, 满足不断增长的核心数的带宽需求, 也会把单个处理器上的核心分为几组, ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">zombie12138</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/collections/Chinese-punctuation/" title="博客使用中文标点啦!">博客使用中文标点啦!</a><time datetime="2025-12-22T17:43:11.824Z" title="发表于 2025-12-23 01:43:11">2025-12-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/collections/butterfly/" title="Butterfly 主题使用 | 重塑博客分类和标签">Butterfly 主题使用 | 重塑博客分类和标签</a><time datetime="2025-12-13T06:02:23.000Z" title="发表于 2025-12-13 14:02:23">2025-12-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/distributedsystem/build-batch-platform/" title="「Abyss」搭建任务调度平台 xxl-job">「Abyss」搭建任务调度平台 xxl-job</a><time datetime="2025-11-01T13:54:03.000Z" title="发表于 2025-11-01 21:54:03">2025-11-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/kernelos/android-root/" title="OnePlus13 一加13 Root">OnePlus13 一加13 Root</a><time datetime="2025-09-20T06:47:27.000Z" title="发表于 2025-09-20 14:47:27">2025-09-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/kernelos/ArchLinux-in-wsl/" title="ArchLinux &amp; Windows 开发环境配置">ArchLinux &amp; Windows 开发环境配置</a><time datetime="2025-08-30T16:26:44.000Z" title="发表于 2025-08-31 00:26:44">2025-08-31</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By zombie12138</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"></div><script>
+if (document.getElementById('post')) {
+  var copyright = document.querySelector('.post-copyright');
+  if (copyright) {
+    var div = document.createElement('div');
+    div.className = 'custom-statement';
+    div.innerHTML = '<span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>特殊声明: </span> 本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。';
+    copyright.appendChild(div);
+  }
+}
+</script>
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
