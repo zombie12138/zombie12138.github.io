@@ -1,0 +1,1359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践 | zombie's</title><meta name="author" content="zombie12138"><meta name="copyright" content="zombie12138"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近用了很久的嵌入式板子连上去发现 docker 和 systemctl 都用不了，重启系统直接挂了。不过好在重要的服务都跑在一台新买的 AMD 8745HS 上。不过现在已经累计 40 多个容器跑在单机上，连哪个容器挂了、哪个容器占用多少内存都不知道。虽然可以使用 docker stats 来观测，但是也无法事后查看。哪一天服务崩掉也只能通过服务业务本身通知，但如果服务彻底崩溃，这个过程是完全静">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践">
+<meta property="og:url" content="https://zombie12138.github.io/2026/engineer/homelab-monitoring/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="最近用了很久的嵌入式板子连上去发现 docker 和 systemctl 都用不了，重启系统直接挂了。不过好在重要的服务都跑在一台新买的 AMD 8745HS 上。不过现在已经累计 40 多个容器跑在单机上，连哪个容器挂了、哪个容器占用多少内存都不知道。虽然可以使用 docker stats 来观测，但是也无法事后查看。哪一天服务崩掉也只能通过服务业务本身通知，但如果服务彻底崩溃，这个过程是完全静">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-03-04T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-24T18:42:26.040Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Project&#x2F;HomeLab">
+<meta property="article:tag" content="Survey">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Grafana">
+<meta property="article:tag" content="Loki">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践",
+  "url": "https://zombie12138.github.io/2026/engineer/homelab-monitoring/",
+  "image": "https://zombie12138.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-03-04T04:00:00.000Z",
+  "dateModified": "2026-04-24T18:42:26.040Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "zombie12138",
+      "url": "https://zombie12138.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://zombie12138.github.io/2026/engineer/homelab-monitoring/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">96</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">zombie's</span></a><a class="nav-page-title" href="/"><span class="site-name">HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-04T04:00:00.000Z" title="发表于 2026-03-04 12:00:00">2026-03-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-24T18:42:26.040Z" title="更新于 2026-04-25 02:42:26">2026-04-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Engineer/">Engineer</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">12.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>47分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>最近用了很久的嵌入式板子连上去发现 <code>docker</code> 和 <code>systemctl</code> 都用不了，重启系统直接挂了。不过好在重要的服务都跑在一台新买的 AMD 8745HS 上。不过现在已经累计 40 多个容器跑在单机上，连哪个容器挂了、哪个容器占用多少内存都不知道。虽然可以使用 <code>docker stats</code> 来观测，但是也无法事后查看。哪一天服务崩掉也只能通过服务业务本身通知，但如果服务彻底崩溃，这个过程是完全静默的。决定彻底解决这个问题：搭一套完整的可观测性栈。</p>
+<span id="more"></span>
+<div class="note warning flat"><p>本文由 AI 辅助写作，经作者审核修订后发布，文章 AI 含量：70%；代码 AI 含量 80%。</p>
+</div>
+<h2 id="背景">背景</h2>
+<img src="/2026/engineer/homelab-monitoring/fastfetch.png" class="" title="fastfetch">
+<p>我的 HomeLab 单机规格：32GB RAM、AMD Ryzen 7 8745H (8C16T)、826GB 磁盘。上面跑着 40 多个容器，分布在大量独立的 compose 文件里：clash &amp; yacd、qbittorrent+wireguard（多实例）、Samba、TDengine、frpc、DST 游戏服务器、交易数据爬取、离线任务调度，以及各种杂项。</p>
+<p>部署之前的状态：</p>
+<ul>
+<li><strong>指标</strong>：没有。只能 <code>docker stats</code> 看当前快照，没有历史记录。</li>
+<li><strong>日志</strong>：每个容器各自写 JSON 文件，Docker 日志轮转，查日志要先 <code>docker ps</code> 找容器名，再 <code>docker logs</code> 翻滚，效率极差。</li>
+<li><strong>告警</strong>：没有。服务挂了只能靠自己发现。</li>
+</ul>
+<h2 id="可观测性四种信号">可观测性四种信号</h2>
+<p>现代可观测性有四种信号，从&quot;广度&quot;到&quot;深度&quot;递进：Metrics 告诉你趋势，Logs 告诉你细节，Traces 串联请求链路，Profiles 定位代码热点辅助分析性能问题。一个典型的故障排查流程是：Metrics 发现异常 → Logs 定位原因 → 必要时 Trace 追踪跨服务链路。Metric 和 Log 是互补的，不是替代关系。</p>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>存储内容</th>
+<th>单条大小</th>
+<th>查询速度</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metrics</strong></td>
+<td>预聚合的数字（计数器/直方图/仪表盘）</td>
+<td>8 bytes/点</td>
+<td>O(1)，毫秒级</td>
+<td>每秒多少请求？p99 延迟？错误率？CPU 趋势？</td>
+</tr>
+<tr>
+<td><strong>Logs</strong></td>
+<td>每条事件的完整文本</td>
+<td>几百 B ~ 几 KB/条</td>
+<td>全量扫描，慢</td>
+<td>3:14pm 那个报错的完整堆栈？具体哪行代码？</td>
+</tr>
+<tr>
+<td><strong>Traces</strong></td>
+<td>请求在多个服务间的链路和耗时</td>
+<td>几 KB/trace</td>
+<td>按 traceID 查</td>
+<td>这个 API 慢，卡在哪个下游服务？</td>
+</tr>
+<tr>
+<td><strong>Profiles</strong></td>
+<td>函数级 CPU/内存采样</td>
+<td>几十 KB/采样</td>
+<td>按时间段查</td>
+<td>哪个函数吃了最多 CPU？内存泄漏在哪？</td>
+</tr>
+</tbody>
+</table>
+<h2 id="技术选型">技术选型</h2>
+<h3 id="监控栈由哪些角色组成">监控栈由哪些角色组成</h3>
+<p>一套完整的监控栈有四层职责：</p>
+<ul>
+<li><strong>Exporter 层</strong>：把各种服务的内部状态暴露为 HTTP <code>/metrics</code> 端点（格式：Prometheus text）</li>
+<li><strong>Scraper/Agent 层</strong>：定期拉取（Pull）或接收推送（Push）指标，转发到存储</li>
+<li><strong>TSDB（时序数据库）层</strong>：高效存储和查询时间序列数据</li>
+<li><strong>Visualization 层</strong>：查询、展示、告警</li>
+</ul>
+<p>之所以是四个组件而不是一个程序，是因为每层的关注点不同——Exporter 只需要懂&quot;如何读 cgroup 和各种指标&quot;，TSDB 只需要懂&quot;如何压缩时间序列&quot;，这种分层让组件之间解耦，可以自由组合。</p>
+<p>常见的组合也有很多，例如：</p>
+<ul>
+<li><strong>PLG（Prometheus + Loki + Grafana）</strong>：Prometheus 负责指标采集拉取/查询，Loki 负责日志存储与查询，Grafana 统一展示与关联分析，是当前最常见的轻量开源组合之一。</li>
+<li><strong>ELK（Elasticsearch + Logstash + Kibana）</strong>：日志检索和分析能力很强，适合复杂日志分析场景，但整体资源占用更高。</li>
+</ul>
+<p>本文采用的是 Prometheus 生态变体：指标侧使用 VictoriaMetrics（PromQL 兼容）替代 Prometheus 内置 TSDB，日志侧使用 Loki，并统一接入 Grafana，下面我们探讨每一层的详细选择。</p>
+<h3 id="指标采集层：node-exporter-和-cAdvisor">指标采集层：node_exporter 和 cAdvisor</h3>
+<p>指标采集层负责暴露服务内部状态，通常使用 Prometheus text 格式，例如一个真实的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sudo docker exec vmagent wget -qO- &#x27;http://promtail:9080/metrics&#x27; 2&gt;&amp;1 | head -20</span><br><span class="line"># HELP deprecated_flags_inuse_total The number of deprecated flags currently set.</span><br><span class="line"># TYPE deprecated_flags_inuse_total counter</span><br><span class="line">deprecated_flags_inuse_total 0</span><br><span class="line"># HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.</span><br><span class="line"># TYPE go_gc_duration_seconds summary</span><br><span class="line">go_gc_duration_seconds&#123;quantile=&quot;0&quot;&#125; 2.3923e-05</span><br><span class="line">go_gc_duration_seconds&#123;quantile=&quot;0.25&quot;&#125; 3.1547e-05</span><br><span class="line">go_gc_duration_seconds&#123;quantile=&quot;0.5&quot;&#125; 3.7952e-05</span><br><span class="line">go_gc_duration_seconds&#123;quantile=&quot;0.75&quot;&#125; 4.3119e-05</span><br><span class="line">go_gc_duration_seconds&#123;quantile=&quot;1&quot;&#125; 0.000503058</span><br><span class="line">go_gc_duration_seconds_sum 8.894905256</span><br><span class="line">go_gc_duration_seconds_count 139251</span><br><span class="line"># HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent.</span><br><span class="line"># TYPE go_gc_gogc_percent gauge</span><br><span class="line">go_gc_gogc_percent 100</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>node_exporter</strong> 读取 <code>/proc/stat</code>、<code>/proc/meminfo</code>、<code>/proc/diskstats</code> 等内核接口，<strong>暴露主机级指标</strong>：CPU 使用率、内存、磁盘 IO、网络流量。它只读不写，直接以 root 或普通用户运行即可。</li>
+<li><strong>cAdvisor</strong>（Container Advisor）读取 <code>/sys/fs/cgroup/&lt;subsystem&gt;/&lt;container_id&gt;/</code> 下的 cgroup 文件，同时通过 Docker socket 获取容器元数据（名字、标签、镜像），暴露容器级指标：<strong>每个容器</strong>的 CPU 份额、内存用量、网络 IO。</li>
+<li><strong>Telegraf</strong>——更通用，可以 <strong>同时采集主机和容器指标</strong>，但配置更复杂，内存占用也更高。</li>
+</ul>
+<p>对于 HomeLab 轻量使用的场景，node_exporter 暴露宿主机指标 + cAdvisor 自动拉取容器指标更合适。</p>
+<h3 id="存储与查询层：Pull-vs-Push-时序数据库选型">存储与查询层：Pull vs Push &amp; 时序数据库选型</h3>
+<p><strong>Pull vs Push</strong> 是第一个核心取舍：</p>
+<ul>
+<li><strong>Pull</strong>（Prometheus 模型）：Scraper 主动 HTTP GET 每个 target 的 <code>/metrics</code>。优点：scraper 掌握采集频率 <strong>流量可控</strong>；状态即刻感知，target 宕机立刻感知。缺点：target 必须可被 scraper 网络访问。</li>
+<li><strong>Push</strong>（InfluxDB/vmagent 也支持）：target 主动推送数据到接收端。优点：target 在 NAT 后面也能上报；缺点：接收端宕机时 target 需要缓冲，采集频率由 target 控制。</li>
+</ul>
+<p>HomeLab 内网环境，Pull 模型完全够用。</p>
+<p>时序数据库选型对比（并未全部实测，数据由 opus 4.6 生成）：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>Prometheus</th>
+<th>VictoriaMetrics</th>
+<th>InfluxDB 2.x</th>
+<th>TDengine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM 使用</td>
+<td>1~1.5 GB</td>
+<td>0.5~1 GB</td>
+<td>1.5~2 GB</td>
+<td>0.5~0.8 GB</td>
+</tr>
+<tr>
+<td>磁盘压缩</td>
+<td>~1.3 bytes/点</td>
+<td>~0.7 bytes/点（7~10x）</td>
+<td>~1.0 bytes/点</td>
+<td>~0.7 bytes/点</td>
+</tr>
+<tr>
+<td>PromQL 兼容性</td>
+<td>原生</td>
+<td>完全兼容</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>现成仪表盘</td>
+<td>极多</td>
+<td>极多（PromQL 兼容）</td>
+<td>一般</td>
+<td>几乎为零</td>
+</tr>
+<tr>
+<td>部署复杂度</td>
+<td>多个二进制</td>
+<td>单一二进制</td>
+<td>较复杂</td>
+<td>较复杂</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最终选 VictoriaMetrics</strong>：单二进制部署、PromQL 完全兼容（所有 Prometheus 仪表盘直接导入）、高压缩比，是最经典的搭配之一。</p>
+<h4 id="VictoriaMetrics-存储原理">VictoriaMetrics 存储原理</h4>
+<p>VictoriaMetrics 的存储引擎比较接近 LSM Tree，不过对于时序数据进行了特定优化，核心思路是<strong>按月分区 + MergeTree 合并 + 列式压缩</strong>。</p>
+<p><strong>写入流程</strong>：数据写入时先进内存表（in-memory part），积累到一定大小后 flush 到磁盘上的 <code>small/</code> 目录，形成一个 part。后台 merge 线程持续将多个小 parts 合并成更大的 part，最终移入 <code>big/</code> 目录。这个过程类似 LSM-Tree 的 compaction，但针对时序数据做了大量优化——比如合并时不需要排序（时间戳天然有序），主要工作是重新压缩和构建索引。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">写入 → 内存表 → flush → small/ (多个小 parts)</span><br><span class="line">                          ↓ 后台 merge</span><br><span class="line">                        big/ (少量大 parts)</span><br></pre></td></tr></table></figure>
+<p><strong>磁盘结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">data/</span><br><span class="line">├── small/              ← 未合并的小 parts</span><br><span class="line">│   └── 2026_04/        ← 按月分区</span><br><span class="line">│       └── &lt;part_id&gt;/</span><br><span class="line">│           ├── values.bin       ← 指标值（列存储，压缩）</span><br><span class="line">│           ├── timestamps.bin   ← 时间戳（列存储，压缩）</span><br><span class="line">│           ├── index.bin        ← 块内索引</span><br><span class="line">│           ├── metaindex.bin    ← 块间索引</span><br><span class="line">│           └── metadata.json    ← 元信息（行数、时间范围等）</span><br><span class="line">├── big/                ← 合并后的大 parts</span><br><span class="line">│   └── 2026_04/</span><br><span class="line">└── indexdb/            ← 倒排索引（label → TSID 映射）</span><br></pre></td></tr></table></figure>
+<p>每个 part 内部是<strong>列式存储</strong>——时间戳和值分开存放。同一个 time series 的相邻数据点在物理上连续排列，这对压缩极为有利。</p>
+<p><strong>压缩算法</strong>：VictoriaMetrics 对时间戳和值使用不同的编码策略：</p>
+<ul>
+<li><strong>时间戳</strong>：采用 <a target="_blank" rel="noopener" href="https://www.vldb.org/pvldb/vol8/p1816-teller.pdf">Gorilla 编码</a>（Facebook 2015 年论文《Gorilla: A Fast, Scalable, In-Memory Time Series Database》）。核心思想是存储相邻时间戳的差值的差值（delta-of-delta）。对于固定间隔采集（如每 15 秒一个点），delta-of-delta 几乎全是 0，一个时间戳只需要 1-2 bits。</li>
+<li><strong>值</strong>：使用 XOR + 变长编码。相邻值做 XOR，如果结果为 0（值没变）只需 1 bit；变化不大时只存变化的 bit 位。对于 gauge 类指标（如 CPU 利用率在 0.3~0.4 之间波动），压缩率极高。</li>
+</ul>
+<p>实际效果：每个数据点平均只占约 <strong>0.7 bytes</strong>（时间戳 + 值合计），而原始的 float64 + int64 需要 16 bytes，压缩比约 20 倍。</p>
+<p><strong>过期与保留</strong>：通过 <code>-retentionPeriod</code> 参数控制（本文配置 90 天）。过期删除的粒度是<strong>月分区</strong>——到了第 91 天，整个月分区目录直接删除，无需逐条扫描，删除操作是 O(1) 的。</p>
+<p><strong>降采样</strong>：VictoriaMetrics 开源版<strong>不自动降采样</strong>。90 天前和今天的数据精度完全一样（15 秒一个点就一直是 15 秒）。降采样是<a target="_blank" rel="noopener" href="https://docs.victoriametrics.com/victoriametrics-enterprise/#downsampling">企业版功能</a>（通过 <code>-downsampling.period</code> 配置）。对于 HomeLab 场景，90 天全精度数据大约占 2-3 GB（当前 50 天约 1.2 GB），完全在可接受范围内，不需要降采样。</p>
+<p>关于 <strong>TDengine</strong>：虽然我有一个 TDengine，但是它已经在跑了，复用能节省 RAM，但是复用会耦合两个服务之间的负载和稳定性，且极少现成 Grafana 仪表盘（要从零搭）、Grafana 插件成熟度差、SQL 语法导致 Prometheus 仪表盘全部不可用。节省的那 0.3~0.5 GB 不值得长期维护成本。</p>
+<h3 id="指标采集代理与胶水层：vmagent">指标采集代理与胶水层：vmagent</h3>
+<p>如果沿用 Prometheus 一体化方案，链路通常是 <code>exporter -&gt; Prometheus -&gt; Grafana</code>，Prometheus 自己就能完成抓取、存储、查询与规则计算，不一定需要额外代理。</p>
+<p>本文把指标存储换成 VictoriaMetrics 后，链路变为 <code>exporter -&gt; vmagent -&gt; VictoriaMetrics -&gt; Grafana</code>。这时 <strong>vmagent</strong> 负责中间“胶水层”职责：主动抓取各个 exporter 的 <code>/metrics</code>、通过 remote_write 转发到 VictoriaMetrics，并在短暂抖动时做缓冲重试。</p>
+<h3 id="日志采集与存储层：Promtail-Loki">日志采集与存储层：Promtail+Loki</h3>
+<p>日志采集器的选择：</p>
+<ul>
+<li><strong>Promtail</strong>：Loki 官方采集器，和 Loki 原生集成，配置最简单；支持 <code>docker_sd_configs</code>，可通过 <code>/var/run/docker.sock</code> 自动发现容器。</li>
+<li><strong>Fluentd/Fluent Bit</strong>：通用采集器，插件生态完善（可对接 Loki），适配面广，但配置与运维复杂度更高。</li>
+<li><strong>Filebeat</strong>：Elastic Beats 家族；虽支持 Elasticsearch/Logstash/Kafka 等输出，但无原生 Loki 输出，接入 PLG 往往需要中转链路，不是轻量场景的首选。</li>
+<li><strong>Logstash</strong>：更偏向日志处理/转发管道（解析、清洗、路由），常和 Elasticsearch 或 OpenSearch 搭配；功能强但相对更重。</li>
+</ul>
+<p>日志存储选型：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>估算 RAM</th>
+<th>索引模型</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Loki</strong></td>
+<td>~0.2~0.4 GB</td>
+<td>标签索引（不索引全文）</td>
+<td>极轻量，Grafana 原生接入</td>
+<td>必须用标签约束查询范围，无全文索引</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>~4~8 GB</td>
+<td>全文倒排索引</td>
+<td>全文检索强，分析能力强</td>
+<td>极重，Java 堆</td>
+</tr>
+<tr>
+<td>Graylog</td>
+<td>~4~6 GB</td>
+<td>全文（依赖 ES）</td>
+<td>UI 好，有 pipeline</td>
+<td>依然需要 ES</td>
+</tr>
+</tbody>
+</table>
+<p>在这台已运行大量容器的主机上，ELK/Graylog 的资源成本偏高，直接排除。<br>
+Loki 的标签索引模型更贴合容器日志查询习惯：按容器名、Compose 项目、服务名先筛选，再查看具体日志内容，标签维度已足够。</p>
+<h3 id="最终选型汇总">最终选型汇总</h3>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>采集</th>
+<th>存储</th>
+<th>状态</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Metrics</td>
+<td>node_exporter (宿主机指标) + cAdvisor (容器) + vmagent (代理)</td>
+<td>VictoriaMetrics</td>
+<td><strong>已部署</strong></td>
+<td>PromQL 兼容，压缩率高</td>
+</tr>
+<tr>
+<td>Logs</td>
+<td>Promtail</td>
+<td>Loki</td>
+<td><strong>已部署</strong></td>
+<td>标签索引，轻量</td>
+</tr>
+<tr>
+<td>Traces</td>
+<td>—</td>
+<td>Tempo（Grafana 生态）</td>
+<td>未部署</td>
+<td>当前无跨服务调用链需求</td>
+</tr>
+<tr>
+<td>Profiles</td>
+<td>—</td>
+<td>Pyroscope（Grafana 生态）</td>
+<td>未部署</td>
+<td>需应用内嵌 SDK，当前无需求</td>
+</tr>
+</tbody>
+</table>
+<h2 id="架构设计">架构设计</h2>
+<h3 id="采集方案：宿主机采集-vs-Sidecar">采集方案：宿主机采集 vs Sidecar</h3>
+<p>选定组件之后，先要回答一个部署层面的基础问题：采集器放在哪里、怎么接触到被监控的容器？有两种主流方案：</p>
+<pre class="mermaid">flowchart TB
+    subgraph host["宿主机采集（本项目）"]
+        direction LR
+        sys["/proc + /sys/fs/cgroup
+        /var/run/docker.sock
+        /var/lib/docker/containers"] -->|"挂载读取"| agents["cAdvisor
+        node_exporter
+        Promtail"]
+        agents --> containers2["[容器A] [容器B] ... 不需要修改"]
+    end
+    subgraph sidecar["Sidecar 模式"]
+        direction LR
+        app1["[App]"] <-->|"共享 namespace"| sc1["[Sidecar]"]
+        app2["[App]"] <-->|"共享 namespace"| sc2["[Sidecar]"]
+    end</pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>宿主机采集（本项目）</th>
+<th>Sidecar 模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>典型场景</td>
+<td><strong>单机 Docker Compose</strong></td>
+<td>Kubernetes / 微服务</td>
+</tr>
+<tr>
+<td>侵入性</td>
+<td>零（不改现有容器）</td>
+<td>高（改每个 compose 文件）</td>
+</tr>
+<tr>
+<td>新容器发现</td>
+<td>自动</td>
+<td>需手动加 sidecar</td>
+</tr>
+<tr>
+<td>容器数量开销</td>
+<td>固定少量采集容器</td>
+<td>随服务数增长</td>
+</tr>
+<tr>
+<td>采集深度</td>
+<td>系统级（CPU/内存/IO/日志）</td>
+<td>可深入应用级（JVM/SQL/自定义）</td>
+</tr>
+<tr>
+<td>宿主机权限</td>
+<td>需要（挂载 <code>/sys</code>、<code>docker.sock</code>）</td>
+<td>不需要</td>
+</tr>
+</tbody>
+</table>
+<p>本方案里的指标链路（node_exporter、cAdvisor、vmagent）本质上就是宿主机集中采集；日志链路（Promtail/Fluent Bit/Filebeat）在工程上既可宿主机采集，也可 Sidecar 部署。</p>
+<p>在本文场景下全部选择 <strong>宿主机采集</strong>，原因很直接：容器规模较大且分布在大量 compose 文件中，Sidecar 模式意味着要改所有 compose 文件并为每个服务额外部署 sidecar。宿主机模式只需额外维护一份监控 compose，零侵入，且所有采集器都可以以 Docker 容器方式运行。</p>
+<h3 id="数据流：指标管道">数据流：指标管道</h3>
+<pre class="mermaid">flowchart LR
+    ne["node_exporter
+    :9100"] & ca["cAdvisor
+    :8080"]
+    -->|scrape 15s| vma[vmagent]
+    -->|remote_write| vic[("VictoriaMetrics
+    :8428")]
+    -->|PromQL| g[Grafana]</pre>
+<p><strong>深度解析</strong>：</p>
+<ul>
+<li><strong>node_exporter</strong> 通过 <code>/proc/stat</code> 读取 CPU 时间片（user/system/idle/iowait），通过 <code>/proc/meminfo</code> 读取内存分布，通过 <code>/proc/diskstats</code> 读取块设备 IO 计数器，汇聚成 Prometheus 格式的文本端点。</li>
+<li><strong>cAdvisor</strong> 读取 <code>/sys/fs/cgroup/&lt;subsystem&gt;/&lt;container_id&gt;/</code> 下的 cgroup v2 文件（如 <code>cpu.stat</code>、<code>memory.current</code>），同时调用 Docker socket（<code>/var/run/docker.sock</code>）获取容器名称和标签，将两者合并成带容器元数据的 metrics。</li>
+<li><strong>vmagent</strong> 只做 scrape + remote_write，不存储任何数据，内存占用极小（~50 MB）。相比 Prometheus server（scrape + 存储 + 查询三合一），vmagent 更轻量，且支持多个 remote_write 目标（方便未来扩展）。</li>
+</ul>
+<h3 id="数据流：日志管道">数据流：日志管道</h3>
+<pre class="mermaid">flowchart LR
+    subgraph containers["Docker 容器"]
+        c1["容器 A"] & c2["容器 B"] & c3["容器 C"]
+    end
+    containers -->|"logging driver
+    json-file"| logs
+    logs["/var/lib/docker/containers/
+    &lt;id&gt;-json.log"] -->|"tail + relabel"| pt[Promtail]
+    pt -->|push| loki[("Loki
+    :3100")]
+    loki -->|LogQL| g[Grafana]</pre>
+<p><strong>深度解析</strong>：</p>
+<ul>
+<li><strong>Docker json-file logging driver</strong>：默认 logging driver，每条 stdout/stderr 输出写成一行 JSON：<code>&#123;&quot;log&quot;:&quot;...\n&quot;,&quot;stream&quot;:&quot;stdout&quot;,&quot;time&quot;:&quot;2026-01-01T00:00:00Z&quot;&#125;</code>。日志文件路径是 <code>/var/lib/docker/containers/&lt;container_id&gt;/&lt;container_id&gt;-json.log</code>。</li>
+<li><strong>Promtail docker_sd_configs</strong>：通过 Docker socket 自动发现所有运行中的容器，读取 <code>/var/lib/docker/containers/&lt;id&gt;/&lt;id&gt;-json.log</code>，无需手动配置每个容器。容器新启动后 5 秒内自动被发现。</li>
+<li><strong>relabel_configs</strong>：从容器 label（Docker Compose 自动注入的 <code>com.docker.compose.project</code>、<code>com.docker.compose.service</code>）提取 <code>compose_project</code>、<code>compose_service</code> 标签，使得 LogQL 查询可以按服务名精确筛选。</li>
+</ul>
+<h3 id="为什么合并在单个-compose">为什么合并在单个 compose</h3>
+<ol>
+<li><strong>Grafana 是共享的</strong> — Grafana 同时连 VictoriaMetrics 和 Loki，拆成两个 compose 文件要么重复部署两份 Grafana，要么靠外部网络跨 compose 通信。放在一起自动共享网络，<code>depends_on</code> 直接用。</li>
+<li><strong>服务间依赖在同一个 compose 里最简单</strong> — vmagent → victoriametrics、promtail → loki、grafana → victoriametrics + loki，这些依赖关系 <code>depends_on</code> 一行搞定。</li>
+<li><strong>这组监控容器是一个功能单元</strong> — “监控”。要么一起起要么一起停，<code>docker compose up -d</code> / <code>down</code> 一次搞定。</li>
+</ol>
+<h2 id="部署">部署</h2>
+<h3 id="目录结构">目录结构</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">monitoring/</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── grafana/</span><br><span class="line">│   └── provisioning/</span><br><span class="line">│       ├── datasources/datasources.yml</span><br><span class="line">│       └── alerting/</span><br><span class="line">│           ├── contactpoints.yml</span><br><span class="line">│           ├── policies.yml</span><br><span class="line">│           └── rules.yml</span><br><span class="line">├── loki/config.yml</span><br><span class="line">├── promtail/config.yml</span><br><span class="line">├── vmagent/scrape.yml</span><br><span class="line">├── host-services/               # 宿主机 systemd 服务配置，通过 symlink 安装</span><br><span class="line">│   ├── docker-events.service</span><br><span class="line">│   ├── logrotate-docker-events</span><br><span class="line">│   ├── journal-export.service</span><br><span class="line">│   └── logrotate-journal-export</span><br><span class="line">└── data/                        # gitignored，运行时数据</span><br><span class="line">    ├── victoriametrics/         # ~694 MB，时序数据 + 缓存 + 元数据</span><br><span class="line">    │   ├── data/                #   TSDB 数据分区（按月）</span><br><span class="line">    │   ├── cache/               #   metricID↔TSID 映射缓存、rollup 缓存</span><br><span class="line">    │   ├── metadata/            #   指标元数据</span><br><span class="line">    │   ├── snapshots/           #   快照（备份用）</span><br><span class="line">    │   └── flock.lock           #   单实例互斥锁</span><br><span class="line">    ├── loki/                    # ~80 MB，日志索引 + chunks</span><br><span class="line">    │   ├── chunks/              #   压缩后的日志块</span><br><span class="line">    │   ├── tsdb-shipper-active/ #   当前活跃的 TSDB 索引</span><br><span class="line">    │   ├── tsdb-shipper-cache/  #   索引缓存</span><br><span class="line">    │   ├── compactor/           #   compaction 工作目录</span><br><span class="line">    │   ├── wal/                 #   Write-Ahead Log，崩溃恢复用</span><br><span class="line">    │   └── rules/               #   告警规则（若有）</span><br><span class="line">    ├── promtail/                # ~64 KB</span><br><span class="line">    │   └── positions.yaml       #   每个日志文件的读取偏移量，重启后继续读</span><br><span class="line">    ├── tetragon/                # Tetragon eBPF 事件输出</span><br><span class="line">    │   └── events.log</span><br><span class="line">    ├── journal-export/          # systemd journal 导出</span><br><span class="line">    │   └── journal.log</span><br><span class="line">    ├── docker-events/           # Docker 生命周期事件导出</span><br><span class="line">    │   └── events.log</span><br><span class="line">    └── grafana/                 # ~52 MB</span><br><span class="line">        ├── grafana.db           #   SQLite，存仪表盘/用户/告警状态</span><br><span class="line">        └── plugins/             #   已安装插件</span><br></pre></td></tr></table></figure>
+<h3 id="准备工作：data-目录权限">准备工作：data 目录权限</h3>
+<p>在 <code>docker compose up</code> 之前，需要先建好数据目录并修正权限——Grafana 和 Loki 以非 root UID 运行，若目录 owner 是 root，它们会报权限不足立刻退出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p data/&#123;victoriametrics,loki,promtail,grafana&#125;</span><br><span class="line">sudo <span class="built_in">chown</span> 472:472 data/grafana      <span class="comment"># Grafana 容器 UID 472</span></span><br><span class="line">sudo <span class="built_in">chown</span> 10001:10001 data/loki     <span class="comment"># Loki 容器 UID 10001</span></span><br></pre></td></tr></table></figure>
+<p>VictoriaMetrics 和 Promtail 写数据目录时会自行处理权限（配合 <code>CHOWN</code>/<code>DAC_OVERRIDE</code> cap），无需提前 chown。</p>
+<h3 id="安全加固：capabilities">安全加固：capabilities</h3>
+<p>所有容器统一 <code>no-new-privileges: true</code> + <code>cap_drop: [ALL]</code> + 按需 <code>cap_add</code>，只开放最小权限。</p>
+<p><code>no-new-privileges: true</code> 的作用：防止容器内进程通过 SUID/SGID 二进制提权（setuid bit 不再生效），即使容器内存在 SUID 程序也无法用它切换到更高权限。</p>
+<p>各 capability 的含义：</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>作用</th>
+<th>使用服务</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CHOWN</code></td>
+<td>修改文件 owner（<code>chown</code> 系统调用）</td>
+<td>VictoriaMetrics、Loki、Grafana</td>
+</tr>
+<tr>
+<td><code>DAC_OVERRIDE</code></td>
+<td>绕过文件读写权限检查（不管 owner/group）</td>
+<td>VictoriaMetrics、Promtail</td>
+</tr>
+<tr>
+<td><code>DAC_READ_SEARCH</code></td>
+<td>绕过文件读取和目录遍历权限检查</td>
+<td>Promtail（读 Docker 日志文件，owner 是 root）</td>
+</tr>
+<tr>
+<td><code>SETUID</code> / <code>SETGID</code></td>
+<td>切换进程 UID/GID</td>
+<td>Loki、Grafana（启动时内部降权）</td>
+</tr>
+<tr>
+<td><code>FOWNER</code></td>
+<td>绕过文件 owner 校验（<code>fchown</code>、<code>fchmod</code> 等）</td>
+<td>Loki、Grafana</td>
+</tr>
+</tbody>
+</table>
+<p>cAdvisor 的例外：cAdvisor 必须用 <code>privileged: true</code>，不能用 <code>cap_drop: ALL</code>。cgroup v2 + Docker 29 环境下，读取完整的 cgroup 层级结构需要 root namespace 的访问权限，现有的细粒度 capability 无法覆盖这一需求。关于 Linux 中的权限问题可以后面再单独来讲。</p>
+<h3 id="cAdvisor-兼容性：Docker-29-containerd-image-store">cAdvisor 兼容性：Docker 29 + containerd image store</h3>
+<p>cAdvisor 在 Docker 29+ 上的兼容性问题可以分成两层：</p>
+<ol>
+<li><strong>API 层（先决条件）</strong>：Docker 29 要求最低 API 1.44。旧版 cAdvisor（如 v0.49.1，client 1.41）会在初始化阶段直接失败，Docker factory 无法注册（<a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/issues/3749">Issue #3749</a>）。</li>
+<li><strong>存储层（路径/驱动适配）</strong>：启用 containerd image store（containerd snapshotter）后，容器层元数据路径和驱动语义发生变化（如 <code>overlay2 -&gt; overlayfs</code>）。cAdvisor 旧实现按历史路径解析 rootfs，会触发 <code>failed to identify the read-write layer ID for container</code>，导致容器级 metrics 缺失（<a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/issues/3643">Issue #3643</a>, <a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/issues/3860">Issue #3860</a>）。</li>
+</ol>
+<p>按版本看：</p>
+<ul>
+<li><strong>v0.49.1</strong>：卡在 API 层（1.41 &lt; 1.44），启动阶段即失败（<a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/issues/3749">Issue #3749</a>）。</li>
+<li><strong>v0.52.1 ~ v0.53.0</strong>：API 层通过，但存储层不兼容——在 Docker 29 + containerd snapshotter 下，容器级 metrics 全部缺失，仅可见系统 cgroup（<a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/issues/3860">Issue #3860</a>）。</li>
+<li><strong>v0.54.0+</strong>（2024-12-02）：<a target="_blank" rel="noopener" href="https://github.com/google/cadvisor/pull/3709">PR #3709</a> 改为基于 containerd OCI spec 读取 rootfs 路径，兼容性明显改善。</li>
+</ul>
+<p>实践上建议直接使用 <code>v0.55.1</code>（本文已验证可用），并启用 <code>privileged: true</code> + <code>--store_container_labels=true</code>。</p>
+<h3 id="监控关键配置">监控关键配置</h3>
+<p><code>docker-compose.yml</code> Grafana 服务（关键部分），数据源配置见下一小节：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># begining of yml, commmon anchor</span></span><br><span class="line"><span class="attr">x-logging:</span> <span class="string">&amp;default-logging</span></span><br><span class="line">  <span class="attr">driver:</span> <span class="string">json-file</span></span><br><span class="line">  <span class="attr">options:</span></span><br><span class="line">    <span class="attr">max-size:</span> <span class="string">1m</span></span><br><span class="line">    <span class="attr">max-file:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># under services</span></span><br><span class="line"><span class="attr">grafana:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">grafana/grafana:latest</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">grafana</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./data/grafana:/var/lib/grafana</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./grafana/provisioning:/etc/grafana/provisioning:ro</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">GF_SECURITY_ADMIN_PASSWORD=admin</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">HTTP_PROXY=http://$&#123;HOST_IP&#125;:$&#123;PROXY_PORT&#125;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">HTTPS_PROXY=http://$&#123;HOST_IP&#125;:$&#123;PROXY_PORT&#125;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">NO_PROXY=localhost,victoriametrics,loki,vmagent,promtail,grafana,node-exporter,cadvisor,127.0.0.1,10.0.0.0/8,172.16.0.0/12</span></span><br><span class="line">  <span class="attr">depends_on:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">victoriametrics</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">loki</span></span><br><span class="line">  <span class="attr">logging:</span> <span class="string">*default-logging</span></span><br><span class="line">  <span class="attr">security_opt:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="literal">no</span><span class="string">-new-privileges:true</span></span><br><span class="line">  <span class="attr">cap_drop:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ALL</span></span><br><span class="line">  <span class="attr">cap_add:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CHOWN</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">SETGID</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">SETUID</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">FOWNER</span></span><br></pre></td></tr></table></figure>
+<p>Loki <code>config.yml</code>（关键部分）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">limits_config:</span></span><br><span class="line">  <span class="attr">retention_period:</span> <span class="string">336h</span>     <span class="comment"># 14 天</span></span><br><span class="line">  <span class="attr">ingestion_rate_mb:</span> <span class="number">16</span>     <span class="comment"># 限流 16M/s</span></span><br><span class="line">  <span class="attr">ingestion_burst_size_mb:</span> <span class="number">32</span> <span class="comment"># burst 32M/s</span></span><br><span class="line">  <span class="attr">reject_old_samples:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">reject_old_samples_max_age:</span> <span class="string">168h</span>  <span class="comment"># 7 天前日志拒绝</span></span><br><span class="line">  <span class="attr">unordered_writes:</span> <span class="literal">true</span>     <span class="comment"># 允许乱序写入，应对 DST 日志批量导入</span></span><br><span class="line"></span><br><span class="line"><span class="attr">compactor:</span></span><br><span class="line">  <span class="attr">working_directory:</span> <span class="string">/loki/compactor</span></span><br><span class="line">  <span class="attr">compaction_interval:</span> <span class="string">10m</span></span><br><span class="line">  <span class="attr">retention_enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">retention_delete_delay:</span> <span class="string">2h</span></span><br><span class="line">  <span class="attr">delete_request_store:</span> <span class="string">filesystem</span></span><br></pre></td></tr></table></figure>
+<p>vmagent <code>scrape.yml</code>（5 个采集目标）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">node-exporter</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;node-exporter:9100&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">cadvisor</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;cadvisor:8080&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">vmagent</span></span><br><span class="line">    <span class="attr">scrape_interval:</span> <span class="string">30s</span>          <span class="comment"># 自身指标变化慢，30s 够用</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;vmagent:8429&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">promtail</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;promtail:9080&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">loki</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;loki:3100&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>这 5 个组件都自带 <code>/metrics</code> HTTP 端点，返回 Prometheus text 格式的指标数据——这是 Prometheus 生态的约定：每个组件既是被监控对象，也是指标的自我暴露者。vmagent 每隔 <code>scrape_interval</code> 对每个 target 发起 HTTP GET，解析响应中的指标行，转发到 VictoriaMetrics 存储。</p>
+<p>前两个 target 是<strong>被观测对象</strong>（宿主机和容器的资源状态），后三个是<strong>观测链路自身</strong>（采集器、日志收集器、日志存储的内部健康指标）。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>端口</th>
+<th><code>/metrics</code> 暴露的典型指标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node-exporter</td>
+<td>9100</td>
+<td>CPU、内存、磁盘、网络、文件系统（宿主机维度）</td>
+</tr>
+<tr>
+<td>cAdvisor</td>
+<td>8080</td>
+<td>每个容器的 CPU/内存/网络/IO（容器维度）</td>
+</tr>
+<tr>
+<td>vmagent</td>
+<td>8429</td>
+<td>每个 scrape target 的成功/失败次数、发送到 VM 的速率、队列积压</td>
+</tr>
+<tr>
+<td>Promtail</td>
+<td>9080</td>
+<td>读取的日志行数、发送到 Loki 的速率、dropped entries（丢包）、每个 target 的 lag</td>
+</tr>
+<tr>
+<td>Loki</td>
+<td>3100</td>
+<td>写入速率、限流触发次数（<code>loki_ingester_*</code>）、chunk 压缩、查询延迟</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Provisioning-as-Code（Grafana-数据源）">Provisioning as Code（Grafana 数据源）</h3>
+<p>数据源通过 <code>grafana/provisioning/datasources/datasources.yml</code> 声明式配置，Grafana 启动时自动加载，无需手动点击：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">datasources:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">VictoriaMetrics</span></span><br><span class="line">    <span class="attr">uid:</span> <span class="string">P4169E866C3094E38</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">prometheus</span></span><br><span class="line">    <span class="attr">access:</span> <span class="string">proxy</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://victoriametrics:8428</span></span><br><span class="line">    <span class="attr">isDefault:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">editable:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Loki</span></span><br><span class="line">    <span class="attr">uid:</span> <span class="string">P8E80F9AEF21F6940</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">loki</span></span><br><span class="line">    <span class="attr">access:</span> <span class="string">proxy</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://loki:3100</span></span><br><span class="line">    <span class="attr">editable:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>注：<em>这里的 uid 可以自己配置成可读字符串。这里最初并未指定，随机码是 Grafana 自动生成的，后面配置告警规则为了防止 uid 漂移，所以手动写死了。（其实不换 db 文件也不会重新生成导致漂移）</em></p>
+<p>部署后打开 Grafana（<a target="_blank" rel="noopener" href="http://10.0.0.110:3000">http://10.0.0.110:3000</a>），在 Connections → Data sources 就能看到两个数据源已自动配置完成。</p>
+<img src="/2026/engineer/homelab-monitoring/data_source.png" class="" title="data_source">
+<h3 id="Promtail：Docker-日志自动发现">Promtail：Docker 日志自动发现</h3>
+<p>指标管道配置完成后，还需要告诉 Promtail 从哪里抓日志、贴什么标签。Promtail 通过 <code>docker_sd_configs</code> 自动发现所有容器：</p>
+<ol>
+<li><strong>发现阶段</strong>：通过 Docker socket 轮询容器列表（每 5 秒），获取容器 ID、名称、标签</li>
+<li><strong>读取阶段</strong>：tail <code>/var/lib/docker/containers/&lt;id&gt;/&lt;id&gt;-json.log</code>，解析每行 JSON 的 <code>log</code> 字段</li>
+<li><strong>relabel 阶段</strong>：从容器 label 提取 compose 元数据，映射为 Loki 标签</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">docker</span></span><br><span class="line">    <span class="attr">docker_sd_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">unix:///var/run/docker.sock</span></span><br><span class="line">        <span class="attr">refresh_interval:</span> <span class="string">5s</span></span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">&quot;__meta_docker_container_name&quot;</span>]</span><br><span class="line">        <span class="attr">regex:</span> <span class="string">&quot;/?(.*)&quot;</span></span><br><span class="line">        <span class="attr">target_label:</span> <span class="string">container</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">&quot;__meta_docker_container_label_com_docker_compose_project&quot;</span>]</span><br><span class="line">        <span class="attr">target_label:</span> <span class="string">compose_project</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">&quot;__meta_docker_container_label_com_docker_compose_service&quot;</span>]</span><br><span class="line">        <span class="attr">target_label:</span> <span class="string">compose_service</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">&quot;__meta_docker_container_log_stream&quot;</span>]</span><br><span class="line">        <span class="attr">target_label:</span> <span class="string">logstream</span></span><br></pre></td></tr></table></figure>
+<p>每条日志自动附带四个标签：<code>container</code>、<code>compose_project</code>、<code>compose_service</code>、<code>logstream</code>（stdout/stderr）。</p>
+<h3 id="非-Docker-日志源接入">非 Docker 日志源接入</h3>
+<p>Docker SD 自动采集的是容器 stdout/stderr，但有些数据源不走 Docker 日志：容器写文件的日志、宿主机 systemd journal、内核级 execve 事件、Docker 生命周期事件。这些需要单独接入 Promtail。其中 Docker 生命周期事件（docker events）是为了容器告警引入的，采集配置在后文告警章节说明，采集模式和下面的 journal、Tetragon 完全一致：宿主机 systemd service 导出 JSON 文件 → Promtail volume 挂载读取 → Loki。</p>
+<p>对全部 compose 项目做了审计，绝大多数服务写 stdout，已被 Docker SD 自动采集。以下是需要特殊处理的几类日志源。</p>
+<h4 id="容器日志修正：frpc">容器日志修正：frpc</h4>
+<p>frpc 原先写文件 <code>/var/log/frpc.log</code>。处理：修改 <code>frpc.toml</code>，把 <code>log.to = &quot;/var/log/frpc.log&quot;</code> 改为 <code>log.to = &quot;console&quot;</code>，重启后日志输出到 stdout，Promtail 自动采集，无需任何额外配置。</p>
+<h4 id="文件日志采集：DST-游戏服务器">文件日志采集：DST 游戏服务器</h4>
+<p>DST 用 supervisord 管理多个子进程（dst-master、dst-caves、sshd），日志分别写到 <code>/var/log/supervisor/</code> 下的不同文件，不适合改 stdout。方案：把宿主机日志目录挂载进 Promtail 容器，通过 <code>dst-files</code> job 做文件 tail：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">dst-files</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">localhost</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">job:</span> <span class="string">dst</span></span><br><span class="line">        <span class="attr">compose_project:</span> <span class="string">dst</span></span><br><span class="line">        <span class="attr">__path__:</span> <span class="string">/var/log/dst/*.log</span></span><br><span class="line">  <span class="attr">pipeline_stages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">regex:</span></span><br><span class="line">        <span class="attr">expression:</span> <span class="string">&#x27;(?P&lt;filename&gt;[a-z-]+)\.log$&#x27;</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">filename</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">filename:</span></span><br></pre></td></tr></table></figure>
+<p>采集的日志文件：<code>dst-master.log</code>、<code>dst-master-error.log</code>、<code>dst-caves.log</code>、<code>dst-caves-error.log</code>、<code>supervisord.log</code>、<code>sshd.log</code>、<code>sshd-error.log</code>。每个文件自动附带 <code>filename</code> 标签用于区分。</p>
+<p><strong>DST 日志丢失排查</strong>：Promtail 首次部署后，DST 服务器日志（17MB+ 的 <code>dst-master.log</code>）在 Loki 中几乎搜不到。排查下来是四个问题叠加：</p>
+<ol>
+<li><strong>Positions 文件未持久化</strong>：Promtail 的 positions 文件默认在容器内 <code>/tmp/</code>，重启后从文件开头重新读取全部历史日志。</li>
+<li><strong>Loki 拒绝旧日志</strong>：重新读取的历史日志 timestamp 过旧，被 Loki 的 <code>reject_old_samples_max_age</code> 拒绝（<code>entry too far behind</code>）。</li>
+<li><strong>速率限制</strong>：大量日志突发写入触发默认 4 MB/s 限制，批量被 429 拒绝。</li>
+<li><strong>乱序被拒</strong>：速率限制导致重试，部分批次先到后到，乱序被拒。</li>
+</ol>
+<p>修复方案：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml promtail volumes 加上：</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">./data/promtail:/data</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># promtail/config.yml positions 改为：</span></span><br><span class="line"><span class="attr">positions:</span></span><br><span class="line">  <span class="attr">filename:</span> <span class="string">/data/positions.yaml</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loki/config.yml limits_config 调整：</span></span><br><span class="line"><span class="attr">limits_config:</span></span><br><span class="line">  <span class="attr">ingestion_rate_mb:</span> <span class="number">16</span>        <span class="comment"># 默认 4，提高到 16</span></span><br><span class="line">  <span class="attr">ingestion_burst_size_mb:</span> <span class="number">32</span>  <span class="comment"># 突发限制</span></span><br><span class="line">  <span class="attr">reject_old_samples_max_age:</span> <span class="string">168h</span>  <span class="comment"># 允许 7 天内的旧日志</span></span><br><span class="line">  <span class="attr">unordered_writes:</span> <span class="literal">true</span>       <span class="comment"># 允许乱序写入</span></span><br></pre></td></tr></table></figure>
+<h4 id="宿主机命令审计：从-Bash-History-到-eBPF">宿主机命令审计：从 Bash History 到 eBPF</h4>
+<p>出事后想回溯&quot;当时在机器上执行了什么&quot;，需要命令审计。最简单的方式是采集 <code>.bash_history</code>——在 <code>.bashrc</code> 中加 <code>PROMPT_COMMAND=&quot;history -a&quot;</code> 让每条命令立即 flush 到文件，Promtail 挂载文件采集。但它只能记录交互式 bash 命令，<code>unset HISTFILE</code>、换 shell、通过 Claude Code 等非交互式工具执行的命令都不会被记录，且每条命令触发一次磁盘写入。</p>
+<p>更强的方案有两层：<strong>auditd</strong>（内核 2.6，在 <code>execve</code> 系统调用里埋硬编码钩子，无法绕过但不可编程、日志量大、不能跑在容器里）和 <strong>eBPF</strong>（内核 4.x+，动态加载 BPF 程序到内核 VM，可挂载任意内核函数，内核态过滤，容器化部署）。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>bash history / PROMPT_COMMAND</th>
+<th>auditd</th>
+<th>eBPF (Falco/Tetragon)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>层级</td>
+<td>用户态，shell 自己记</td>
+<td>内核态，系统调用级硬编码钩子</td>
+<td>内核态，动态加载的 BPF 程序</td>
+</tr>
+<tr>
+<td>可绕过</td>
+<td>容易（换 shell、unset 变量）</td>
+<td>极难（内核层拦截）</td>
+<td>极难（内核层拦截）</td>
+</tr>
+<tr>
+<td>信息量</td>
+<td>命令文本（可扩展到 IP/PID）</td>
+<td>完整：UID、IP、PID、参数、返回值</td>
+<td>同 auditd，且可自定义聚合</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>只能记录 shell 命令</td>
+<td>固定钩子 + 规则过滤</td>
+<td>任意挂载点 + 可编程逻辑</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>无开销</td>
+<td>规则多时开销明显</td>
+<td>内核态过滤，开销极小</td>
+</tr>
+<tr>
+<td>容器支持</td>
+<td>需要逐容器配置</td>
+<td>宿主机全局，不能跑在容器里</td>
+<td>可以，天然感知容器/Pod</td>
+</tr>
+</tbody>
+</table>
+<p>最终选择 eBPF 方案（<a target="_blank" rel="noopener" href="https://tetragon.io/">Tetragon</a>，Cilium 出品）。</p>
+<h5 id="原理：execve-与-eBPF-hook">原理：execve 与 eBPF hook</h5>
+<p>Linux 上<strong>所有程序执行只有一条路：<code>execve</code> 系统调用</strong>。无论是 bash 敲命令、Claude Code 调 docker、cron 定时任务还是 Python <code>subprocess.run()</code>，最终都会调用 <code>execve</code>。但脚本内部的运算不会被记录——Python <code>x = 1 + 1</code> 不触发 <code>execve</code>，<code>os.system(&quot;ls&quot;)</code> 才会；Shell <code>cd /tmp</code> 不触发（bash 内置），<code>ls</code> 触发。</p>
+<p>Tetragon 默认 hook 两个内核 tracepoint：<code>sys_enter_execve</code>（进程启动）和 <code>sched_process_exit</code>（进程退出）。</p>
+<h5 id="为什么能在-Docker-里运行">为什么能在 Docker 里运行</h5>
+<p>容器只是&quot;发射台&quot;——Tetragon 在容器内调用 <code>bpf()</code> 系统调用，把 BPF 字节码提交给<strong>宿主机内核</strong>，内核验证后加载到 tracepoint。之后 BPF 程序在内核态运行，跟容器无关。需要 <code>privileged: true</code> 是因为普通容器没有 <code>bpf()</code> 权限。删除容器时 BPF 程序随之卸载，宿主机零残留。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">容器内 Tetragon 进程</span><br><span class="line">  ↓ bpf() syscall（需要 privileged）</span><br><span class="line">宿主机内核</span><br><span class="line">  ↓ 验证 BPF 字节码 → 加载到 tracepoint</span><br><span class="line">  ↓ 每次 execve 触发 BPF 程序</span><br><span class="line">  ↓ perf ring buffer 回传数据</span><br><span class="line">容器内 Tetragon 进程</span><br><span class="line">  ↓ 写 JSON 到 events.log</span><br><span class="line">Promtail → Loki</span><br></pre></td></tr></table></figure>
+<h5 id="部署配置">部署配置</h5>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tetragon:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">quay.io/cilium/tetragon-ci:latest</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">tetragon</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">  <span class="attr">privileged:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">pid:</span> <span class="string">host</span></span><br><span class="line">  <span class="attr">command:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">tetragon</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">--export-filename=/var/log/tetragon/events.log</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">--export-file-max-size-mb=50</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">--export-file-max-backups=1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">--export-allowlist=&#123;&quot;event_set&quot;:[&quot;PROCESS_EXEC&quot;]&#125;</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/sys/kernel/btf:/sys/kernel/btf:ro</span>   <span class="comment"># 内核 BTF 信息</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/boot:/boot:ro</span>                        <span class="comment"># 内核符号表</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./data/tetragon:/var/log/tetragon</span>     <span class="comment"># 事件输出</span></span><br></pre></td></tr></table></figure>
+<p>Promtail 挂载事件文件，用 <code>json</code> pipeline 提取 <code>binary</code> 和 <code>parent_binary</code> 作为 indexed label，在 Grafana 下拉框里可以直接按可执行文件路径过滤：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml promtail volumes 加上：</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">./data/tetragon:/var/log/tetragon:ro</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># promtail/config.yml 加上：</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">tetragon</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">localhost</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">job:</span> <span class="string">tetragon</span></span><br><span class="line">        <span class="attr">__path__:</span> <span class="string">/var/log/tetragon/events.log</span></span><br><span class="line">  <span class="attr">pipeline_stages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">json:</span></span><br><span class="line">        <span class="attr">expressions:</span></span><br><span class="line">          <span class="attr">binary:</span> <span class="string">process_exec.process.binary</span></span><br><span class="line">          <span class="attr">parent_binary:</span> <span class="string">process_exec.parent.binary</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">binary:</span></span><br><span class="line">        <span class="attr">parent_binary:</span></span><br></pre></td></tr></table></figure>
+<p><code>json</code> stage 支持嵌套路径（用 <code>.</code> 分隔），<code>process_exec.process.binary</code> 从 Tetragon 的 JSON 事件中直接提取出执行的二进制路径。配合 <code>--export-allowlist</code> 在内核态只产出 <code>PROCESS_EXEC</code> 事件，Promtail 侧不需要做任何 <code>match</code> + <code>drop</code> 过滤。</p>
+<h5 id="事件示例">事件示例</h5>
+<p>Claude Code 执行 <code>echo &quot;hello&quot;</code> 时，Tetragon 记录：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;process_exec&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;process&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;binary&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/bin/bash&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-c \&quot;eval &#x27;echo hello&#x27;\&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;pid&quot;</span><span class="punctuation">:</span> <span class="number">1030181</span><span class="punctuation">,</span> <span class="attr">&quot;uid&quot;</span><span class="punctuation">:</span> <span class="number">1000</span><span class="punctuation">,</span> <span class="attr">&quot;auid&quot;</span><span class="punctuation">:</span> <span class="number">1000</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/zombie/dockers&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parent&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;binary&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/zombie/.local/share/claude/versions/2.1.89&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="string">&quot;--continue&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;pid&quot;</span><span class="punctuation">:</span> <span class="number">42417</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>parent 链直接给出完整调用路径。不同来源的命令 parent 不同——交互式 bash 的 parent 是 <code>sshd</code>，Cursor 的是 <code>cursor-server/node</code>，Claude Code 的是 claude 二进制。Grafana 中查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;job=&quot;tetragon&quot;&#125; |= &quot;process_exec&quot; |= &quot;claude&quot;        # Claude Code 的命令</span><br><span class="line">&#123;job=&quot;tetragon&quot;&#125; |= &quot;process_exec&quot; |= &quot;/usr/bin/rm&quot;   # 危险操作审计</span><br></pre></td></tr></table></figure>
+<h5 id="自定义过滤：TracingPolicy">自定义过滤：TracingPolicy</h5>
+<p>默认记录所有 <code>execve</code>，如果需要只监控特定行为（比如敏感文件写入），可以编写 TracingPolicy YAML 挂载到容器内 <code>/etc/tetragon/tetragon.tp.d/</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">cilium.io/v1alpha1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">TracingPolicy</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">sensitive-file-write</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">kprobes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">call:</span> <span class="string">sys_openat</span></span><br><span class="line">      <span class="attr">args:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">index:</span> <span class="number">1</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">string</span></span><br><span class="line">      <span class="attr">selectors:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">matchArgs:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">index:</span> <span class="number">1</span></span><br><span class="line">              <span class="attr">operator:</span> <span class="string">Prefix</span></span><br><span class="line">              <span class="attr">values:</span> [<span class="string">&quot;/etc/&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>这是 Tetragon 自己的配置格式，不需要 Kubernetes。纯文件驱动，放到目录里 Tetragon 自动加载。</p>
+<h4 id="宿主机系统日志：systemd-journal">宿主机系统日志：systemd journal</h4>
+<p>SSH 登录、systemd 服务启停、内核 OOM、cron 执行等事件全部记录在 systemd journal 中。将其采集到 Loki 后，可以直接在 Grafana 里查询 <code>&#123;job=&quot;systemd&quot;, unit=&quot;ssh.service&quot;&#125; |= &quot;Failed password&quot;</code> 定位 SSH 爆破，或 <code>&#123;job=&quot;systemd&quot;&#125; |= &quot;Out of memory&quot;</code> 追溯 OOM 事件。</p>
+<p><strong>为什么不用 Promtail 原生 journal 支持</strong>：<code>grafana/promtail</code> 所有官方 Docker 镜像都没有编译 journal 支持（需要 CGO + libsystemd），配置了 <code>journal</code> job 会直接警告 <code>support for reading the systemd journal is not compiled into this build</code>。Grafana 官方推荐迁移到 Alloy（Promtail 的继任者），但为了不引入新组件，这里用更简单的方案：在宿主机上用 systemd service 把 journal 导出为 JSON 文件，Promtail 采集文件。</p>
+<p>和 docker-events 相同的模式：配置文件放在 git 仓库的 <code>monitoring/host-services/</code> 目录，通过 symlink 安装到系统目录。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># monitoring/host-services/journal-export.service</span></span><br><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Export systemd journal to file for Promtail</span><br><span class="line"><span class="attr">After</span>=systemd-journald.service</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/bin/bash -c <span class="string">&#x27;journalctl -f -o json &gt; /home/zombie/dockers/monitoring/data/journal-export/journal.log&#x27;</span></span><br><span class="line"><span class="attr">Restart</span>=always</span><br><span class="line"><span class="attr">RestartSec</span>=<span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>导出的文件会持续增长，配合 logrotate 每天轮转（<code>copytruncate</code> 模式，不中断写入进程）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># monitoring/host-services/logrotate-journal-export</span><br><span class="line">/home/zombie/dockers/monitoring/data/journal-export/journal.log &#123;</span><br><span class="line">    daily</span><br><span class="line">    rotate 1</span><br><span class="line">    compress</span><br><span class="line">    missingok</span><br><span class="line">    notifempty</span><br><span class="line">    copytruncate</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Promtail 侧挂载并解析 JSON：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml promtail volumes 加上：</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">./data/journal-export:/var/log/journal-export:ro</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># promtail/config.yml 加上：</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">journal</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">localhost</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">job:</span> <span class="string">systemd</span></span><br><span class="line">        <span class="attr">__path__:</span> <span class="string">/var/log/journal-export/*.log</span></span><br><span class="line">  <span class="attr">pipeline_stages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">json:</span></span><br><span class="line">        <span class="attr">expressions:</span></span><br><span class="line">          <span class="attr">unit:</span> <span class="string">_SYSTEMD_UNIT</span></span><br><span class="line">          <span class="attr">priority:</span> <span class="string">PRIORITY</span></span><br><span class="line">          <span class="attr">message:</span> <span class="string">MESSAGE</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">unit:</span></span><br><span class="line">        <span class="attr">priority:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">output:</span></span><br><span class="line">        <span class="attr">source:</span> <span class="string">message</span></span><br></pre></td></tr></table></figure>
+<p><code>pipeline_stages</code> 从 journal JSON 中提取 <code>_SYSTEMD_UNIT</code> 和 <code>PRIORITY</code> 作为 Loki label，<code>MESSAGE</code> 作为日志正文。最终数据有三份存储：journal 自身（journald 管理，~4G 上限）、export 文件（logrotate 保留 1 天）、Loki（14 天 retention）。export 文件只是薄中转层，不会膨胀。</p>
+<h2 id="Grafana-使用">Grafana 使用</h2>
+<h3 id="Dashboard">Dashboard</h3>
+<p>Dashboard 分为几个部分，一个是根目录的全部的 Dashboard，另外是：</p>
+<ul>
+<li><strong>Playlists (播放列表)</strong>：用于在监控大屏或无人值守终端上自动循环切换显示多个指定的面板。</li>
+<li><strong>Snapshots (快照)</strong>：将当前面板的数据和状态保存为一份不可更改的静态副本，用于故障复盘或跨团队分享。</li>
+<li><strong>Library Panels (库面板)</strong>：创建可重复使用的标准组件，实现“一处修改，所有引用的面板同步更新”。</li>
+<li><strong>Shared Dashboards (共享面板)</strong>：通过链接、导出 JSON 或权限设置，将动态的监控视图协作给其他成员查看。</li>
+</ul>
+<img src="/2026/engineer/homelab-monitoring/dashboard.png" class="" title="dashboard">
+<p><strong>导入步骤</strong>：Dashboards → Import → 输入 ID → 选 VictoriaMetrics 数据源 → Import。</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>采集对象</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1860</code></td>
+<td>Node Exporter Full</td>
+<td>宿主机（node-exporter）</td>
+<td>CPU、内存、磁盘、网络，非常详细</td>
+</tr>
+<tr>
+<td><code>193</code></td>
+<td>Docker monitoring (cAdvisor)</td>
+<td>容器（cAdvisor）</td>
+<td>展示内容较少，不能分容器查看</td>
+</tr>
+<tr>
+<td><code>14282</code></td>
+<td>cAdvisor 备选</td>
+<td>容器（cAdvisor）</td>
+<td>展示较少，部分不可用需手动适配</td>
+</tr>
+<tr>
+<td><code>19792</code></td>
+<td>Docker Container &amp; Host Metrics</td>
+<td>容器（cAdvisor）</td>
+<td>使用新 <code>name</code> label，适配当前 cAdvisor</td>
+</tr>
+<tr>
+<td><code>12683</code></td>
+<td>VictoriaMetrics - vmagent</td>
+<td>采集链路（vmagent）</td>
+<td>scrape 成功率、远程写队列、丢弃 series</td>
+</tr>
+<tr>
+<td><code>20881</code></td>
+<td>Promtail Monitoring</td>
+<td>采集链路（Promtail）</td>
+<td>专为非 K8s 设计，活跃文件数、发送/读取/丢弃字节、请求延迟 p99</td>
+</tr>
+<tr>
+<td><code>17781</code></td>
+<td>Loki Metrics Dashboard</td>
+<td>采集链路（Loki）</td>
+<td>136 个指标在线，覆盖 distributor、ingester、store、API、缓存、查询性能</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关于社区面板的空面板问题</strong>：Grafana 社区面板大多为 Kubernetes 环境设计，Docker Compose 部署时部分面板会显示空。常见原因：</p>
+<ul>
+<li>K8s 专用 label 过滤（<code>namespace</code>、<code>pod</code>、<code>container</code>），Docker Compose 环境没有这些 label</li>
+<li>集群模式组件的指标（如 Loki 的 <code>cortex_*</code> 系列：consul、frontend、ring），单机模式不产生</li>
+<li>未启用的功能对应的指标（如 vmagent 的 <code>vm_streamaggr_*</code> 需要配置流聚合才会出现）</li>
+<li>特定硬件/内核才有的指标（如 Node Exporter 的 NUMA、NFS、InfiniBand）</li>
+</ul>
+<p>空面板不代表配置有误，是功能覆盖差异。选面板时优先选非 K8s 设计的版本（如 Promtail 用 20881 而非 15443），剩余空面板可以直接删除或隐藏。</p>
+<p><strong>1860 Node Exporter Full</strong> 展示宿主机指标非常详细：</p>
+<img src="/2026/engineer/homelab-monitoring/node_exporter_full.png" class="" title="node_exporter_full">
+<p><strong>193 Docker monitoring</strong> 展示比较正常，但是不能分 Docker 进行查看，网络也是按每个连接来算的，我的这里显示了大量 frpc 的连接。</p>
+<img src="/2026/engineer/homelab-monitoring/docker_monitoring.png" class="" title="docker_monitoring">
+<p><strong>14282 Cadvisor exporter</strong> 展示则是默认开了堆叠。</p>
+<p>此外，上面分 docker 的变量是 <code>label_values(&#123;__name__=~&quot;container.*&quot;, instance=~&quot;$host&quot;&#125;,name)</code>，选择之后是空的数据，改为 <code>label_values(container_last_seen&#123;name=~&quot;.+&quot;&#125;, name)</code> 即可。</p>
+<img src="/2026/engineer/homelab-monitoring/cadvisor_exporter.png" class="" title="cadvisor_exporter">
+<p><strong>19792 cadvisor dashboard</strong> 三个里面唯一一个好用的 cadvisor 面板，上面是全部的 docker 数据堆叠，下面则是每一个 docker 的指标；</p>
+<img src="/2026/engineer/homelab-monitoring/cadvisor_all.png" class="" title="cadvisor">
+<img src="/2026/engineer/homelab-monitoring/cadvisor_per_cocontainer.png" class="" title="grafana data">
+<h3 id="PromQL-查询">PromQL 查询</h3>
+<p>在 Grafana 左侧选 Explore，切换数据源为 VictoriaMetrics，进入 PromQL 查询界面。</p>
+<p>常用 PromQL：</p>
+<table>
+<thead>
+<tr>
+<th>查询</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>up</code></td>
+<td>所有 scrape target 的状态（1=正常，0=宕机）</td>
+</tr>
+<tr>
+<td><code>node_memory_MemAvailable_bytes</code></td>
+<td>可用内存字节数</td>
+</tr>
+<tr>
+<td><code>rate(node_cpu_seconds_total&#123;mode!=&quot;idle&quot;&#125;[5m])</code></td>
+<td>CPU 使用率（去掉 idle 模式）</td>
+</tr>
+<tr>
+<td><code>container_memory_usage_bytes&#123;name=~&quot;.+&quot;&#125;</code></td>
+<td>各容器内存使用</td>
+</tr>
+<tr>
+<td><code>sort_desc(container_memory_usage_bytes&#123;name=~&quot;.+&quot;&#125;)</code></td>
+<td>各容器内存使用（降序排列）</td>
+</tr>
+<tr>
+<td><code>rate(container_cpu_usage_seconds_total&#123;name=~&quot;.+&quot;&#125;[5m])</code></td>
+<td>各容器 CPU 使用率</td>
+</tr>
+</tbody>
+</table>
+<p>也能命令行查询，注意查询中的 <code>&#123;</code>、<code>&#125;</code>、<code>[</code>、<code>]</code> 需要 URL 编码（<code>%7B</code>、<code>%7D</code>、<code>%5B</code>、<code>%5D</code>）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 各容器内存使用（排序）</span></span><br><span class="line">sudo docker <span class="built_in">exec</span> vmagent wget -qO- \</span><br><span class="line">  <span class="string">&#x27;http://victoriametrics:8428/api/v1/query?query=sort_desc(container_memory_usage_bytes%7Bname%3D~%22.%2B%22%7D)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># scrape target 状态</span></span><br><span class="line">sudo docker <span class="built_in">exec</span> vmagent wget -qO- \</span><br><span class="line">  <span class="string">&#x27;http://victoriametrics:8428/api/v1/query?query=up&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看 Loki 所有可用标签</span></span><br><span class="line">sudo docker <span class="built_in">exec</span> grafana wget -qO- <span class="string">&#x27;http://loki:3100/loki/api/v1/labels&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Explore：LogQL-查询与日志下钻">Explore：LogQL 查询与日志下钻</h3>
+<p>切换 Explore 数据源为 Loki，进入 LogQL 查询界面。</p>
+<p>LogQL 语法基础：</p>
+<ul>
+<li><code>&#123;label=&quot;value&quot;&#125;</code> — 标签精确匹配，<strong>必须先用标签筛选，再加文本过滤</strong></li>
+<li><code>&#123;label=~&quot;regex&quot;&#125;</code> — 标签正则匹配</li>
+<li><code>&#123;...&#125; |= &quot;text&quot;</code> — 精确包含某字符串</li>
+<li><code>&#123;...&#125; |~ &quot;regex&quot;</code> — 正则匹配日志内容</li>
+</ul>
+<p>常用 LogQL：</p>
+<table>
+<thead>
+<tr>
+<th>查询</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&#123;compose_service=~&quot;.+&quot;&#125;</code></td>
+<td>查看所有容器日志</td>
+</tr>
+<tr>
+<td><code>&#123;compose_service=&quot;frpc&quot;&#125;</code></td>
+<td>查看某个服务的日志</td>
+</tr>
+<tr>
+<td><code>&#123;compose_service=~&quot;.+&quot;&#125; |= &quot;error&quot;</code></td>
+<td>搜索包含 error 的日志</td>
+</tr>
+<tr>
+<td><code>&#123;compose_service=&quot;grafana&quot;&#125; |= &quot;datasource&quot;</code></td>
+<td>搜索某服务的特定关键词</td>
+</tr>
+<tr>
+<td><code>&#123;compose_project=&quot;monitoring&quot;&#125;</code></td>
+<td>查看某个 compose 项目的所有日志</td>
+</tr>
+<tr>
+<td><code>&#123;compose_service=~&quot;.+&quot;&#125; |~ &quot;(?i)warn|error|fail&quot;</code></td>
+<td>正则搜索多个关键词（不区分大小写）</td>
+</tr>
+<tr>
+<td><code>&#123;job=&quot;dst&quot;, filename=&quot;dst-master&quot;&#125;</code></td>
+<td>DST master 进程日志</td>
+</tr>
+<tr>
+<td><code>&#123;job=&quot;dst&quot;, filename=~&quot;.*error.*&quot;&#125;</code></td>
+<td>DST 所有错误日志</td>
+</tr>
+</tbody>
+</table>
+<img src="/2026/engineer/homelab-monitoring/logs.png" class="" title="LogQL">
+<p>Drilldown &gt; Grafana Logs Drilldown 也可以查看，更加方便：</p>
+<img src="/2026/engineer/homelab-monitoring/drilldown_log.png" class="" title="drilldown_log">
+<h2 id="告警系统">告警系统</h2>
+<h3 id="方案选型">方案选型</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Grafana Unified Alerting</th>
+<th>Prometheus Alertmanager</th>
+<th>vmalert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>额外容器</td>
+<td><strong>不需要</strong></td>
+<td>需要单独跑 alertmanager</td>
+<td>需要单独跑 vmalert</td>
+</tr>
+<tr>
+<td>跨数据源</td>
+<td>VictoriaMetrics + Loki 都能告警</td>
+<td>只能查 metrics</td>
+<td>只能查 VM metrics</td>
+</tr>
+<tr>
+<td>UI</td>
+<td>告警状态、历史、静默全在 Grafana</td>
+<td>独立 UI</td>
+<td>独立 UI</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>单机小规模</td>
+<td>多集群、复杂路由树</td>
+<td>VM 集群、高可用</td>
+</tr>
+</tbody>
+</table>
+<p>选 Grafana Unified Alerting，不额外部署 Alertmanager 或 vmalert。</p>
+<h3 id="告警规则">告警规则</h3>
+<p>基础告警规则（日志管道健康）：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>表达式</th>
+<th>触发条件</th>
+<th>noDataState</th>
+<th>严重程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Log pipeline service down</td>
+<td><code>min(up&#123;job=~&quot;promtail|loki&quot;&#125;) &lt; 1</code></td>
+<td>任一服务宕机超过 2 分钟</td>
+<td>Alerting</td>
+<td>critical</td>
+</tr>
+<tr>
+<td>Promtail dropping log entries</td>
+<td><code>sum(rate(promtail_dropped_entries_total[5m])) &gt; 0</code></td>
+<td>持续 5 分钟有日志被丢弃</td>
+<td>OK</td>
+<td>warning</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>noDataState</code> 的坑</strong>：两条规则的 <code>noDataState</code> 设置不同，原因很重要：</p>
+<ul>
+<li><strong>“Log pipeline service down”</strong> 用 <code>noDataState: Alerting</code>——没有 <code>up</code> 指标说明采集本身也坏了，应该告警。</li>
+<li><strong>“Promtail dropping entries”</strong> 用 <code>noDataState: OK</code>——没有 dropped 指标说明根本没在丢，不该告警。</li>
+</ul>
+<p>最初两条都用了 <code>Alerting</code>，导致服务正常时 <code>sum(rate(promtail_dropped_entries_total[5m])) &gt; 0</code> 返回空（没有 dropped 事件），触发 NoData → Alerting，产生大量误报。</p>
+<h3 id="容器生命周期告警">容器生命周期告警</h3>
+<p>上面两条规则只覆盖了日志管道的健康，但更常见的场景是：某个容器挂了，没人知道。需要覆盖三种情况：容器宕机（停止/被杀）、容器异常重启、容器 healthcheck 变为 unhealthy。</p>
+<h4 id="为什么不用端点探测">为什么不用端点探测</h4>
+<p>业界最常见的做法是不监控容器状态本身，而是用 Uptime Kuma 或 HTTP probe 探测服务端点（比如 <code>grafana:3000/api/health</code> 是否返回 200）。配合 Docker 的 <code>restart: unless-stopped</code>，容器崩了自动重启，探针甚至感知不到。</p>
+<p>但这个方案不适合我的场景：大量容器里很多服务没有 HTTP 端点（clash 代理、frpc 隧道、tetragon eBPF、redis、mysql 等），给每个服务配一个 TCP/HTTP 探针比容器层面的方案更麻烦。而且端点探测感知不到短暂重启和 OOM 等底层原因。</p>
+<h4 id="方案调研">方案调研</h4>
+<p>检测容器状态变化的方式大致分为以下几类：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>数据源</th>
+<th>宕机</th>
+<th>重启</th>
+<th>unhealthy</th>
+<th>排除临时容器</th>
+<th>宿主机侵入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cAdvisor PromQL</td>
+<td>已有 cAdvisor 指标</td>
+<td>✗ 指标消失无法检测</td>
+<td>✓ <code>changes(start_time)</code></td>
+<td>✓ <code>health_state==0</code></td>
+<td>compose label 过滤</td>
+<td>无</td>
+</tr>
+<tr>
+<td>docker events → Loki</td>
+<td><code>docker events</code> 事件流</td>
+<td>✓ <code>die</code> 事件</td>
+<td>✓ <code>start</code> 事件</td>
+<td>✓ <code>health_status</code> 事件</td>
+<td>需 LogQL 过滤</td>
+<td>需 systemd service</td>
+</tr>
+<tr>
+<td>docker-state-exporter</td>
+<td>第三方 exporter</td>
+<td>✓ 上报已停止容器</td>
+<td>✓ <code>restart_count</code></td>
+<td>✓</td>
+<td>无 restart_policy label</td>
+<td>无(纯容器)</td>
+</tr>
+<tr>
+<td>Docker daemon metrics</td>
+<td><code>/etc/docker/daemon.json</code></td>
+<td>✗ 只有聚合计数</td>
+<td>✗</td>
+<td>✗</td>
+<td>N/A</td>
+<td>需改 daemon 配置并重启</td>
+</tr>
+<tr>
+<td>dockerd journal 日志</td>
+<td>已有 journal 采集</td>
+<td>部分(只有 container ID, 无容器名)</td>
+<td>部分</td>
+<td>✗</td>
+<td>需文本匹配</td>
+<td>无</td>
+</tr>
+<tr>
+<td>日环比(cAdvisor)</td>
+<td>已有指标的时间偏移</td>
+<td>✓ 但 24h 生效</td>
+<td>✗</td>
+<td>✗</td>
+<td>天然排除</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Uptime Kuma</td>
+<td>独立监控系统</td>
+<td>✓</td>
+<td>✗</td>
+<td>✓ HTTP 探针</td>
+<td>手动配</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>几个关键发现：</p>
+<ol>
+<li><strong>cAdvisor 的盲区</strong>：cAdvisor 只上报运行中容器的指标，容器停了指标直接消失。无法用 PromQL 可靠表达&quot;某个容器不在了&quot;，因为 <code>absent()</code> 需要预知容器名。</li>
+<li><strong>cAdvisor v0.55.1 已有 <code>container_health_state</code></strong>：实测确认值为 <code>-1</code>（无 healthcheck）、<code>0</code>（unhealthy）、<code>1</code>（healthy）。不需要额外 exporter 检测 unhealthy。</li>
+<li><strong>dockerd journal 不够用</strong>：虽然已经在采集，但容器生命周期日志只有 container ID hash，没有容器名，不适合做告警主数据源。</li>
+<li><strong>docker-state-exporter 成熟度不足</strong>：~150 stars，2023 年后停更。</li>
+</ol>
+<h4 id="排除临时容器-compose-working-dir-过滤">排除临时容器: compose working_dir 过滤</h4>
+<p>常见的过滤思路（自定义 Docker label、restart_policy、compose_project）都有问题：要么需要侵入性地修改所有 compose 文件加标签，要么无法区分长驻服务和临时 benchmark（两者都有 restart policy 和 compose_project label）。</p>
+<p>实际检查所有运行中容器的 <code>com.docker.compose.project.working_dir</code> label 后发现了一个天然的区分条件：</p>
+<ul>
+<li>临时 <code>docker run --rm</code> 容器：没有任何 compose label，天然排除</li>
+<li>benchmark compose 容器：working_dir 为 <code>/home/zombie/works/tsdb_bench</code>，按路径排除</li>
+<li>长驻服务：所有其他 compose 容器</li>
+</ul>
+<p>cAdvisor 配了 <code>--store_container_labels=true</code>，这些 Docker label 直接作为 metric label 出现在 VictoriaMetrics 里。PromQL 过滤条件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  container_label_com_docker_compose_project_working_dir!=&quot;&quot;,</span><br><span class="line">  container_label_com_docker_compose_project_working_dir!~&quot;.*tsdb_bench.*&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>零 label 侵入，零宿主机改动，新增长驻服务自动纳入监控。</p>
+<h4 id="最终方案-cAdvisor-docker-events-混合">最终方案: cAdvisor + docker events 混合</h4>
+<p>取长补短：cAdvisor 覆盖重启和 unhealthy（已部署，零新增），docker events 覆盖宕机（cAdvisor 的盲区）。</p>
+<p><strong>告警规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>数据源</th>
+<th>表达式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>容器异常重启</td>
+<td>cAdvisor → VM</td>
+<td><code>changes(container_start_time_seconds&#123;...working_dir!=&quot;&quot;, ...working_dir!~&quot;.*tsdb_bench.*&quot;&#125;[30s]) &gt; 0</code></td>
+</tr>
+<tr>
+<td>容器 unhealthy</td>
+<td>cAdvisor → VM</td>
+<td><code>container_health_state&#123;...working_dir 同上&#125; == 0</code></td>
+</tr>
+<tr>
+<td>容器宕机</td>
+<td>docker events → Loki</td>
+<td><code>sum by (actor_name) (count_over_time(&#123;job=&quot;docker-events&quot;,action=&quot;die&quot;&#125;[1m]))</code></td>
+</tr>
+<tr>
+<td>容器 OOM 被杀</td>
+<td>docker events → Loki</td>
+<td><code>sum by (actor_name) (count_over_time(&#123;job=&quot;docker-events&quot;,action=&quot;oom&quot;&#125;[1m]))</code></td>
+</tr>
+</tbody>
+</table>
+<p>注意 docker events 的告警用 <code>action=&quot;die&quot;</code> label 精确过滤，而不是 <code>|= &quot;die&quot;</code> 文本匹配。后者会误匹配 <code>exec_die</code>（exec 命令正常结束），导致大量误报。<code>sum by (actor_name)</code> 按容器名分组，告警消息里直接显示哪个容器出了问题。</p>
+<p><strong>单点静默</strong>：每条告警的 firing instance 都带 <code>name</code> label（容器名），在 Grafana Alerting 的 Silence 功能里按 <code>name=&quot;xxx&quot;</code> 创建静默即可，不影响其他容器。</p>
+<h4 id="docker-events-采集">docker events 采集</h4>
+<p>cAdvisor 覆盖了重启和 unhealthy，但容器宕机是它的盲区（指标随容器消失）。用 <code>docker events</code> 补上这块：和 journal-export 同样的模式，宿主机 systemd service 导出事件流为 JSON 文件，Promtail 采集。</p>
+<p>配置文件放在 git 仓库内（<code>monitoring/host-services/</code>），通过 symlink 安装到系统目录，不需要手动复制：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># monitoring/host-services/docker-events.service</span></span><br><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Docker events exporter</span><br><span class="line"><span class="attr">After</span>=docker.service</span><br><span class="line"><span class="attr">Requires</span>=docker.service</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/bin/docker events --format <span class="string">&#x27;&#123;&#123;json .&#125;&#125;&#x27;</span></span><br><span class="line"><span class="attr">StandardOutput</span>=append:/home/zombie/dockers/monitoring/data/docker-events/events.log</span><br><span class="line"><span class="attr">Restart</span>=always</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># monitoring/host-services/logrotate-docker-events</span></span><br><span class="line">/home/zombie/dockers/monitoring/data/docker-events/events.log &#123;</span><br><span class="line">    daily</span><br><span class="line">    rotate 3</span><br><span class="line">    copytruncate</span><br><span class="line">    missingok</span><br><span class="line">    notifempty</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">ln</span> -sf $(<span class="built_in">pwd</span>)/monitoring/host-services/docker-events.service /etc/systemd/system/</span><br><span class="line">sudo <span class="built_in">ln</span> -sf $(<span class="built_in">pwd</span>)/monitoring/host-services/logrotate-docker-events /etc/logrotate.d/docker-events</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> --now docker-events.service</span><br></pre></td></tr></table></figure>
+<p>事件输出到 <code>monitoring/data/docker-events/events.log</code>，Promtail 通过 volume 挂载读取。symlink 的好处是配置文件始终由 git 管理，修改后 <code>systemctl daemon-reload</code> 即可生效。</p>
+<p>Promtail 配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">docker-events</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">localhost</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">job:</span> <span class="string">docker-events</span></span><br><span class="line">        <span class="attr">__path__:</span> <span class="string">/var/log/docker-events/events.log</span></span><br><span class="line">  <span class="attr">pipeline_stages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">json:</span></span><br><span class="line">        <span class="attr">expressions:</span></span><br><span class="line">          <span class="attr">action:</span> <span class="string">Action</span></span><br><span class="line">          <span class="attr">actor_name:</span> <span class="string">Actor.Attributes.name</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">action:</span></span><br><span class="line">        <span class="attr">actor_name:</span></span><br></pre></td></tr></table></figure>
+<p><code>docker events</code> 的 JSON 输出包含 <code>Action</code>（die/start/stop/health_status 等）、<code>Actor.Attributes.name</code>（容器名）、<code>Actor.Attributes.image</code>（镜像）等字段，Promtail 提取为 label 后可以在 Grafana 中按容器名精确查询和告警。</p>
+<h3 id="Telegram-通知">Telegram 通知</h3>
+<p>通知渠道：Telegram bot，<code>group_wait: 10s</code>、<code>group_interval: 30s</code>、<code>repeat_interval: 4h</code>。</p>
+<p><code>group_wait</code> 是首次告警等待聚合的时间，设短一些保证及时收到。<code>group_interval</code> 控制同组告警后续更新的间隔。这两个值直接决定了从容器挂掉到收到 Telegram 消息的延迟，实测从容器 die 到收到通知约 15~20 秒。</p>
+<p>Grafana 容器通过 <code>HTTP_PROXY</code> 环境变量访问 Telegram API。注意代理的延迟需要低于 Grafana 通知的默认超时（5s），否则会 TLS handshake timeout。</p>
+<h2 id="应用层打点">应用层打点</h2>
+<p>上面讨论的都是被动采集——node_exporter 从内核接口读宿主机状态，cAdvisor 从 cgroup 读容器资源。这些都是系统视角，看不到业务视角：这个请求处理了多久？队列里积压了多少任务？某个 API 的错误率是多少？要回答这些问题，需要在代码里主动埋点。</p>
+<h3 id="Metric-类型">Metric 类型</h3>
+<p>Prometheus 生态有三种基本 metric 类型，覆盖绝大多数场景：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特征</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Counter</strong></td>
+<td>只增不减，重启归零</td>
+<td>请求总数、错误总数、处理字节数</td>
+</tr>
+<tr>
+<td><strong>Gauge</strong></td>
+<td>可增可减的瞬时值</td>
+<td>队列深度、活跃连接数、内存用量</td>
+</tr>
+<tr>
+<td><strong>Histogram</strong></td>
+<td>将数值按 bucket 分桶，自动计算 p50/p95/p99</td>
+<td>请求延迟、响应体大小</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Pull-模式：服务暴露-metrics-端点">Pull 模式：服务暴露 /metrics 端点</h3>
+<p>推荐方式。服务启动一个 HTTP server，暴露 <code>/metrics</code>，vmagent 定时 scrape。以 Python 为例（<code>prometheus_client</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> prometheus_client <span class="keyword">import</span> Counter, Histogram, Gauge, start_http_server</span><br><span class="line"></span><br><span class="line"><span class="comment"># Counter：只增不减</span></span><br><span class="line">requests_total = Counter(</span><br><span class="line">    <span class="string">&#x27;myapp_requests_total&#x27;</span>, <span class="string">&#x27;Total requests&#x27;</span>,</span><br><span class="line">    [<span class="string">&#x27;method&#x27;</span>, <span class="string">&#x27;endpoint&#x27;</span>, <span class="string">&#x27;status&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Histogram：自动计算分位数</span></span><br><span class="line">request_duration = Histogram(</span><br><span class="line">    <span class="string">&#x27;myapp_request_duration_seconds&#x27;</span>, <span class="string">&#x27;Request latency&#x27;</span>,</span><br><span class="line">    buckets=[<span class="number">.005</span>, <span class="number">.01</span>, <span class="number">.025</span>, <span class="number">.05</span>, <span class="number">.1</span>, <span class="number">.25</span>, <span class="number">.5</span>, <span class="number">1</span>, <span class="number">2.5</span>, <span class="number">5</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Gauge：瞬时值</span></span><br><span class="line">queue_depth = Gauge(<span class="string">&#x27;myapp_queue_depth&#x27;</span>, <span class="string">&#x27;Tasks waiting in queue&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测</span></span><br><span class="line">requests_total.labels(method=<span class="string">&#x27;GET&#x27;</span>, endpoint=<span class="string">&#x27;/api&#x27;</span>, status=<span class="string">&#x27;200&#x27;</span>).inc()</span><br><span class="line"><span class="keyword">with</span> request_duration.time():</span><br><span class="line">    process_request()</span><br><span class="line">queue_depth.<span class="built_in">set</span>(<span class="built_in">len</span>(task_queue))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露 /metrics</span></span><br><span class="line">start_http_server(<span class="number">9527</span>)</span><br></pre></td></tr></table></figure>
+<p>接入 vmagent 只需在 <code>scrape.yml</code> 加一条：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">myapp</span></span><br><span class="line">  <span class="attr">static_configs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;myapp-host:9527&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>之后在 Grafana 中就可以用 PromQL 查询自定义指标：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rate(myapp_requests_total&#123;status=&quot;500&quot;&#125;[5m])           # 每秒 500 错误数</span><br><span class="line">histogram_quantile(0.99, rate(myapp_request_duration_seconds_bucket[5m]))  # p99 延迟</span><br><span class="line">myapp_queue_depth                                       # 当前队列深度</span><br></pre></td></tr></table></figure>
+<h3 id="Push-模式：短命进程主动上报">Push 模式：短命进程主动上报</h3>
+<p>短命进程（定时任务、一次性脚本）在完成前就退出了，vmagent 来不及 scrape。这种场景用 VictoriaMetrics 的 import API 直接推送，不需要额外部署 Pushgateway：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, time</span><br><span class="line"></span><br><span class="line">metrics = [</span><br><span class="line">    <span class="string">f&#x27;batch_duration_seconds&#123;&#123;job=&quot;nightly_sync&quot;&#125;&#125; <span class="subst">&#123;elapsed&#125;</span>&#x27;</span>,</span><br><span class="line">    <span class="string">f&#x27;batch_records_total&#123;&#123;job=&quot;nightly_sync&quot;&#125;&#125; <span class="subst">&#123;record_count&#125;</span>&#x27;</span>,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">requests.post(</span><br><span class="line">    <span class="string">&#x27;http://victoriametrics:8428/api/v1/import/prometheus&#x27;</span>,</span><br><span class="line">    data=<span class="string">&#x27;\n&#x27;</span>.join(metrics),</span><br><span class="line">    headers=&#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/plain&#x27;</span>&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>VictoriaMetrics 原生支持 Prometheus text 格式的 import，写入后即可在 Grafana 面板（range query）中查到。不需要 Pushgateway 中转，也不需要额外端口。</p>
+<p>注意：Push 的数据只有孤立的几个点（没有后续持续上报），PromQL 的 instant query 会在 5 分钟 lookback 窗口后认为数据&quot;过期&quot;而不返回。这不影响 Grafana 面板展示（面板用的是 range query），但在 Explore 里用 instant query 时需要注意时间范围。</p>
+<h2 id="总结与展望">总结与展望</h2>
+<h3 id="当前成果">当前成果</h3>
+<p>从零搭建了一套完整的可观测性栈，覆盖了 Metrics 和 Logs 两个信号：</p>
+<ul>
+<li><strong>指标管道</strong>：node_exporter + cAdvisor → vmagent → VictoriaMetrics → Grafana，15 秒采集间隔，宿主机和全部容器的 CPU、内存、磁盘、网络指标全部可查可回溯。</li>
+<li><strong>日志管道</strong>：Docker json-file → Promtail → Loki → Grafana，所有容器日志自动采集，按 compose_service 标签精确检索。额外采集 systemd journal、Tetragon eBPF execve 事件、Docker lifecycle 事件。</li>
+<li><strong>告警</strong>：Grafana Unified Alerting + Telegram 通知，6 条规则覆盖日志管道健康、容器宕机、重启、unhealthy、OOM。告警规则全部通过 provisioning YAML 管理，不依赖 Grafana DB。</li>
+<li><strong>安全</strong>：全容器 <code>cap_drop: ALL</code> + 最小权限 <code>cap_add</code>，<code>no-new-privileges: true</code>。</li>
+</ul>
+<h4 id="容器与服务清单">容器与服务清单</h4>
+<p>监控栈共 8 个容器 + 2 个宿主机 systemd 服务：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>类型</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node_exporter</td>
+<td>容器</td>
+<td>宿主机指标采集</td>
+</tr>
+<tr>
+<td>cAdvisor</td>
+<td>容器</td>
+<td>容器指标采集、health_state</td>
+</tr>
+<tr>
+<td>vmagent</td>
+<td>容器</td>
+<td>指标转发（scrape → remote_write）</td>
+</tr>
+<tr>
+<td>VictoriaMetrics</td>
+<td>容器</td>
+<td>指标存储与查询</td>
+</tr>
+<tr>
+<td>Promtail</td>
+<td>容器</td>
+<td>日志采集（Docker 日志、journal、tetragon、docker-events）</td>
+</tr>
+<tr>
+<td>Loki</td>
+<td>容器</td>
+<td>日志存储与查询</td>
+</tr>
+<tr>
+<td>Grafana</td>
+<td>容器</td>
+<td>可视化、告警引擎、Telegram 通知</td>
+</tr>
+<tr>
+<td>Tetragon</td>
+<td>容器</td>
+<td>eBPF execve 审计</td>
+</tr>
+<tr>
+<td>journal-export</td>
+<td><strong>宿主机 systemd</strong></td>
+<td>导出 systemd journal 为 JSON 文件</td>
+</tr>
+<tr>
+<td>docker-events</td>
+<td><strong>宿主机 systemd</strong></td>
+<td>导出 Docker 生命周期事件为 JSON 文件</td>
+</tr>
+</tbody>
+</table>
+<p>对宿主机的改动全部可通过 git 管理和追溯，全部放在 docker 配置的 git 仓库下，通过 symlink 链接到实际使用的位置。</p>
+<h3 id="后续计划">后续计划</h3>
+<p><strong>Promtail → Alloy 迁移</strong>：Promtail 已于 2025/02 宣布废弃，2026/03 EOL。继任者 <a target="_blank" rel="noopener" href="https://github.com/grafana/alloy">Grafana Alloy</a>（3100+ stars，v1.16.0，周更节奏）可以同时替代 Promtail 和 vmagent，单进程处理日志采集和指标转发。官方 Docker 镜像内置了 libsystemd，不再需要 journal-export 这种 workaround。缺点是内存占用较高（300Mi~1GiB vs Promtail 的 ~150Mi），有公开 issue 跟踪。当前不急于迁移，等内存问题改善后考虑，届时可以减少 2 个容器（Promtail + vmagent）和 1 个宿主机服务（journal-export）。</p>
+<p><strong>docker-state-exporter</strong>：当前容器宕机检测依赖 docker events + 宿主机 systemd 服务，是整个栈里唯一不能纯容器化的部分。<a target="_blank" rel="noopener" href="https://github.com/karugaru/docker_state_exporter">docker_state_exporter</a> 可以用纯容器方式暴露容器运行状态（包括已停止的容器），消除这个宿主机依赖。但项目成熟度一般（~150 stars，2023 年后低活跃）。本质上只是一个调用 Docker API 的小程序，后续可以考虑自己写一个，同时暴露 container state、health status、restart count，彻底去掉 docker-events systemd 服务。</p>
+<p><strong>应用层监控接入</strong>：当前监控覆盖了基础设施层（容器指标、日志、生命周期告警），下一步是接入应用层。计划中的几个方向：</p>
+<ul>
+<li><strong>Orth 任务调度监控</strong>：Orth（xxl-job 魔改版）是自研的分布式任务调度框架，用于交易数据的离线批量拉取。Grafana 通过 MySQL datasource 直接查询 <code>orth_job_log</code> 表，可以构建任务成功率、执行耗时、失败趋势等面板，和容器资源指标关联分析（比如任务失败时 CPU 是否打满）。Orth 自身的 admin UI 负责业务操作（触发、重试、日志查看），Grafana 负责运维视角的趋势监控和告警。</li>
+<li><strong>MySQL 监控</strong>：mysqld_exporter 读取 <code>performance_schema</code>、<code>information_schema</code> 和 <code>SHOW GLOBAL STATUS</code>，暴露连接数、QPS、慢查询、缓冲池命中率等指标。对 MySQL 零侵入，只需创建一个只读监控用户。</li>
+<li><strong>交易数据存储监控</strong>：交易数据的存储和分析库正在选型评测中，确定后同样接入 Grafana 做查询性能和存储健康监控。</li>
+</ul>
+<p><strong>自定义业务面板</strong>：导入的社区仪表盘覆盖了通用指标，但看不到业务视角。后续计划搭建交易系统专属面板：K 线叠加买卖点、持仓盈亏曲线、策略信号触发频率。其他有趣的方向：qBittorrent 的下载速度和做种比、Clash 的流量分布、DST 服务器的在线玩家数。</p>
+<p><strong>关于 AI 接入</strong>：VictoriaMetrics 和 Loki 都提供 HTTP API，技术上完全可以让 AI agent 通过 PromQL/LogQL 查询指标和日志，辅助故障排查。已经尝试使用 SKILL 接入，但是目前尚未观测到实际收益，反倒是本次排查过程中，讲深入排查的思路做成了一个 <a target="_blank" rel="noopener" href="https://github.com/zombie12138/no-magic-skill/">NO-MAGIC-SKILL</a> 非常好用。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io">zombie12138</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io/2026/engineer/homelab-monitoring/">https://zombie12138.github.io/2026/engineer/homelab-monitoring/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明来源 <a href="https://zombie12138.github.io" target="_blank">zombie's</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Note/">Note</a><a class="post-meta__tags" href="/tags/Project-HomeLab/">Project/HomeLab</a><a class="post-meta__tags" href="/tags/Survey/">Survey</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a><a class="post-meta__tags" href="/tags/Grafana/">Grafana</a><a class="post-meta__tags" href="/tags/Loki/">Loki</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/collections/Chinese-punctuation/" title="博客使用中文标点啦!"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">博客使用中文标点啦!</div></div><div class="info-2"><div class="info-item-1">短讯：博客从此文章以后，开始使用中文标点啦！  为什么使用英文标点 从最初写代码时，我便开始纠结标点问题，尤其是在格式控制上。比如我写的 Markdown 一直是遵循 markdownlint-cli2。在写作过程中，我开始注意到一些细节，比如中文与英文之间需要有空格，英文标点后、括号前后需要加空格等。随着使用的深入，我逐渐发现英文标点在某些方面更为高效，具体包括以下几点：  使用英文标点可以更好地进行光标控制。通过按住 CTRL + ←、→、DEL、BACKSPACE，能够跳过整个句子或删除半句，直到遇到中英文标点或标点旁边的空格。其实这一点可以通过安装插件 cjk-word-handler 插件解决，但是这个插件存在 Bug：英文和空格视为同一个单词，这个和 vscode 原生视为两个单词有不同。 一直使用英文标点可以避免切换中英文标点。即使在写作中需要插入方括号、括号、反引号等符号，切换标点符号时也不需要来回切换中英文标点。 还有一点必须承认，尽管使用英文标点很多地方不方便，比如需要手动插入空格；尽管英文标点插入中文中太过于瘦小很难看；尽管不符合写作规范，但是我追求的就是这...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/database/install-TDengine/" title="「Abyss」安装 TDengine"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-04</div><div class="info-item-2">「Abyss」安装 TDengine</div></div><div class="info-2"><div class="info-item-1">最近想要做点量化交易的回测分析什么的, 首先第一就是数据库的选择, 最终选择了 TDengine.  环境: rk3399 2 Cortex-A72 + 4 Cortex-A53; 2 GB RAM Clickhouse 从 pull 到 give up 官方网站 提供了几种安装方式, Linux 包, 源码编译, Docker. 本着能 Docker 就 Docker 的想法, 最终选择了 Docker 来配置. Dockerhub 查看说明, 提示:  The arm64 image requires support for the ARMv8.2-A architecture⁠ and additionally the Load-Acquire RCpc register. The register is optional in version ARMv8.2-A and mandatory in ARMv8.3-A⁠. Supported in Graviton &gt;=2, Azure and GCP instances. Examples for unsupport...</div></div></div></a><a class="pagination-related" href="/2024/networking/vsftpd/" title="VSFTPD 配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-23</div><div class="info-item-2">VSFTPD 配置</div></div><div class="info-2"><div class="info-item-1">最近空闲了一点点, 收拾这些电子小玩具. 之前一个玩客云上面跑了个 vsftpd, 现在 vsftpd 要放到搭载 rk3399 的 king3399 上跑  docker 上的 vsftpd 首先就是配置一下 vsftpd, 发现 Dockerhub 上已经有 这个的docker 了. 之前是两个 ftp 用户, 但是这个 docker 每次只有环境变量配置的一个用户, 尽管可以手动添加用户, 但是这个重启就消失了, 并且设置不同目录的话还要修改配置文件, 可能还要映射配置文件. 所以要起两个 docker. 但是这个没法使用 tls, 所以还是找了一个 fork的版本 来用. 但是这个没法修改服务使用的 UID 和 GID, 干脆手动改一下 Dockerfile. 修改有三个原因, 首先就是这个 Docker 运行时候的 UID 和 GID 需要运行前设置; 其次就是不喜欢这个 Docker Centos; 最后就是发现 Dockerfile 最后是发现一些操作不符合我的使用习惯. 需要 Docker 吗 修改了半天, 发现很多配置都需要修改. 所以想要详细的配置, Dock...</div></div></div></a><a class="pagination-related" href="/2024/networking/ddns/" title="使用 DDNS | ddclient"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-23</div><div class="info-item-2">使用 DDNS | ddclient</div></div><div class="info-2"><div class="info-item-1">家里面的宽带竟然是有公网 IP 的, 想要利用这个公网 IP, 于是家里放了一个玩客云的盒子 (ARMv7), 现在来给这个 IP 加一个 DDNS, 方便以后跑 frp 和 wireguard  dynv6 首先没有 DNS, 选择了一个免费的 ddns 网站 dynv6, 注册之后直接添加 zone, 然后填入自己当前的 IP 试试, 得到 zombie12138.dns.army 这样的域名 build 就是使用 ddclient, 定期汇报自己的 IP 机器本身是 32bit arm, 并且本身也没有 release 的二进制, clone 代码然后编译 1234567891011wget https://github.com/ddclient/ddclient/archive/refs/tags/v3.11.2.zipunzip v3.11.2.zipcd ddclient-3.11.2./autogen./configure \    --prefix=/usr \    --sysconfdir=/etc/ddclient \    --localstatedir=...</div></div></div></a><a class="pagination-related no-desc" href="/2025/networking/proxy-in-docker/" title="Docker 中的 Proxy"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-29</div><div class="info-item-2">Docker 中的 Proxy</div></div></div></a><a class="pagination-related" href="/2024/networking/frpc-in-docker/" title="docker 中跑 frpc"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-24</div><div class="info-item-2">docker 中跑 frpc</div></div><div class="info-2"><div class="info-item-1">docker 里面跑下 frpc. 现在越来越水了, 之前这些东西也会自己记录, 但是没有这样搞到博客里面, 现在把 blog 当成记事本了. 后面把这些 tag 设置一个标签, 设置 blog 显示这些时候要更小一点, 或者藏到某些地方…  配置 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647user = &quot;3399&quot;serverAddr = &quot;xxx.dns.army&quot;serverPort = 7000log.to = &quot;/var/log/frp/frpc.log&quot;log.level = &quot;info&quot;log.maxDays = 3auth.method = &quot;token&quot;auth.token = &quot;xxxxx&quot;webServer.addr = &quot;0.0.0.0&quot;webServer.port = 3392webServ...</div></div></div></a><a class="pagination-related" href="/2024/kernelos/docker-file-size/" title="Docker 文件瘦身 | 迁移"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-30</div><div class="info-item-2">Docker 文件瘦身 | 迁移</div></div><div class="info-2"><div class="info-item-1">一直用一个 King3399 的机器, 15 GB 存储, 1 GB 的内存, 拿来做种 / 一些服务 / ftp / samba等, 但是这几天突然连不上了, 发现竟然是存储满了.  问题 最开始的症状是链接的时候显示网络名不可用:  以往的解决方式是直接重启就好了, 今天想探究一下原因, 服务是 Docker 里面的, 查看一下 Docker 的日志, 还蛮健康  看日志:  似乎是 disk 满了  排查 看一下空间使用  查看 /var 的空间, 初步判断问题是由 Docker 引起的:  进一步查看 /var/lib/docker/, 发现 overlay2 和某个 container 都很大:  这是我写的一个 telegram 的机器人, 出问题的时候会直接 print 堆栈, 但是后来它的代理挂了, 我也没有处理就一直打印网络错误的日志:  就是这个机器人再用:  此外 docker system df (-v) 也可以查看 docker 容器和镜像占据的空间 (-v 是 verbose):  但是 docker system df 命令主要关注 Docker 资...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">zombie12138</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">96</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7%E5%9B%9B%E7%A7%8D%E4%BF%A1%E5%8F%B7"><span class="toc-number">2.</span> <span class="toc-text">可观测性四种信号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">技术选型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E6%A0%88%E7%94%B1%E5%93%AA%E4%BA%9B%E8%A7%92%E8%89%B2%E7%BB%84%E6%88%90"><span class="toc-number">3.1.</span> <span class="toc-text">监控栈由哪些角色组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E6%A0%87%E9%87%87%E9%9B%86%E5%B1%82%EF%BC%9Anode-exporter-%E5%92%8C-cAdvisor"><span class="toc-number">3.2.</span> <span class="toc-text">指标采集层：node_exporter 和 cAdvisor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E4%B8%8E%E6%9F%A5%E8%AF%A2%E5%B1%82%EF%BC%9APull-vs-Push-%E6%97%B6%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E9%80%89%E5%9E%8B"><span class="toc-number">3.3.</span> <span class="toc-text">存储与查询层：Pull vs Push &amp; 时序数据库选型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VictoriaMetrics-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="toc-number">3.3.1.</span> <span class="toc-text">VictoriaMetrics 存储原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E6%A0%87%E9%87%87%E9%9B%86%E4%BB%A3%E7%90%86%E4%B8%8E%E8%83%B6%E6%B0%B4%E5%B1%82%EF%BC%9Avmagent"><span class="toc-number">3.4.</span> <span class="toc-text">指标采集代理与胶水层：vmagent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E4%B8%8E%E5%AD%98%E5%82%A8%E5%B1%82%EF%BC%9APromtail-Loki"><span class="toc-number">3.5.</span> <span class="toc-text">日志采集与存储层：Promtail+Loki</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E9%80%89%E5%9E%8B%E6%B1%87%E6%80%BB"><span class="toc-number">3.6.</span> <span class="toc-text">最终选型汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">架构设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E9%9B%86%E6%96%B9%E6%A1%88%EF%BC%9A%E5%AE%BF%E4%B8%BB%E6%9C%BA%E9%87%87%E9%9B%86-vs-Sidecar"><span class="toc-number">4.1.</span> <span class="toc-text">采集方案：宿主机采集 vs Sidecar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%9A%E6%8C%87%E6%A0%87%E7%AE%A1%E9%81%93"><span class="toc-number">4.2.</span> <span class="toc-text">数据流：指标管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%9A%E6%97%A5%E5%BF%97%E7%AE%A1%E9%81%93"><span class="toc-number">4.3.</span> <span class="toc-text">数据流：日志管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%90%88%E5%B9%B6%E5%9C%A8%E5%8D%95%E4%B8%AA-compose"><span class="toc-number">4.4.</span> <span class="toc-text">为什么合并在单个 compose</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-number">5.</span> <span class="toc-text">部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">5.1.</span> <span class="toc-text">目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C%EF%BC%9Adata-%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90"><span class="toc-number">5.2.</span> <span class="toc-text">准备工作：data 目录权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA%EF%BC%9Acapabilities"><span class="toc-number">5.3.</span> <span class="toc-text">安全加固：capabilities</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cAdvisor-%E5%85%BC%E5%AE%B9%E6%80%A7%EF%BC%9ADocker-29-containerd-image-store"><span class="toc-number">5.4.</span> <span class="toc-text">cAdvisor 兼容性：Docker 29 + containerd image store</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="toc-number">5.5.</span> <span class="toc-text">监控关键配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Provisioning-as-Code%EF%BC%88Grafana-%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%89"><span class="toc-number">5.6.</span> <span class="toc-text">Provisioning as Code（Grafana 数据源）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Promtail%EF%BC%9ADocker-%E6%97%A5%E5%BF%97%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0"><span class="toc-number">5.7.</span> <span class="toc-text">Promtail：Docker 日志自动发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E-Docker-%E6%97%A5%E5%BF%97%E6%BA%90%E6%8E%A5%E5%85%A5"><span class="toc-number">5.8.</span> <span class="toc-text">非 Docker 日志源接入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E6%97%A5%E5%BF%97%E4%BF%AE%E6%AD%A3%EF%BC%9Afrpc"><span class="toc-number">5.8.1.</span> <span class="toc-text">容器日志修正：frpc</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%EF%BC%9ADST-%E6%B8%B8%E6%88%8F%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">5.8.2.</span> <span class="toc-text">文件日志采集：DST 游戏服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%BF%E4%B8%BB%E6%9C%BA%E5%91%BD%E4%BB%A4%E5%AE%A1%E8%AE%A1%EF%BC%9A%E4%BB%8E-Bash-History-%E5%88%B0-eBPF"><span class="toc-number">5.8.3.</span> <span class="toc-text">宿主机命令审计：从 Bash History 到 eBPF</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9Aexecve-%E4%B8%8E-eBPF-hook"><span class="toc-number">5.8.3.1.</span> <span class="toc-text">原理：execve 与 eBPF hook</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E5%9C%A8-Docker-%E9%87%8C%E8%BF%90%E8%A1%8C"><span class="toc-number">5.8.3.2.</span> <span class="toc-text">为什么能在 Docker 里运行</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E9%85%8D%E7%BD%AE"><span class="toc-number">5.8.3.3.</span> <span class="toc-text">部署配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E7%A4%BA%E4%BE%8B"><span class="toc-number">5.8.3.4.</span> <span class="toc-text">事件示例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%87%E6%BB%A4%EF%BC%9ATracingPolicy"><span class="toc-number">5.8.3.5.</span> <span class="toc-text">自定义过滤：TracingPolicy</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%97%A5%E5%BF%97%EF%BC%9Asystemd-journal"><span class="toc-number">5.8.4.</span> <span class="toc-text">宿主机系统日志：systemd journal</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grafana-%E4%BD%BF%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">Grafana 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dashboard"><span class="toc-number">6.1.</span> <span class="toc-text">Dashboard</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PromQL-%E6%9F%A5%E8%AF%A2"><span class="toc-number">6.2.</span> <span class="toc-text">PromQL 查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Explore%EF%BC%9ALogQL-%E6%9F%A5%E8%AF%A2%E4%B8%8E%E6%97%A5%E5%BF%97%E4%B8%8B%E9%92%BB"><span class="toc-number">6.3.</span> <span class="toc-text">Explore：LogQL 查询与日志下钻</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%8A%E8%AD%A6%E7%B3%BB%E7%BB%9F"><span class="toc-number">7.</span> <span class="toc-text">告警系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E9%80%89%E5%9E%8B"><span class="toc-number">7.1.</span> <span class="toc-text">方案选型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99"><span class="toc-number">7.2.</span> <span class="toc-text">告警规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%91%8A%E8%AD%A6"><span class="toc-number">7.3.</span> <span class="toc-text">容器生命周期告警</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E7%AB%AF%E7%82%B9%E6%8E%A2%E6%B5%8B"><span class="toc-number">7.3.1.</span> <span class="toc-text">为什么不用端点探测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E8%B0%83%E7%A0%94"><span class="toc-number">7.3.2.</span> <span class="toc-text">方案调研</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%92%E9%99%A4%E4%B8%B4%E6%97%B6%E5%AE%B9%E5%99%A8-compose-working-dir-%E8%BF%87%E6%BB%A4"><span class="toc-number">7.3.3.</span> <span class="toc-text">排除临时容器: compose working_dir 过滤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E6%96%B9%E6%A1%88-cAdvisor-docker-events-%E6%B7%B7%E5%90%88"><span class="toc-number">7.3.4.</span> <span class="toc-text">最终方案: cAdvisor + docker events 混合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-events-%E9%87%87%E9%9B%86"><span class="toc-number">7.3.5.</span> <span class="toc-text">docker events 采集</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Telegram-%E9%80%9A%E7%9F%A5"><span class="toc-number">7.4.</span> <span class="toc-text">Telegram 通知</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E6%89%93%E7%82%B9"><span class="toc-number">8.</span> <span class="toc-text">应用层打点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Metric-%E7%B1%BB%E5%9E%8B"><span class="toc-number">8.1.</span> <span class="toc-text">Metric 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pull-%E6%A8%A1%E5%BC%8F%EF%BC%9A%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2-metrics-%E7%AB%AF%E7%82%B9"><span class="toc-number">8.2.</span> <span class="toc-text">Pull 模式：服务暴露 &#x2F;metrics 端点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Push-%E6%A8%A1%E5%BC%8F%EF%BC%9A%E7%9F%AD%E5%91%BD%E8%BF%9B%E7%A8%8B%E4%B8%BB%E5%8A%A8%E4%B8%8A%E6%8A%A5"><span class="toc-number">8.3.</span> <span class="toc-text">Push 模式：短命进程主动上报</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%B1%95%E6%9C%9B"><span class="toc-number">9.</span> <span class="toc-text">总结与展望</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E6%88%90%E6%9E%9C"><span class="toc-number">9.1.</span> <span class="toc-text">当前成果</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E4%B8%8E%E6%9C%8D%E5%8A%A1%E6%B8%85%E5%8D%95"><span class="toc-number">9.1.1.</span> <span class="toc-text">容器与服务清单</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92"><span class="toc-number">9.2.</span> <span class="toc-text">后续计划</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/engineer/homelab-monitoring/" title="HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践">HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践</a><time datetime="2026-03-04T04:00:00.000Z" title="发表于 2026-03-04 12:00:00">2026-03-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/collections/Chinese-punctuation/" title="博客使用中文标点啦!">博客使用中文标点啦!</a><time datetime="2026-02-11T05:07:33.176Z" title="发表于 2026-02-11 13:07:33">2026-02-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/networking/bbr-tuning-experiment/" title="从骨干网到 BBR：我的 Homelab 香港反代服务器选购与调优实战">从骨干网到 BBR：我的 Homelab 香港反代服务器选购与调优实战</a><time datetime="2026-02-11T05:07:33.060Z" title="发表于 2026-02-11 13:07:33">2026-02-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/collections/butterfly/" title="Butterfly 主题使用 | 重塑博客分类和标签">Butterfly 主题使用 | 重塑博客分类和标签</a><time datetime="2025-12-13T06:02:23.000Z" title="发表于 2025-12-13 14:02:23">2025-12-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/distributedsystem/build-batch-platform/" title="「Abyss」搭建任务调度平台 xxl-job">「Abyss」搭建任务调度平台 xxl-job</a><time datetime="2025-11-01T13:54:03.000Z" title="发表于 2025-11-01 21:54:03">2025-11-01</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By zombie12138</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad: false});
+const els = document.querySelectorAll('pre.mermaid');
+if (els.length > 0) {
+  for (const el of els) {
+    el.textContent = el.textContent;
+  }
+  await mermaid.run({nodes: els});
+}
+</script>
+<script>
+if (document.getElementById('post')) {
+  var copyright = document.querySelector('.post-copyright');
+  if (copyright) {
+    var div = document.createElement('div');
+    div.className = 'custom-statement';
+    div.innerHTML = '<span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>特殊声明: </span> 本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。';
+    copyright.appendChild(div);
+  }
+}
+</script>
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
