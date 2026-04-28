@@ -65,15 +65,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/architecture/AMD-IPU/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2024/architecture/disaster-reconstruction/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -137,6 +128,24 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -156,24 +165,6 @@
   
   <url>
     <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -245,7 +236,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/plcompiler/TVM-LIBCXX/</loc>
+    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -254,7 +245,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
+    <loc>https://zombie12138.github.io/2024/plcompiler/TVM-LIBCXX/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -281,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/plcompiler/weak-symbol/</loc>
+    <loc>https://zombie12138.github.io/2024/plcompiler/linkers/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -290,7 +281,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/plcompiler/linkers/</loc>
+    <loc>https://zombie12138.github.io/2024/plcompiler/weak-symbol/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
