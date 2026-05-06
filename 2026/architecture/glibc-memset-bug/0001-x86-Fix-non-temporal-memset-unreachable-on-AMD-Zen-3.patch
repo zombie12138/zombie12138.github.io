@@ -1,0 +1,54 @@
+From 168b6f7441f83d221fc27bf2dccbd64e5e9dd09e Mon Sep 17 00:00:00 2001
+From: zombie12138 <zombie12139@gmail.com>
+Date: Tue, 5 May 2026 09:37:09 -0700
+Subject: [PATCH] x86: Fix non-temporal memset unreachable on AMD Zen 3/4/5
+
+On AMD Zen 3/4/5 with ERMS, the non-temporal memset path is unreachable
+because rep_stosb_threshold is set to SIZE_MAX (vectorized loop is faster
+than ERMS on these CPUs), but the non-temporal code path is nested inside
+the rep_stosb branch.
+
+The existing rescue logic at the Avoid_STOSB check only covers the case
+where the CPU lacks ERMS hardware support.  It does not cover AMD Zen 3+
+where ERMS is supported but deliberately unused for performance reasons.
+
+Extend the condition to also lower rep_stosb_threshold when:
+- The user has not explicitly set x86_rep_stosb_threshold (respect tunables)
+- rep_stosb_threshold is higher than memset_non_temporal_threshold (NT gated)
+
+This makes the non-temporal path reachable for large memset operations,
+providing ~2x speedup on pre-faulted buffers larger than L3 cache.
+
+Tested on AMD Ryzen 7 8745HS (Zen 4):
+- Pre-faulted 64MB memset: 2.02 ms -> 0.94 ms (2.15x faster)
+- First-touch 64MB memset: 19.3 ms -> 21.3 ms (11% regression, expected:
+  kernel clear_page cache warming bypassed by NT stores)
+
+	* sysdeps/x86/dl-cacheinfo.h (dl_init_cacheinfo): Extend
+	rep_stosb_threshold lowering condition to cover AMD Zen 3/4/5
+	where ERMS is supported but stosb is disabled via threshold.
+
+Signed-off-by: zombie12138 <zombie12139@gmail.com>
+Bug: https://sourceware.org/bugzilla/show_bug.cgi?id=34129
+---
+ sysdeps/x86/dl-cacheinfo.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sysdeps/x86/dl-cacheinfo.h b/sysdeps/x86/dl-cacheinfo.h
+index b6e17b0e32..78929d1f2d 100644
+--- a/sysdeps/x86/dl-cacheinfo.h
++++ b/sysdeps/x86/dl-cacheinfo.h
+@@ -1293,7 +1293,9 @@ dl_init_cacheinfo (struct cpu_features *cpu_features)
+   /* Do `rep_stosb_thresh = non_temporal_thresh` after setting/getting the
+      final value of `x86_memset_non_temporal_threshold`. In some cases this can
+      be a matter of correctness.  */
+-  if (CPU_FEATURES_ARCH_P (cpu_features, Avoid_STOSB))
++  if (CPU_FEATURES_ARCH_P (cpu_features, Avoid_STOSB)
++      || (!TUNABLE_IS_INITIALIZED (x86_rep_stosb_threshold)
++	  && rep_stosb_threshold > memset_non_temporal_threshold))
+     rep_stosb_threshold
+ 	= TUNABLE_GET (x86_memset_non_temporal_threshold, long int, NULL);
+   TUNABLE_SET_WITH_BOUNDS (x86_rep_stosb_threshold, rep_stosb_threshold, 1,
+-- 
+2.47.3
+
