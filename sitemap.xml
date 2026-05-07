@@ -4,7 +4,7 @@
   <url>
     <loc>https://zombie12138.github.io/2026/architecture/glibc-memset-bug/</loc>
     
-    <lastmod>2026-05-06</lastmod>
+    <lastmod>2026-05-07</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -101,33 +101,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2026/collections/Chinese-punctuation/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -164,7 +137,34 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
+    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -182,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
     
     <lastmod>2025-12-22</lastmod>
     

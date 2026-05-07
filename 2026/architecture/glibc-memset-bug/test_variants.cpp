@@ -97,6 +97,69 @@ double test_B4(int rows, int cols, int rounds) {
     return total / rounds;
 }
 
+// C1: flat vector + mdspan — 单块连续内存，C++23 多维视图，零开销抽象
+// 编译需要 -std=c++23，且编译器支持 <mdspan>（GCC 14 需 libstdc++ trunk 或用 Kokkos mdspan）
+#if __has_include(<mdspan>)
+#include <mdspan>
+#define HAS_MDSPAN 1
+#else
+#define HAS_MDSPAN 0
+#endif
+
+#if HAS_MDSPAN
+double test_C1_mdspan(int rows, int cols, int rounds) {
+    double total = 0;
+    for (int r = 0; r < rounds; r++) {
+        auto start = chrono::high_resolution_clock::now();
+        vector<int> storage(static_cast<size_t>(rows) * cols);
+        auto mat = std::mdspan(storage.data(),
+                               std::extents<int, std::dynamic_extent, std::dynamic_extent>{rows, cols});
+        doNotOptimize(&storage);
+        doNotOptimize(&mat);
+        auto end = chrono::high_resolution_clock::now();
+        total += chrono::duration<double, milli>(end - start).count();
+    }
+    return total / rounds;
+}
+#endif
+
+// C2: flat vector + views::chunk — 单块连续内存，C++23 range 视图分块
+#if __cpp_lib_ranges_chunk >= 202202L
+#define HAS_CHUNK 1
+#else
+#define HAS_CHUNK 0
+#endif
+
+#if HAS_CHUNK
+#include <ranges>
+double test_C2_chunk(int rows, int cols, int rounds) {
+    double total = 0;
+    for (int r = 0; r < rounds; r++) {
+        auto start = chrono::high_resolution_clock::now();
+        vector<int> storage(static_cast<size_t>(rows) * cols);
+        auto mat = storage | std::views::chunk(cols);
+        doNotOptimize(&storage);
+        doNotOptimize(&mat);
+        auto end = chrono::high_resolution_clock::now();
+        total += chrono::duration<double, milli>(end - start).count();
+    }
+    return total / rounds;
+}
+#endif
+
+// C0: flat vector — 作为 C1/C2 的基准对照
+double test_C0_flat(int rows, int cols, int rounds) {
+    double total = 0;
+    for (int r = 0; r < rounds; r++) {
+        auto start = chrono::high_resolution_clock::now();
+        vector<int> mat(static_cast<size_t>(rows) * cols);
+        doNotOptimize(&mat);
+        auto end = chrono::high_resolution_clock::now();
+        total += chrono::duration<double, milli>(end - start).count();
+    }
+    return total / rounds;
+}
+
 int main() {
     struct Case { int rows; int cols; };
     Case cases[] = {{1000, 10}, {100000, 10}, {100000, 100}};
@@ -109,8 +172,23 @@ int main() {
          << setw(16) << "B2(assign)"
          << setw(18) << "B3(emplace_back)"
          << setw(16) << "B4(move=)"
-         << endl;
-    cout << string(94, '-') << endl;
+         << setw(12) << "C0(flat)";
+#if HAS_MDSPAN
+    cout << setw(14) << "C1(mdspan)";
+#endif
+#if HAS_CHUNK
+    cout << setw(14) << "C2(chunk)";
+#endif
+    cout << endl;
+
+    int total_cols = 106;
+#if HAS_MDSPAN
+    total_cols += 14;
+#endif
+#if HAS_CHUNK
+    total_cols += 14;
+#endif
+    cout << string(total_cols, '-') << endl;
 
     for (auto& c : cases) {
         int rounds = 1000;
@@ -121,6 +199,7 @@ int main() {
         double b2 = test_B2(c.rows, c.cols, rounds);
         double b3 = test_B3(c.rows, c.cols, rounds);
         double b4 = test_B4(c.rows, c.cols, rounds);
+        double c0 = test_C0_flat(c.rows, c.cols, rounds);
 
         cout << left << setw(16) << dim << right
              << setw(9) << a << " ms"
@@ -128,7 +207,16 @@ int main() {
              << setw(13) << b2 << " ms"
              << setw(15) << b3 << " ms"
              << setw(13) << b4 << " ms"
-             << endl;
+             << setw(9) << c0 << " ms";
+#if HAS_MDSPAN
+        double c1 = test_C1_mdspan(c.rows, c.cols, rounds);
+        cout << setw(11) << c1 << " ms";
+#endif
+#if HAS_CHUNK
+        double c2 = test_C2_chunk(c.rows, c.cols, rounds);
+        cout << setw(11) << c2 << " ms";
+#endif
+        cout << endl;
     }
     return 0;
 }
