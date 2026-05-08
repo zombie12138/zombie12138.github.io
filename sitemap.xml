@@ -4,7 +4,7 @@
   <url>
     <loc>https://zombie12138.github.io/2026/architecture/glibc-memset-bug/</loc>
     
-    <lastmod>2026-05-07</lastmod>
+    <lastmod>2026-05-08</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -137,6 +137,24 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -164,25 +182,34 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2024/networking/ssh-remote-command/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/networking/udp2raw/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -209,15 +236,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2024/kernelos/first-linux-patch/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -227,25 +245,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/networking/ssh-remote-command/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/networking/udp2raw/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
+    <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -301,7 +301,7 @@
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2026-05-07</lastmod>
+    <lastmod>2026-05-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
