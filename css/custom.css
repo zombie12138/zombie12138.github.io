@@ -1,0 +1,13 @@
+/* 自定义样式：所有手写覆盖都放这里，方便 git 追踪与维护 */
+
+/* 正文阅读体验：放大字号 + 加行高（默认 14px/1.6 对中文长文偏挤）
+   只作用于文章正文容器 #article-container，不影响菜单/侧栏/代码块 */
+#article-container {
+  font-size: 1.0625rem;   /* ≈17px（基于浏览器默认 16px），现场可调 16–18px */
+  line-height: 1.8;       /* 中文长文舒适行高，可调 1.7–1.9 */
+  letter-spacing: 0.02em;
+}
+
+#article-container p {
+  margin: 1.1em 0;
+}
