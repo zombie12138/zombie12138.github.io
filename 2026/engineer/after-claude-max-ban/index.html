@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储 | zombie's</title><meta name="author" content="zombie12138"><meta name="copyright" content="zombie12138"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="之前很长一段时间，我的 AI coding 工具都非常固定，可以说生活在象牙塔里，几乎所有 vibecoding 全都在 Claude Code 中完成。Claude Max x5 也从来没有过 Token 用不完的危机，相反需要每天定目标消耗 Token，东西做错了就直接重做。虽然有 Cursor Pro，但是一直吃灰，当 vscode&#x2F;网页问答用。听说 Codex  Review 很厉害、GL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储">
+<meta property="og:url" content="https://zombie12138.github.io/2026/engineer/after-claude-max-ban/index.html">
+<meta property="og:site_name" content="zombie&#39;s">
+<meta property="og:description" content="之前很长一段时间，我的 AI coding 工具都非常固定，可以说生活在象牙塔里，几乎所有 vibecoding 全都在 Claude Code 中完成。Claude Max x5 也从来没有过 Token 用不完的危机，相反需要每天定目标消耗 Token，东西做错了就直接重做。虽然有 Cursor Pro，但是一直吃灰，当 vscode&#x2F;网页问答用。听说 Codex  Review 很厉害、GL">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zombie12138.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-07-03T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-08T13:17:01.363Z">
+<meta property="article:author" content="zombie12138">
+<meta property="article:tag" content="Survey">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Project&#x2F;HomeLab">
+<meta property="article:tag" content="Storage">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zombie12138.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储",
+  "url": "https://zombie12138.github.io/2026/engineer/after-claude-max-ban/",
+  "image": "https://zombie12138.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-07-03T04:00:00.000Z",
+  "dateModified": "2026-07-08T13:17:01.363Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "zombie12138",
+      "url": "https://zombie12138.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://zombie12138.github.io/2026/engineer/after-claude-max-ban/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">87</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Quant/"><i class="fa-fw fas fa-chart-line"></i><span> 量化交易</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">zombie's</span></a><a class="nav-page-title" href="/"><span class="site-name">从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 所有文章</span></a></div><div class="menus_item"><span class="site-page group"><span> 文章分类</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Kernel&amp;OS/"><i class="fa-fw fas fa-terminal"></i><span> 内核与操作系统</span></a></li><li><a class="site-page child" href="/categories/Architecture/"><i class="fa-fw fas fa-project-diagram"></i><span> 体系结构</span></a></li><li><a class="site-page child" href="/categories/DistributedSystem/"><i class="fa-fw fas fa-sitemap"></i><span> 分布式系统</span></a></li><li><a class="site-page child" href="/categories/Networking/"><i class="fa-fw fas fa-network-wired"></i><span> 网络系统</span></a></li><li><a class="site-page child" href="/categories/PL&amp;Compiler/"><i class="fa-fw fas fa-code"></i><span> 编程语言与编译器</span></a></li><li><a class="site-page child" href="/categories/AI/"><i class="fa-fw fas fa-robot"></i><span> 人工智能</span></a></li><li><a class="site-page child" href="/categories/Database/"><i class="fa-fw fas fa-database"></i><span> 数据库系统</span></a></li><li><a class="site-page child" href="/categories/Embedded/"><i class="fa-fw fas fa-microchip"></i><span> 嵌入式与端侧</span></a></li><li><a class="site-page child" href="/categories/Quant/"><i class="fa-fw fas fa-chart-line"></i><span> 量化交易</span></a></li><li><a class="site-page child" href="/categories/Engineer/"><i class="fa-fw fas fa-tools"></i><span> 工程实践</span></a></li><li><a class="site-page child" href="/categories/Collections/"><i class="fa-fw fas fa-bookmark"></i><span> 收藏与杂项</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 写作类型</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Survey/"><i class="fa-fw fas fa-binoculars"></i><span> 调研综述</span></a></li><li><a class="site-page child" href="/tags/Theory/"><i class="fa-fw fas fa-brain"></i><span> 理论分析</span></a></li><li><a class="site-page child" href="/tags/SourceCode/"><i class="fa-fw fas fa-file-code"></i><span> 源码解析</span></a></li><li><a class="site-page child" href="/tags/Optimization/"><i class="fa-fw fas fa-tachometer-alt"></i><span> 性能优化</span></a></li><li><a class="site-page child" href="/tags/Benchmark/"><i class="fa-fw fas fa-chart-line"></i><span> 基准测试</span></a></li><li><a class="site-page child" href="/tags/TroubleShooting/"><i class="fa-fw fas fa-bug"></i><span> 故障排查</span></a></li><li><a class="site-page child" href="/tags/Design/"><i class="fa-fw fas fa-drafting-compass"></i><span> 系统设计</span></a></li><li><a class="site-page child" href="/tags/Note/"><i class="fa-fw fas fa-sticky-note"></i><span> 笔记备忘</span></a></li></ul></div><div class="menus_item"><span class="site-page group"><span> 系列与项目</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tags/Project-Abyss/"><i class="fa-fw fas fa-diagram-project"></i><span> Abyss</span></a></li><li><a class="site-page child" href="/tags/Project-Blog/"><i class="fa-fw fas fa-pen-nib"></i><span> Blog</span></a></li><li><a class="site-page child" href="/tags/Project-HomeLab/"><i class="fa-fw fas fa-server"></i><span> HomeLab</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/tags/Featured/"><i class="fa-fw fas fa-star"></i><span> 精品文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/Encrypted"><i class="fa-fw fas fa-lock"></i><span> 加密文章</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-03T04:00:00.000Z" title="发表于 2026-07-03 12:00:00">2026-07-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-08T13:17:01.363Z" title="更新于 2026-07-08 21:17:01">2026-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Engineer/">Engineer</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>22分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>之前很长一段时间，我的 AI coding 工具都非常固定，可以说生活在象牙塔里，几乎所有 vibecoding 全都在 Claude Code 中完成。Claude Max x5 也从来没有过 Token 用不完的危机，相反需要每天定目标消耗 Token，东西做错了就直接重做。虽然有 Cursor Pro，但是一直吃灰，当 vscode/网页问答用。听说 Codex  Review 很厉害、GLM/Deepseek 又出了 1M 上下文的新模型也从来不关注。</p>
+<p>直到账号突然被封禁。</p>
+<span id="more"></span>
+<div class="note warning flat"><p>本文由 AI 辅助写作，经作者审核修订后发布，文章 AI 含量：50%；代码 AI 含量 80%。</p>
+</div>
+<h2 id="我的-vibe-coding-模式">我的 vibe coding 模式</h2>
+<p>被封之前，我几乎没有过多尝试其他工具。虽然之前从 chatgpt 横空出世震惊世界开始，尝试过 copilot、cursor、trae，但是直到 2025 年底我才开始充值并且使用 cursor，深深地被 vibecoding 的发展所震惊。但是由于 token 消耗太快，便购买 claude pro，过了两天就买了 Claude Max，从此一发不可收拾。</p>
+<p>我买的是 Claude Max x5，日常 coding 直接上最好的模型（截至封号前使用的是 Opus 4.8），完全不需要算 token。所有的 vibecoding 基本全在 Claude Code（下文称 cc）完成，甚至个人笔记之前想过搭建 RAG 来管理 AI 对话和各种笔记，但是也被 cc 暴力接管，博客文章也经常让 Claude Code 辅助撰写。</p>
+<p>因为 Claude 对于账号管控非常严格，因此我是通过我的 Google 账号进行订阅（多交 25 USD 的谷歌税）。并且我一直在固定的服务器上工作，日常就是 WindowsTerminal + OpenSSH + Tmux + CC，走的是固定的代理节点，日常会话中英文混杂，甚至最近几个月因此时区也改成了美西时区。</p>
+<p>那个时候我几乎不关心每次上下文有多长，也不关心输入 token 到底多少钱，相反我焦虑的是订阅 Token 花不完。Max 订阅把这件事包掉了，我只需要关心模型好不好用，并且经常浪费 token 训斥 AI。那是我至今也非常怀念的一段日子，只要一次交够钱，就能肆无忌惮地把一个项目不停的推倒重来。</p>
+<h2 id="封禁和申诉">封禁和申诉</h2>
+<p>其实最近已经是越来越严格了，在互联网和身边也有人控诉，MAX 充值一两周就封号，CC 源码泄露时候也有人深挖其风控收集的信息，及其细致严苛。但是我还算比较庆幸，我的账号虽然直接用的代理，但是整个账号一个地点登录，固定 IP，还算毕竟稳定。直到 2026 年 6 月 30 日的下午，我发现账户需要重新登录，由于这个也曾经出现过，我也没有在意，就出去玩了。晚上回来发现依然无法登录，登录网页 &lt;<a target="_blank" rel="noopener" href="http://claude.ai">claude.ai</a>&gt; 发现已经是免费用户了。查看邮件，收到了一封邮件：</p>
+<img src="/2026/engineer/after-claude-max-ban/blocked.png" class="" title="blocked">
+<p>Claude Max 被封之后，我第一反应就是找原因，我第一反应是最近网络波动较多，可能代理行为、网络重试、最近激增的中文输入这些特征导致的，后面又怀疑是不是最近做的一些抢号脚本导致违反用户协议。开始我还挺慌，也抱有一丝幻想，没有查攻略就找 Gemini 帮我写申诉邮件，解释自己是正常 coding 使用，不是薅羊毛，也不是批量滥用。给 <a href="mailto:support@anthropic.com">support@anthropic.com</a>/<a href="mailto:usersafety@mail.anthropic.com">usersafety@mail.anthropic.com</a> 发送申诉邮件，但是收到的只有机器人自动回复：</p>
+<img src="/2026/engineer/after-claude-max-ban/reply.png" class="" title="reply">
+<p>后来刷小红书才知道可能是由于 Ali 蒸馏的原因，亦或是 AI 安全敏感的原因，最近普遍进行了封号，并且一些直接租海外服务器 SSH 使用的人、甚至留学生都被封号。我则可能最初已经暴露，浏览器/操作系统的特征信息、大量的中文对话，只不过这次风控阈值调低才真的暴露。看到有人说有专门的申诉入口，support 里面找 fin AI，告诉它没有申诉入口就会给我一份专门的申诉表单入口。于是又去填表，重新解释一遍，但是回复给我的是只有自动模板。</p>
+<img src="/2026/engineer/after-claude-max-ban/Adiv.jpg" class="" title="A畜">
+<p>更离谱的是，Cursor 那边也出问题了。之前一直不用它，现在突然想拿来救急，但是也只能使用大陆地区的模型。我是直接 Alipay 支付的，通过本地 TUN 模式代理 + HTTP1.1 协议使用的，猜测也因为 Anthropic 的要求或者一些敏感原因。</p>
+<h2 id="Alternative">Alternative</h2>
+<p>AI 一旦挂了，整个工作会变得非常痛苦，现在只有一个残血 cursor 可以用，但是我更加习惯 CLI 的 coding agent，当务之急是找到替代。</p>
+<h3 id="GLM">GLM</h3>
+<p>首先是尝试了 GLM-5.2，这个应该是力大飞砖的最强国产编程模型。</p>
+<p>这里不得不吐槽下 GLM 的官网，聊天、Coding Plan 套餐、个人中心、文档分散在很多不同的入口，我最终直接用 API 验证才知道，普通余额可以直接使用，Coding Plan 也可以。并且，不同的 token 用量，缓存命中率这些完全看不到，甚至连消费情况也是按月统计。</p>
+<p>配置好了 CC+GLM5.2 之后，但是按量付费让我第一次认真意识到 token 问题。之前 Max 订阅下没有感觉，换成 GLM API 后，我测试了一个复杂的性能问题，它直接干了半个小时烧了 49 CNY，但只用完了 200k/1M 的上下文。后续日常使用小半天就能烧掉 100 CNY。按照这样算，我之前一天用量得 500 元才能支撑。但是不得不说，GLM 用起来体验和智商还是非常接近 opus 4.8 最新模型的，但是 opus 大概率是残血蒸馏的，但是 GLM 则是靠力大飞砖，高昂的推理成本就是模型 token 天价的原因。我也试过去抢智谱的 Coding Plan，但是没抢到，后面就放弃了。</p>
+<h3 id="Codex">Codex</h3>
+<p>再后面我买了 OpenAI Pro。Codex 能用，首先就是非常 <strong>节约 token</strong>，体感上能比 CC pro 多做一倍的工作，同时出 token 速度也非常快。但是我还是觉得它的工作方式没有 Claude Code 那么贴手，并且最大的问题是 <strong>太跟随指令了</strong>。我之前要求任何问题有歧义需要停下来咨询我的意见，cc 只在关键位置停下，但是 codex 我一次需求会停下来咨询数次，甚至完全没有影响的、排查 bug 的方案也要停下来咨询我；我之前也要求 cc 每次输入英文并且表述有问题先纠正我，之后再回答问题、工作。但是 cc 很少遵循，反倒是 codex，哪怕我输入中文也会不停地纠正我的表述。</p>
+<p>这样我的 codex 一个 pro 订阅覆盖大部分的开发工作；GLM+CC 则是更加强也更加昂贵的补充，或者仅仅指定 plan；Curosr 辅助一些简单任务，做日常 IDE 用。</p>
+<h3 id="agent-link-skill-快速同步-cc-和-codex">agent-link-skill: 快速同步 cc 和 codex</h3>
+<p>但是 CC 和 Codex 的 rules、memory、plugin 乃至 上下文都不共享，交替使用会有很多麻烦。为了解决上下文共享，我写了一个 skill，叫 <a target="_blank" rel="noopener" href="https://github.com/zombie12138/agent-link-skill">agent-link-skill</a>。</p>
+<p>它做的事情非常简单，就是用 symlink 把 Claude Code 和 Codex 的一些文件连起来。比如项目规则里 Claude Code 读 <code>CLAUDE.md</code>，Codex 读 <code>AGENTS.md</code>，那就让其中一个指向另一个，这样两边文件是完全同步的。项目记忆也是类似，让 Codex 的 memory 目录指向 Claude Code 已经整理好的 reviewed memory。这个功能看起来小得不能再小，指令也只是几句话的事情。但是为了让这个过程更加流畅，行为更固定，我还是选择 skill 把它固化起来。</p>
+<p>但是做起来比我想象中繁琐。因为 Claude Code 和 Codex 对 rules、skills、memory 的管理不同。对于 rules 这种单一文件非常好解决；memory 则是 claude code 就可能存在多个可能的文件夹；Skill 则是最为复杂。Codex 的 Skill 包含自己的 <code>.system</code>，Claude Code 存在一个插件目录和一个 Skill 目录两个来源。考虑到 codex <code>.system</code> 不应该向 CC 暴露，最终放弃同步整个 SKILL 文件夹，选择逐个同步。后续安装自动触发 Skill 进行同步也比较复杂，需要用户手动配置 hook 定期检查，或者靠全局 rule 来约束提醒。最终选择让 skill 保持简单，仅仅做同步。</p>
+<p>更多的问题是脚本和 prompt 的边界问题。写 prompt 的 codex 最初是所有功能全都放脚本，尽管 prompt 已经包含不同的情况处理。首先就是脚本会非常复杂，一个这样的简单的需求，我让 AI 写了 400 行晦涩难懂的代码，完全没法 review。这个甚至 prompt 给个 symlink 的命令行都可以，拉扯多次，最终让 AI 代码保持在了 200 行附近。</p>
+<p>至于上下文，这里懒得解析 AI 存储上下文的方式了，这个太不稳定，可能今天存在 json 中，明天又存 db 里，最好的方式就是 compact 之后总结的信息发送给另一个 agent。但是 CC 现在不显示总结的原文，即使 verbose 模式也看不到，我后续是直接靠 LLM 审计的网关截获的记录拷贝复制过去的。</p>
+<h2 id="LLM-API-Gateway">LLM API Gateway</h2>
+<h3 id="初衷">初衷</h3>
+<p>搭建 LLM API 网关的初衷有很多：</p>
+<ul>
+<li>第一是规避 CC 的一些最简单直接的监控。据说，Claude Code 客户端本身还有很多采集用户数据的情况，堪比木马。但是我又想享用世界最强 harness 的更新。这里可以做透明代理拦截 Anthropic 的请求，但是这里我想匿名化 BASE_URL 和 model name。</li>
+<li>第二是统一 <strong>管理 API</strong>。不同平台的 key、base_url、模型名、价格都不一样，手动塞进每个客户端非常乱。尤其是以后还可能接 Doubao、Kimi、各种套餐、第三方中转等。</li>
+<li>第三是 <strong>请求审计</strong>。我想知道每次请求到底发了什么、模型回了什么、走了哪个上游。更进一步，审计内容也可以拿来做 <strong>跨 agent 的上下文迁移</strong>。比如 Claude Code 的 compact 现在是黑盒，不给看 compact 内容，如果我自己能保存每次请求和返回，至少还有一份真实材料可以恢复。</li>
+<li>最后希望可以进行 <strong>更细致的用量统计</strong>。</li>
+</ul>
+<h3 id="选型">选型</h3>
+<p><a target="_blank" rel="noopener" href="https://github.com/farion1231/cc-switch">cc-switch</a> 是一个轻量、专业地切换不同供应商的工具，它可以切换 <code>ANTHROPIC_BASE_URL</code> 和 token，但是它在客户端侧，是 <strong>改写客户端配置文件</strong>，不在请求链路里。它不做服务端聚合，也不做审计。所以我最后还是决定部署一个真正的 API 网关。</p>
+<p>调研以后，<a target="_blank" rel="noopener" href="https://github.com/Calcium-Ion/new-api">new-api</a> 比较适合我的场景，它是 <a target="_blank" rel="noopener" href="https://github.com/songquanpeng/one-api">one-api</a> 的 fork，使用 go 重写，并且依然在即使维护。它有后台，有渠道管理，有 token 管理，有计费，也能做模型映射。<a target="_blank" rel="noopener" href="https://github.com/BerriAI/litellm">LiteLLM</a> 也很专业，provider 支持更广，但是我这个阶段更需要一个容易部署、后台完整、计费直观的东西。</p>
+<p>new-api 自己有日志，但我想要的不只是计费日志。我想看 Claude Code 发出的完整 <code>/v1/messages</code>，以及上游返回的内容。所以又加了一层审计代理。为了方便管理，new-api 层做聚合，审计层仅仅做审计，因此放在网关和客户端之间，对聚合后的内容进行审计。</p>
+<p>审计可以采用 <a target="_blank" rel="noopener" href="https://github.com/langfuse/langfuse">Langfuse</a>，但是这个是一个终点，不能转发，只能做旁路。这里使用 <a target="_blank" rel="noopener" href="https://github.com/mitmproxy/mitmproxy">Mitmproxy</a> 做审计层实际嵌入链路的工具，仅仅做客户端和 new-api 网关之间的转发，同时 Hook 请求转发到 Langfuse 存储和展示。</p>
+<p>最终链路变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Claude Code -&gt; mitmproxy -&gt; new-api -&gt; 不同 API 供应商</span><br><span class="line">mitmproxy-&gt;Langfuse (转发旁路)</span><br></pre></td></tr></table></figure>
+<p>new-api 负责聚合和计费，审计网关负责请求内容审计，记录请求内容。</p>
+<h3 id="new-api">new-api</h3>
+<p>配置非常简单：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">ai-newapi</span></span><br><span class="line"></span><br><span class="line"><span class="attr">x-logging:</span> <span class="string">&amp;default-logging</span></span><br><span class="line">  <span class="attr">driver:</span> <span class="string">json-file</span></span><br><span class="line">  <span class="attr">options:</span></span><br><span class="line">    <span class="attr">max-size:</span> <span class="string">10m</span></span><br><span class="line">    <span class="attr">max-file:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">new-api:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">calciumion/new-api:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">new-api</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">env_file:</span> <span class="string">.env</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;13000:13000&quot;</span></span><br><span class="line">    <span class="attr">extra_hosts:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;host.docker.internal:host-gateway&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">PORT=13000</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ERROR_LOG_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">HTTP_PROXY=http://host.docker.internal:7890</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">HTTPS_PROXY=http://host.docker.internal:7890</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">NO_PROXY=localhost,127.0.0.1,new-api,z.ai,deepseek.com,volces.com,moonshot.cn</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/data</span></span><br><span class="line">    <span class="attr">logging:</span> <span class="string">*default-logging</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">512M</span></span><br></pre></td></tr></table></figure>
+<p>跑起来以后，后台比我想象中完整。不止有 LLM 聚合和用量统计，还有画图、聊天、用户注册和 token 充值分发的功能。</p>
+<img src="/2026/engineer/after-claude-max-ban/newapi_usage.png" class="" title="new-api 数据看板">
+<img src="/2026/engineer/after-claude-max-ban/newapi_chat.png" class="" title="new-api 操练场">
+<p>数据看板能看到余额、历史消耗、请求次数。</p>
+<img src="/2026/engineer/after-claude-max-ban/newapi_channel.png" class="" title="new-api 渠道管理">
+<img src="/2026/engineer/after-claude-max-ban/newapi_token.png" class="" title="new-api 令牌管理">
+<p>渠道页则是配置的所有的外部上游 API。计费这里也比较重要。new-api 的 ModelRatio 基准是 <code>ratio 1 = $2/M tokens</code>，我把 GLM、DeepSeek、Gemini 的输入输出价格按这个规则配进去，之后用网关的这一个令牌和一个 base_url 就可以了。</p>
+<img src="/2026/engineer/after-claude-max-ban/newapi_log.png" class="" title="new-api 使用日志">
+<p>使用日志里能看到每次请求的模型、token、折算费用、走哪条渠道。展开一行还能看到请求路径、格式转换（比如 OpenAI 兼容 → Claude Messages）这些细节。</p>
+<h3 id="审计层">审计层</h3>
+<p>审计层分两部分：<strong>audit-proxy</strong> 嵌在 CC 和 new-api 之间，负责截获流量；以及负责实际接受到请求存储和展示的：<strong>Langfuse</strong>。</p>
+<h4 id="mitmproxy">mitmproxy</h4>
+<p>mitmproxy 是一款开源、可编程的 HTTP/HTTPS 代理，通过 Python addon 在 <code>request()</code> / <code>response()</code> 等钩子里截获并处理流量。我们用 mitmproxy 做反代，hook 请求转发到 Langfuse 做存储。</p>
+<p>最终流量从 CC 发过来之后经 mitmproxy 转发到 new-api，最终发给 LLM 厂商。它在 <code>request()</code> hook 里解析 <code>/v1/messages</code> 的请求体，并且记录到 <code>flow</code>；在 <code>response()</code> hook 里解析 Anthropic JSON 或 SSE 流式响应，并且记录到 Langfuse 中。</p>
+<p>需要做的只有写大概一两百行的解析和存储，写个 Docker file 和 compose yml，扔 docker 里面即可。</p>
+<h4 id="Langfuse">Langfuse</h4>
+<p>Langfuse 自托管是一组服务：</p>
+<ul>
+<li><strong>Langfuse (web)</strong>：包含 Web UI 和 HTTP Ingestion API，可以登录查看审计的请求详情，也可以做训练数据打分和管理。audit-proxy 里的 Langfuse SDK 把 trace/event POST 到这里；web 接收 ingestion 请求后把任务推送到队列，渲染页面时则从 Postgres、ClickHouse 等读取。</li>
+<li><strong>worker (langfuse-worker)</strong>：后台消费者，不对外暴露端口。从 Redis 队列（BullMQ）取出 ingestion 任务，解析、规范化后批量写入——观测数据进 ClickHouse，元数据和关联关系进 Postgres，大块 raw event / media 进 MinIO。UI 里的 trace 详情，多半要等 worker 异步落库后才能查到。</li>
+<li><strong>Postgres</strong>：关系型库，存元数据和配置（组织、项目、用户、API Key、trace/generation 索引、会话与权限等）。Langfuse web 查列表、做登录鉴权，主要依赖 Postgres。</li>
+<li><strong>ClickHouse</strong>：列式 OLAP 库，存高吞吐的观测事实表（observations、scores、usage 统计、按时间范围的 trace 查询等）。Langfuse v3 把大部分 trace 明细和聚合查询放在这里，因为单条 generation 可能很大、写入很频繁，Postgres 扛不住。</li>
+<li><strong>MinIO</strong>：S3 兼容对象存储，存大块 blob（raw ingestion events、media 附件、batch export 等）。超过一定体积的 payload 或导出文件放在 MinIO，Postgres / ClickHouse 里只存索引和结构化字段。</li>
+<li><strong>Redis</strong>：内存队列和缓存，不持久化 trace 正文。web 收到 SDK 上报后先把 job 推到 Redis（BullMQ），worker 再消费，用来削峰、解耦——API 快速返回 202，重活交给 worker。</li>
+</ul>
+<p>可以看到这个 Langfuse 其实还是非常复杂的，从轻到重给了三种不同的 DB，为了加速写入还有 redis 队列和 worker，但是我们这里用不到这么多复杂的功能（例如训练数据打分和管理相关的），也不会需要特别高性能写入，毕竟只有我一个人使用。因此使用 Langfuse 太重，我本机 48 GB 的内存，一个 Langfuse 就能吃掉 4 GB，但是我用到的功能就只存储和展示，对于性能要求也不大。</p>
+<img src="/2026/engineer/after-claude-max-ban/langfuse.png" class="" title="Langfuse">
+<p>这里的 23823 tokens 是请求响应带来的缓存未命中的 token 数，229 是缓存命中的 token 数，和 new-api 一致，并且可以看到请求响应的原文。有了这个就可以看 CC 具体对 API 每个请求的明细；也可以审计和存储具体会话历史；也可以用上下文、compact 信息跨 Agent 进行迁移会话（或者其实简单让 AI 直接写文件也可以解决）。</p>
+<h4 id="Loki-Grafana-日志接入">Loki Grafana 日志接入</h4>
+<p>由于我不会需要存储特别久的数据，也不需要这些数据做后续的训练等工作，Langfuse 的 4GB 占用起步成本太高，因此我考虑更加轻量的实现。由于之前已经搭建了 Grafana 栈，其中 Loki 日志可以也承接近期少量 LLM 请求的存储工作。因此我在 Mitmproxy 中新增了 Loki 日志的转发。</p>
+<p>新增也非常简单，新增一个滚动日志的写入，proxy 把请求解析、转换，写入日志文件，Loki 新增规则来采集这个日志即可。Loki 只能写入 256KB 的数据，之前 proxy 是简单做了 2w 字符的截断，现在需要做更加细致的截断，这里我对于请求是截断截取后半部分 240KB，对于响应则是返回前后各 120KB。还配置了一个简单的面板：</p>
+<img src="/2026/engineer/after-claude-max-ban/loki.png" class="" title="loki 日志">
+<p>现在，就变成了 proxy 在旁路双写两个旁路，Langfuse 比较专业，但是简单查看 grafana 就够了。两个暂时都保留，后续调整格式，下线  Langfuse。这样整体架构就变成了：</p>
+<pre class="mermaid">flowchart TB
+    subgraph client["客户端"]
+        CC["Claude Code"]
+    end
+
+    subgraph proxy_stack["AI/proxy"]
+        AP["audit-proxy\nmitmproxy + addon"]
+        JSONL["audit.jsonl"]
+    end
+
+    subgraph gateway["AI/newapi"]
+        NA["new-api"]
+    end
+
+    subgraph upstream["外部"]
+        VND["GLM / DeepSeek / Gemini …"]
+    end
+
+    subgraph lf["AI/langfuse（可选）"]
+        WEB["web"]
+        WRK["worker"]
+        PG[("Postgres\n元数据")]
+        CH[("ClickHouse\n观测明细")]
+        S3[("MinIO\nblob")]
+        RD[("Redis\n队列")]
+    end
+
+    subgraph obs["可选：Loki 路径"]
+        PT["Promtail"]
+        LK[("Loki")]
+        GF["Grafana"]
+    end
+
+    CC -->|"POST /v1/messages"| AP
+    AP -->|"转发 reverse proxy"| NA --> VND
+    AP -->|"AUDIT_MODE 含 loki：写"| JSONL --> PT --> LK --> GF
+    AP -->|"AUDIT_MODE 含 langfuse：SDK POST"| WEB
+    WEB -->|"入队 write"| RD
+    RD -->|"消费 write"| WRK
+    WRK -->|"write 观测"| CH
+    WRK -->|"write 元数据"| PG
+    WRK -->|"write 大对象"| S3
+    WEB -->|"read 列表/鉴权"| PG
+    WEB -->|"read 明细/统计"| CH
+    WEB -->|"read blob"| S3</pre>
+<h2 id="审计存储的思考">审计存储的思考</h2>
+<h3 id="Input-被截断">Input 被截断</h3>
+<p>故事还要从审计的存储讲起。当前我的 proxy 脚本是进行 20000 Python 字符截断，之后传入 Langfuse SDK，这个对于 1M 上下文本身够用了。但是 Langfuse 本身是存在截断行为的：</p>
+<img src="/2026/engineer/after-claude-max-ban/langfuse_truncate.png" class="" title="langfuse truncate">
+<p>这个截断是 SDK 进行的，是优先截断最大字段，直到这个整体 json 序列化后小于 1M（<a target="_blank" rel="noopener" href="https://github.com/langfuse/langfuse-python/pull/776">相关 PR</a>）。当然也可以用环境变量修改，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LANGFUSE_MAX_EVENT_SIZE_BYTES=10000000   <span class="comment"># 例如 10MB</span></span><br><span class="line">LANGFUSE_MAX_BATCH_SIZE_BYTES=25000000</span><br></pre></td></tr></table></figure>
+<p>但是这只是临时看更多内容。1M token 级别的上下文，不适合直接塞进 Langfuse 的 input 字段里，也不适合靠浏览器页面硬渲染完整 JSON。就算 SDK 放开，后端、数据库、API 和 UI 也可能有其他限制。</p>
+<p>Loki 则更加严重，默认超过 256KB 会直接抛弃或者截断，我在转发之前就提前进行了截断，对于 1M 的上下文，用 Langfuse 使用传统数据库来进行存储即使压缩也会有大量的前缀冗余的模式没有被充分挖掘：</p>
+<ol>
+<li>对于 Agent 调用记录，不同请求之间往往共享前缀（但是也可能有 rewind 的例外）</li>
+<li>对于所有会话，可能存在公用的系统提示词、项目规则等前缀</li>
+<li>甚至每次返回的响应，都是下次请求的前缀</li>
+<li>一些 SKILL、Memory、读取到的文件，可能出现在任何会话的任何地方（最难利用）</li>
+</ol>
+<p>但是对于公司级别的使用，很多时候可能会需要有一个网关审计记录所有数据，可能也是写入这种传统的 OLAP 或者对象存储，我不禁思考，<strong>对于 Agent 时代，是否有更加高效的审计存储的数据库</strong>？</p>
+<h3 id="KV-cache-的思路">KV cache 的思路</h3>
+<p>笔者在写这篇文章时，还没有对 KV cache 做过系统的学习和研究，仅是初步了解常见优化和概念。但可以发现 agent 审计存储的场景和 KV cache 很接近：block 化、按 hash 寻址、prefix 复用、hot/cold 分层这套机制几乎可以直接搬。但审计的复用条件比 KV cache 更宽松：不要求前缀严格相同，上下文任意位置出现的重复段都能去重。所以仅在前缀复用和 block 存储这一点上，可以借鉴 KV cache 的设计。</p>
+<p>最直观的借鉴是 PagedAttention：把上下文切成 block，按 content hash 寻址，一次请求就是一个 block list。光切块去重还不够——agent 多轮请求里大量是前缀复用，新请求的上下文基本是上一次再加几个 turn，可以用一个 prefix tree 管哪些前缀被哪些请求共享，新请求来了沿树命中已存 block，只存后面的 suffix。这样不仅仅可以不同请求之间前缀压缩，也可以解决系统提示词、项目规则等公用前缀的复用。</p>
+<p>但 KV cache 的 prefix cache 有个硬限制：前缀必须严格相同才能复用。agent 审计里更常见的是另一种重复——同一段 skill、memory、读到的文件内容，会在上下文任意位置出现，不一定是前缀。这是审计存储可以比 KV cache 更进一步的地方：把 prefix tree 升级成 Merkle DAG，任意位置的重复段都靠 content hash 去重。去重一上来就必须管引用计数——多个请求引用同一 block，refcount 归零才能回收。但是这里的难点在于怎么识别重复模式和匹配模式，例如精准识别出来文中出现的 SKILL 片段、或者多个上下文经常出现的文件片段，比如某一个按需加载的 Memory。这种可以手动规定一些调用 SKILL 的特征来进行识别，但是本身可能收效不会太高，做起来却相当复杂。</p>
+<p>对于分布式的存储，还可以把 prefix 重合度高的 session 路由到同一节点。甚至进一步冷热分离等。</p>
+<h3 id="现有的一些组件">现有的一些组件</h3>
+<p>即使没有审计，也有存储用户请求用于训练的需求，那么必定有公司、社区做过开源组件。</p>
+<p>最接近的是 HuggingFace 的 <a target="_blank" rel="noopener" href="https://huggingface.co/docs/hub/en/xet/index">Xet</a>。它就是 CDC + content-addressed + Merkle 的生产实现：文件按 ~64KB 切变长 chunk（rolling hash 定边界）。每个 chunk 算 BLAKE3 hash 存进内容寻址存储（Content-Addressable Storage），chunk hash 再算一层 Merkle hash 做文件完整性校验。上传时先查本地 cache 再查全局 CAS，重复 chunk 直接跳过，chunk 聚合成 64MB 的 xorb 作为传输单元。现在承载 21PB 数据集（Parquet 就占 4PB+），协议<a target="_blank" rel="noopener" href="https://huggingface.co/docs/xet/en/deduplication">开源</a>。</p>
+<p>算法层面，CDC 的事实标准是 <a target="_blank" rel="noopener" href="https://csyhua.github.io/csyhua-atc2016.pdf">FastCDC</a>（Gear rolling hash + normalized chunking），开源实现有 <code>fastcdc-rs</code>（Rust）和 Plakar 的 <a target="_blank" rel="noopener" href="https://plakar.io/posts/2025-07-11/introducing-go-cdc-chunkers/">go-cdc-chunkers</a>。Parquet 那边 pyarrow 也加了 <code>use_content_defined_chunking=True</code>，写 Parquet 时按内容定 data page 边界，配合 Xet 这种 CAS 做 dedup——HuggingFace 还专门出了个 <a target="_blank" rel="noopener" href="https://github.com/huggingface/dataset-dedupe-estimator">dataset-dedupe-estimator</a> 测 dedup 率。</p>
+<p>底层文件系统方面，在很早就有 AI-native 的文件系统，DeepSeek 开源了 <a target="_blank" rel="noopener" href="https://github.com/deepseek-ai/3FS">3FS</a>，MIT 协议。专门优化随机读（training data loading + KV cache lookup），故意不做传统 read cache / prefetch，因为 AI workload 随机访问 cache 命中率低。180 节点 6.6 TiB/s 聚合读吞吐，生产跑 V3/R1 训练 + 推理。它偏重——需要 RDMA + 大量 SSD。</p>
+<h3 id="网络协议">网络协议</h3>
+<p>更进一步，Agent 每一次和 LLM 的交互都需要发送全量的上下文，1M token 上下文可能就是 4-6MB 的 JSON。我的直觉是这事一定能做 hash + delta：客户端只发新 chunk 的 hash 清单 + 新 block bytes，服务端按清单拼上下文，缺的再让客户端补。</p>
+<p>查了一下已经有了，<strong>OpenAI Responses API</strong>：<code>previous_response_id</code> 让下一 turn 只发新 input，服务端按 ID 取回上次 state 拼上下文。还上了 WebSocket 传输，连接级 in-memory state cache，官方博客原话就是「keep a persistent connection and cache state, rather than sending the full conversation history for each follow-up」。</p>
+<p>不过这部分成本比例太低，同时切换协议历史包袱太重，并且需要额外存储原文和原文哈希，或者原文哈希到 kvcache 的映射，大部分 API 还是发送全量上下文。更多的工作依旧是 kvcache 计算和存储相关的。</p>
+<h2 id="总结">总结</h2>
+<p>Claude Max 被封最开始只是一个账号事故。被封之后反而坦然了，最新的 LLM 都不会差太多。后面也是搭建了一套用量统计、审计、聚合的网关。最后一个意料之外的收获：从 Langfuse 截断这个存储问题出发，简单让 AI 调研了下，才发现 LLM/Agent 的 infra 其实除了计算、推理、训练、存储这些最热门的问题，也一定有很多其他的问题。不过这两年已经被业界推得很远了。这也印证了：计算机领域只要理论上存在能实现，就一定能实现，甚至大部分已经有人做的非常完善了。</p>
+<p>这里我不想谈论政治相关的话题，仅仅谈谈我个人感受角度。虽然被封了，但是我对于 Anthropic 的情感是非常复杂的：一方面我非常感激他能提供这样便宜的订阅方案，廉价的 Token（仅针对订阅），世界顶级模型和 Harness；但是另一方面他十分针对性打压大陆用户，对封号行为感到气愤和羞辱。从前我对于国产模型发展是几乎不太关注，什么千问出个新模型、DeepSeek 1m 上下文模型，GLM 又堪比世界一流模型，现在我才深深感受到这些的重要性。我的消费也是真金白银的投票，希望这些公司能发展更好。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io">zombie12138</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zombie12138.github.io/2026/engineer/after-claude-max-ban/">https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明来源 <a href="https://zombie12138.github.io" target="_blank">zombie's</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Survey/">Survey</a><a class="post-meta__tags" href="/tags/Note/">Note</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a><a class="post-meta__tags" href="/tags/LLM/">LLM</a><a class="post-meta__tags" href="/tags/Project-HomeLab/">Project/HomeLab</a><a class="post-meta__tags" href="/tags/Storage/">Storage</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/quant/trade-principles/" title="交易原理 -- 赌徒谬论、鞅、凯利公式与爆仓"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">交易原理 -- 赌徒谬论、鞅、凯利公式与爆仓</div></div><div class="info-2"><div class="info-item-1">很小的时候，我就一直有一个问题，如果赌徒采取以下策略，是不是就永远赢钱：  第一次下注使用最小的筹码。 如果输了，下一次下注使用上一次的筹码的两倍。 直到赢了，重复步骤 1。  当时我给出的结论是，对方不可能这么傻由你来控制赌注，但是本科时候我意外得到了答案。  本文由 AI 辅助写作，经作者审核修订后发布，文章 AI 含量 40%；代码 AI 含量 80%。  赌徒谬论 破除赌徒悖论 其实我说的这种策略已经被无数人尝试，每次都是尝试更大的下注来弥补之前的损失。这就是 马丁格尔策略（Martingale），或者说斐波那契加仓，它还有一个大名鼎鼎的名字就是赌徒谬论。 让我们从两个人对赌开始，如果 A 有 a 份筹码，B 有 b 份筹码。由 A 发起马丁格尔策略，我们尝试模拟下整个流程。 我们用 Monte Carlo 模拟（完整代码）50x50 种不同资金组合（A、B 各从 100 到 10000），每种跑 100 局，观察马丁格尔策略的表现。规则：下注不足时全押（all-in），赢了之后不追回差额，直接从最小注重新开始。 1uv run --with numpy --with m...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/engineer/homelab-monitoring/" title="HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-04</div><div class="info-item-2">HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践</div></div><div class="info-2"><div class="info-item-1">最近用了很久的嵌入式板子连上去发现 docker 和 systemctl 都用不了，重启系统直接挂了。不过好在重要的服务都跑在一台新买的 AMD 8745HS 上。不过现在已经累计 40 多个容器跑在单机上，连哪个容器挂了、哪个容器占用多少内存都不知道。虽然可以使用 docker stats 来观测，但是也无法事后查看。哪一天服务崩掉也只能通过服务业务本身通知，但如果服务彻底崩溃，这个过程是完全静默的。决定彻底解决这个问题：搭一套完整的可观测性栈。  本文由 AI 辅助写作，经作者审核修订后发布，文章 AI 含量：70%；代码 AI 含量 80%。  背景  我的 HomeLab 单机规格：32GB RAM、AMD Ryzen 7 8745H (8C16T)、826GB 磁盘。上面跑着 40 多个容器，分布在大量独立的 compose 文件里：clash &amp; yacd、qbittorrent+wireguard（多实例）、Samba、TDengine、frpc、DST 游戏服务器、交易数据爬取、离线任务调度，以及各种杂项。 部署之前的状态：  指标：没有。只能 docke...</div></div></div></a><a class="pagination-related" href="/2025/database/install-TDengine/" title="「Abyss」安装 TDengine"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-04</div><div class="info-item-2">「Abyss」安装 TDengine</div></div><div class="info-2"><div class="info-item-1">最近想要做点量化交易的回测分析什么的, 首先第一就是数据库的选择, 最终选择了 TDengine.  环境: rk3399 2 Cortex-A72 + 4 Cortex-A53; 2 GB RAM Clickhouse 从 pull 到 give up 官方网站 提供了几种安装方式, Linux 包, 源码编译, Docker. 本着能 Docker 就 Docker 的想法, 最终选择了 Docker 来配置. Dockerhub 查看说明, 提示:  The arm64 image requires support for the ARMv8.2-A architecture⁠ and additionally the Load-Acquire RCpc register. The register is optional in version ARMv8.2-A and mandatory in ARMv8.3-A⁠. Supported in Graviton &gt;=2, Azure and GCP instances. Examples for unsupport...</div></div></div></a><a class="pagination-related" href="/2025/kernelos/android-root/" title="OnePlus13 一加13 Root"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-20</div><div class="info-item-2">OnePlus13 一加13 Root</div></div><div class="info-2"><div class="info-item-1">最近买了个 OnePlus 13, 简单记录 Root 的过程. 上上次 Root 还是高中 16 年那个能通过漏洞一键 Root 的时代, 上次 Root 则是我的 Redmi Note 12 Turbo, MIUI 14.  警告: 手机 Root 存在一定的风险, 并且不同手机解锁 BL 锁流程不同. 为什么 Root 其实并没有非要 Root 的需求, 主要原因是更喜欢自己买的手机自己掌控的感觉, 安装例如 存储隔离 等的工具, LSPosed 的大量插件我用的倒不是很多 (唯一一个一直用的就是 Bilibili 禁止竖屏模式). 我当前的设备:      我之前都是 KernelSU + magisk + LSPosed 一起安装. KernelSU 虽然方便干净, 但是生态用起来总感觉没有 Magisk 方便, 我就两者都共存了. 我这次要 Root 的是下面这台 OnePlus 机器  解锁 BL 解锁手机的 Bootloader (BL) 是获取设备更高权限 (如刷入自定义 ROM, 获取 Root 权限) 的第一步. 对于一加, 先是打开 开发者模式, 进入之后...</div></div></div></a><a class="pagination-related" href="/2025/distributedsystem/build-batch-platform/" title="「Abyss」搭建任务调度平台 xxl-job"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-01</div><div class="info-item-2">「Abyss」搭建任务调度平台 xxl-job</div></div><div class="info-2"><div class="info-item-1">调研并部署一个 Java 批处理系统, 用来某交易平台的数据的抓取和分析.  背景 最近一直想自己搞搞自动交易. 第一步就是先部署一下这个数据抓取的平台. 有了数据才能后面考虑回测, 最终部署到真实的交易中. 经过调研, 某平台提供了两种数据, 一种是历史数据, 是一个压缩过的 csv 文件; 还有一种就是通过 API 查询实时价格. 这里先爬取历史数据, 后续再考虑 API 来抓实时的数据. 框架选择 最初的设计 这个最初使用 Python 实现了一版, 当时参考的是一个 OJ 系统的调度设计, 写了不到 500 行, 只实现了 Worker 以及 Worker 节点和 Manager 节点的同步和通讯, 但是感觉实现的可维护性非常差, 很多设计上也存在缺陷, 重新总结重构.  最初的 Python 实现的是单机多进程的. 若干个 Worker 和一个 Master 进程. Worker 包含一个主线程和一个执行线程, 主线程负责和 Manager 的通讯, 执行线程需要自己 override, 来执行实际的任务. Worker 自己管理执行进度, 管理 Checkpoint....</div></div></div></a><a class="pagination-related" href="/2025/kernelos/ArchLinux-in-wsl/" title="ArchLinux &amp; Windows 开发环境配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-31</div><div class="info-item-2">ArchLinux &amp; Windows 开发环境配置</div></div><div class="info-2"><div class="info-item-1">I use Arch Linux btw.  一直以来都是用的 Debian 系的, 也用过 Redhat 和 CentOS, 很少用过一些其他的发行版, 比如Gentoo, ArchLinux, openSUSE. 虽然这些虽然是外面配了一些不同的软件, 但是还是感觉非常神秘. 最近重装系统了, 顺便在 wsl 中安装 ArchLinux 体验一下. 之前也从来没有做过什么终端美化, 这次简单尝试下. 不过需要注意的是: WSL2 中的 Arch Linux 丧失了 Arch 最核心的优势, 滚动更新内核. WSL2 的内核是微软定制的 microsoft/WSL2-Linux-Kernel, 由微软独立维护, 与 Arch 的 linux 包完全无关. pacman -Syu 只能滚动用户空间(glibc, coreutils, systemd 等), 无法更新内核. 内核版本由 wsl --update 控制. 微软定制内核相比上游 mainline 的主要差异:  Hyper-V 半虚拟化驱动: hv_vmbus, hv_storvsc, hv_netvsc 等, 用于和...</div></div></div></a><a class="pagination-related" href="/2026/collections/Chinese-punctuation/" title="博客使用中文标点啦!"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-11</div><div class="info-item-2">博客使用中文标点啦!</div></div><div class="info-2"><div class="info-item-1">短讯：博客从此文章以后，开始使用中文标点啦！  为什么使用英文标点 从最初写代码时，我便开始纠结标点问题，尤其是在格式控制上。比如我写的 Markdown 一直是遵循 markdownlint-cli2。在写作过程中，我开始注意到一些细节，比如中文与英文之间需要有空格，英文标点后、括号前后需要加空格等。随着使用的深入，我逐渐发现英文标点在某些方面更为高效，具体包括以下几点：  使用英文标点可以更好地进行光标控制。通过按住 CTRL + ←、→、DEL、BACKSPACE，能够跳过整个句子或删除半句，直到遇到中英文标点或标点旁边的空格。其实这一点可以通过安装插件 cjk-word-handler 插件解决，但是这个插件存在 Bug：英文和空格视为同一个单词，这个和 vscode 原生视为两个单词有不同。 一直使用英文标点可以避免切换中英文标点。即使在写作中需要插入方括号、括号、反引号等符号，切换标点符号时也不需要来回切换中英文标点。 还有一点必须承认，尽管使用英文标点很多地方不方便，比如需要手动插入空格；尽管英文标点插入中文中太过于瘦小很难看；尽管不符合写作规范，但是我追求的就是这...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">zombie12138</div><div class="author-info-description">系统编程与性能工程博客 | 深入 Linux 内核、CPU 微架构、AI 推理基础设施与量化交易系统，用 benchmark 和源码说话</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">87</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zombie12138"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84-vibe-coding-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">我的 vibe coding 模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%81%E7%A6%81%E5%92%8C%E7%94%B3%E8%AF%89"><span class="toc-number">2.</span> <span class="toc-text">封禁和申诉</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Alternative"><span class="toc-number">3.</span> <span class="toc-text">Alternative</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GLM"><span class="toc-number">3.1.</span> <span class="toc-text">GLM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codex"><span class="toc-number">3.2.</span> <span class="toc-text">Codex</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#agent-link-skill-%E5%BF%AB%E9%80%9F%E5%90%8C%E6%AD%A5-cc-%E5%92%8C-codex"><span class="toc-number">3.3.</span> <span class="toc-text">agent-link-skill: 快速同步 cc 和 codex</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LLM-API-Gateway"><span class="toc-number">4.</span> <span class="toc-text">LLM API Gateway</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E8%A1%B7"><span class="toc-number">4.1.</span> <span class="toc-text">初衷</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E5%9E%8B"><span class="toc-number">4.2.</span> <span class="toc-text">选型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#new-api"><span class="toc-number">4.3.</span> <span class="toc-text">new-api</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E5%B1%82"><span class="toc-number">4.4.</span> <span class="toc-text">审计层</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mitmproxy"><span class="toc-number">4.4.1.</span> <span class="toc-text">mitmproxy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Langfuse"><span class="toc-number">4.4.2.</span> <span class="toc-text">Langfuse</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Loki-Grafana-%E6%97%A5%E5%BF%97%E6%8E%A5%E5%85%A5"><span class="toc-number">4.4.3.</span> <span class="toc-text">Loki Grafana 日志接入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E5%AD%98%E5%82%A8%E7%9A%84%E6%80%9D%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">审计存储的思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Input-%E8%A2%AB%E6%88%AA%E6%96%AD"><span class="toc-number">5.1.</span> <span class="toc-text">Input 被截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KV-cache-%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="toc-number">5.2.</span> <span class="toc-text">KV cache 的思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%84%E4%BB%B6"><span class="toc-number">5.3.</span> <span class="toc-text">现有的一些组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE"><span class="toc-number">5.4.</span> <span class="toc-text">网络协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/engineer/after-claude-max-ban/" title="从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储">从 Claude Max 被封到自建 LLM 网关：聚合、审计和 Agent 上下文存储</a><time datetime="2026-07-03T04:00:00.000Z" title="发表于 2026-07-03 12:00:00">2026-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/quant/trade-principles/" title="交易原理 -- 赌徒谬论、鞅、凯利公式与爆仓">交易原理 -- 赌徒谬论、鞅、凯利公式与爆仓</a><time datetime="2026-06-29T08:15:48.000Z" title="发表于 2026-06-29 16:15:48">2026-06-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/architecture/glibc-memset-bug/" title="三行 patch 让 glibc memset 快两倍 | 从二维数组写法到 glibc 性能缺陷 | NT 访存优化">三行 patch 让 glibc memset 快两倍 | 从二维数组写法到 glibc 性能缺陷 | NT 访存优化</a><time datetime="2026-04-29T04:00:00.000Z" title="发表于 2026-04-29 12:00:00">2026-04-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/engineer/homelab-monitoring/" title="HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践">HomeLab 可观测性建设 | VictoriaMetrics + Loki + Grafana 全栈实践</a><time datetime="2026-03-04T04:00:00.000Z" title="发表于 2026-03-04 12:00:00">2026-03-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/networking/bbr-tuning-experiment/" title="从骨干网到 BBR：我的 Homelab 香港反代服务器选购与调优实战">从骨干网到 BBR：我的 Homelab 香港反代服务器选购与调优实战</a><time datetime="2026-02-11T08:15:48.000Z" title="发表于 2026-02-11 16:15:48">2026-02-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By zombie12138</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"></div><script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad: false});
+const els = document.querySelectorAll('pre.mermaid');
+if (els.length > 0) {
+  for (const el of els) {
+    el.textContent = el.textContent;
+  }
+  await mermaid.run({nodes: els});
+}
+</script>
+<script>
+if (document.getElementById('post')) {
+  var copyright = document.querySelector('.post-copyright');
+  if (copyright) {
+    var div = document.createElement('div');
+    div.className = 'custom-statement';
+    div.innerHTML = '<span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>特殊声明: </span> 本篇文章由我个人在空闲时间独立制作。所有观点、看法及内容均为个人意见，不代表任何组织或公司的立场。';
+    copyright.appendChild(div);
+  }
+}
+</script>
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

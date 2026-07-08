@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</loc>
+    
+    <lastmod>2026-07-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2026/quant/trade-principles/</loc>
+    
+    <lastmod>2026-07-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2025/collections/awesome-books/</loc>
     
     <lastmod>2026-07-01</lastmod>
@@ -14,15 +32,6 @@
     <loc>https://zombie12138.github.io/2026/architecture/glibc-memset-bug/</loc>
     
     <lastmod>2026-07-01</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2026/quant/trade-principles/</loc>
-    
-    <lastmod>2026-06-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -65,16 +74,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2023/architecture/gflops/</loc>
+    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
+    <loc>https://zombie12138.github.io/2023/architecture/gflops/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -101,7 +101,43 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/kernelos/android-root/</loc>
+    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/collections/HEXO-beautify/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/collections/butterfly/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2021/collections/hello-world/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/collections/interview-mistakes/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -111,6 +147,15 @@
   
   <url>
     <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/kernelos/android-root/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -164,42 +209,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/collections/HEXO-beautify/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/collections/butterfly/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2021/collections/hello-world/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/collections/interview-mistakes/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2024/architecture/disaster-reconstruction/</loc>
     
     <lastmod>2026-05-10</lastmod>
@@ -218,24 +227,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -245,7 +236,43 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2026/collections/Chinese-punctuation/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/collections/awesome-blogs/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -289,28 +316,10 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>https://zombie12138.github.io/2026/collections/Chinese-punctuation/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/collections/awesome-blogs/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2026-07-01</lastmod>
+    <lastmod>2026-07-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
