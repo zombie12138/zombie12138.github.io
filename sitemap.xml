@@ -74,6 +74,15 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2023/architecture/gflops/</loc>
     
     <lastmod>2026-05-10</lastmod>
@@ -93,15 +102,6 @@
   
   <url>
     <loc>https://zombie12138.github.io/2025/collections/butterfly/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
+    <loc>https://zombie12138.github.io/2025/kernelos/android-root/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -155,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/kernelos/android-root/</loc>
+    <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -245,15 +245,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -264,6 +255,15 @@
   
   <url>
     <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
