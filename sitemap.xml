@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</loc>
+    <loc>https://zombie12138.github.io/2026/kernelos/no-bilibili-portrait/</loc>
     
-    <lastmod>2026-07-17</lastmod>
+    <lastmod>2026-08-09</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -13,7 +13,16 @@
   <url>
     <loc>https://zombie12138.github.io/2025/kernelos/ArchLinux-in-wsl/</loc>
     
-    <lastmod>2026-07-17</lastmod>
+    <lastmod>2026-08-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</loc>
+    
+    <lastmod>2026-08-09</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -74,6 +83,60 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/collections/HEXO-beautify/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2021/collections/hello-world/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2025/collections/butterfly/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/collections/interview-mistakes/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
     
     <lastmod>2026-05-10</lastmod>
@@ -92,79 +155,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/collections/HEXO-beautify/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/collections/butterfly/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2021/collections/hello-world/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/collections/interview-mistakes/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2025/kernelos/android-root/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2023/kernelos/before-peterson-algorithm/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zombie12138.github.io/2024/kernelos/trace-dlopen/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -183,6 +174,15 @@
   
   <url>
     <loc>https://zombie12138.github.io/2024/plcompiler/TVM-LIBCXX/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/kernelos/trace-dlopen/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -254,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
+    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -272,15 +272,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2025/distributedsystem/classic-papers/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2024/kernelos/first-linux-patch/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -290,7 +281,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/networking/ssh-remote-command/</loc>
+    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -300,6 +291,15 @@
   
   <url>
     <loc>https://zombie12138.github.io/2024/networking/udp2raw/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/networking/ssh-remote-command/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -319,7 +319,7 @@
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2026-07-17</lastmod>
+    <lastmod>2026-08-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
