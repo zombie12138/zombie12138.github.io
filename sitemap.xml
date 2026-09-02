@@ -4,7 +4,16 @@
   <url>
     <loc>https://zombie12138.github.io/2025/collections/awesome-books/</loc>
     
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-09-02</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</loc>
+    
+    <lastmod>2026-08-28</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -56,15 +65,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2026/engineer/after-claude-max-ban/</loc>
-    
-    <lastmod>2026-08-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2026/architecture/glibc-memset-bug/</loc>
     
     <lastmod>2026-07-01</lastmod>
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
+    <loc>https://zombie12138.github.io/2023/architecture/gflops/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/architecture/gflops/</loc>
+    <loc>https://zombie12138.github.io/2023/architecture/first-touch-on-numa/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -128,15 +128,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
-    
-    <lastmod>2026-05-10</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2025/database/install-TDengine/</loc>
     
     <lastmod>2026-05-10</lastmod>
@@ -146,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
+    <loc>https://zombie12138.github.io/2023/database/redis-benchmark/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -165,6 +156,15 @@
   
   <url>
     <loc>https://zombie12138.github.io/2024/kernelos/trace-dlopen/</loc>
+    
+    <lastmod>2026-05-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zombie12138.github.io/2024/networking/wireguard-x-qbittorrent/</loc>
     
     <lastmod>2026-05-10</lastmod>
     
@@ -227,6 +227,15 @@
   </url>
   
   <url>
+    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
+    
+    <lastmod>2025-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zombie12138.github.io/2025/distributedsystem/build-batch-platform/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -245,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/database/I-was-hacked/</loc>
+    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -254,7 +263,7 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/embedded/ESPAsyncWebSrv/</loc>
+    <loc>https://zombie12138.github.io/2024/kernelos/first-linux-patch/</loc>
     
     <lastmod>2025-12-22</lastmod>
     
@@ -281,15 +290,6 @@
   </url>
   
   <url>
-    <loc>https://zombie12138.github.io/2024/kernelos/first-linux-patch/</loc>
-    
-    <lastmod>2025-12-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zombie12138.github.io/2023/plcompiler/access-private-member-in-cpp/</loc>
     
     <lastmod>2025-12-22</lastmod>
@@ -301,7 +301,7 @@
 
   <url>
     <loc>https://zombie12138.github.io/</loc>
-    <lastmod>2026-08-26</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
